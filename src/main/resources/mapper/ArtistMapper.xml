@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.music.mapper.ArtistMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.music.entity.Artist">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="avatar" property="avatar"/>
+        <result column="bio" property="bio"/>
+        <result column="country" property="country"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+    </resultMap>
+
+    <sql id="BaseColumns">
+        id, name, avatar, bio, country, created_time, updated_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM artist WHERE id = #{id}
+    </select>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM artist
+        ORDER BY created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countTotal" resultType="long">
+        SELECT COUNT(*) FROM artist
+    </select>
+
+    <select id="selectByName" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM artist WHERE name = #{name}
+    </select>
+
+    <select id="searchByName" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM artist
+        WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countSearch" resultType="long">
+        SELECT COUNT(*) FROM artist WHERE name LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO artist (name, avatar, bio, country)
+        VALUES (#{name}, #{avatar}, #{bio}, #{country})
+    </insert>
+
+    <update id="update">
+        UPDATE artist
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="bio != null">bio = #{bio},</if>
+            <if test="country != null">country = #{country},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM artist WHERE id = #{id}
+    </delete>
+
+</mapper>

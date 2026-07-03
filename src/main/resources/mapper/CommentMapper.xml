@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.music.mapper.CommentMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.music.entity.Comment">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="target_type" property="targetType"/>
+        <result column="target_id" property="targetId"/>
+        <result column="content" property="content"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="status" property="status"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+    </resultMap>
+
+    <sql id="BaseColumns">
+        id, user_id, target_type, target_id, content, parent_id, status, created_time, updated_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM comment WHERE id = #{id}
+    </select>
+
+    <select id="selectByTarget" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM comment
+        WHERE target_type = #{targetType} AND target_id = #{targetId}
+          AND parent_id IS NULL
+        ORDER BY created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByTarget" resultType="long">
+        SELECT COUNT(*) FROM comment
+        WHERE target_type = #{targetType} AND target_id = #{targetId}
+          AND parent_id IS NULL
+    </select>
+
+    <select id="selectReplies" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM comment
+        WHERE parent_id = #{parentId}
+        ORDER BY created_time ASC
+        LIMIT #{limit}
+    </select>
+
+    <select id="countReplies" resultType="long">
+        SELECT COUNT(*) FROM comment WHERE parent_id = #{parentId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment (user_id, target_type, target_id, content, parent_id, status)
+        VALUES (#{userId}, #{targetType}, #{targetId}, #{content}, #{parentId}, 'VISIBLE')
+    </insert>
+
+    <update id="softDelete">
+        UPDATE comment SET status = 'DELETED'
+        WHERE id = #{id} AND (user_id = #{userId} OR #{userId} IS NULL)
+    </update>
+
+    <!-- 管理端：查询所有评论 -->
+    <select id="selectAllForAdmin" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM comment
+        <where>
+            <if test="targetType != null and targetType != ''">
+                AND target_type = #{targetType}
+            </if>
+        </where>
+        ORDER BY created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 管理端：统计评论总数 -->
+    <select id="countAllForAdmin" resultType="long">
+        SELECT COUNT(*) FROM comment
+        <where>
+            <if test="targetType != null and targetType != ''">
+                AND target_type = #{targetType}
+            </if>
+        </where>
+    </select>
+
+    <!-- 管理员强制删除评论 -->
+    <update id="adminDelete">
+        UPDATE comment SET status = 'DELETED' WHERE id = #{id}
+    </update>
+
+</mapper>

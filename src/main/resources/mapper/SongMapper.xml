@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.music.mapper.SongMapper">
+
+    <!-- 通用结果映射 -->
+    <resultMap id="BaseResultMap" type="com.example.music.entity.Song">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="artist_id" property="artistId"/>
+        <result column="album_id" property="albumId"/>
+        <result column="duration" property="duration"/>
+        <result column="audio_url" property="audioUrl"/>
+        <result column="cover_url" property="coverUrl"/>
+        <result column="lyric_url" property="lyricUrl"/>
+        <result column="lyrics" property="lyrics"/>
+        <result column="genre" property="genre"/>
+        <result column="language" property="language"/>
+        <result column="release_year" property="releaseYear"/>
+        <result column="status" property="status"/>
+        <result column="uploader_id" property="uploaderId"/>
+        <result column="play_count" property="playCount"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+    </resultMap>
+
+    <!-- 通用查询列 -->
+    <sql id="BaseColumns">
+        id, title, artist_id, album_id, duration, audio_url, cover_url,
+        lyric_url, lyrics, genre, language, release_year,
+        status, uploader_id, play_count, created_time, updated_time
+    </sql>
+
+    <!-- 根据 ID 查询 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM song WHERE id = #{id}
+    </select>
+
+    <!-- 分页查询列表（按创建时间降序） -->
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM song
+        <where>
+            <if test="genre != null and genre != ''">AND genre = #{genre}</if>
+            <if test="status != null and status != ''">AND status = #{status}</if>
+        </where>
+        ORDER BY created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 统计总数 -->
+    <select id="countTotal" resultType="long">
+        SELECT COUNT(*) FROM song
+        <where>
+            <if test="genre != null and genre != ''">AND genre = #{genre}</if>
+            <if test="status != null and status != ''">AND status = #{status}</if>
+        </where>
+    </select>
+
+    <!-- 模糊搜索（歌曲名/艺人名/专辑名 分别关联） -->
+    <select id="search" resultMap="BaseResultMap">
+        SELECT DISTINCT s.id, s.title, s.artist_id, s.album_id, s.duration,
+               s.audio_url, s.cover_url, s.lyric_url, s.lyrics,
+               s.genre, s.language, s.release_year,
+               s.status, s.uploader_id, s.play_count, s.created_time, s.updated_time
+        FROM song s
+        LEFT JOIN artist a ON s.artist_id = a.id
+        LEFT JOIN album al ON s.album_id = al.id
+        WHERE s.status = 'ACTIVE'
+          AND (s.title LIKE CONCAT('%', #{keyword}, '%')
+               OR a.name LIKE CONCAT('%', #{keyword}, '%')
+               OR al.title LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY
+            CASE
+                WHEN s.title LIKE CONCAT('%', #{keyword}, '%') THEN 0
+                WHEN a.name LIKE CONCAT('%', #{keyword}, '%') THEN 1
+                ELSE 2
+            END,
+            s.play_count DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 搜索命中总数 -->
+    <select id="countSearch" resultType="long">
+        SELECT COUNT(DISTINCT s.id)
+        FROM song s
+        LEFT JOIN artist a ON s.artist_id = a.id
+        LEFT JOIN album al ON s.album_id = al.id
+        WHERE s.status = 'ACTIVE'
+          AND (s.title LIKE CONCAT('%', #{keyword}, '%')
+               OR a.name LIKE CONCAT('%', #{keyword}, '%')
+               OR al.title LIKE CONCAT('%', #{keyword}, '%'))
+    </select>
+
+    <!-- 热门歌曲 -->
+    <select id="selectHot" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM song
+        WHERE status = 'ACTIVE'
+        ORDER BY play_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 按艺人查询 -->
+    <select id="selectByArtistId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM song WHERE artist_id = #{artistId}
+        ORDER BY created_time DESC
+    </select>
+
+    <!-- 按上传者查询 -->
+    <select id="selectByUploaderId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM song WHERE uploader_id = #{uploaderId}
+        ORDER BY created_time DESC
+    </select>
+
+    <!-- 按专辑查询 -->
+    <select id="selectByAlbumId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM song WHERE album_id = #{albumId}
+        ORDER BY created_time ASC
+    </select>
+
+    <!-- 统计所有歌曲总播放量 -->
+    <select id="sumPlayCount" resultType="long">
+        SELECT COALESCE(SUM(play_count), 0) FROM song
+    </select>
+
+    <!-- 按风格统计歌曲数量分布 -->
+    <select id="countByGenre" resultType="java.util.Map">
+        SELECT genre AS genre, COUNT(*) AS `count`
+        FROM song
+        WHERE genre IS NOT NULL AND genre != ''
+        GROUP BY genre
+        ORDER BY `count` DESC
+    </select>
+
+    <!-- 新增歌曲（返回自增 ID） -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO song (title, artist_id, album_id, duration, audio_url, cover_url,
+                         lyric_url, lyrics, genre, language, release_year,
+                         status, uploader_id, play_count)
+        VALUES (#{title}, #{artistId}, #{albumId}, #{duration}, #{audioUrl}, #{coverUrl},
+                #{lyricUrl}, #{lyrics}, #{genre}, #{language}, #{releaseYear},
+                COALESCE(#{status}, 'ACTIVE'), #{uploaderId}, COALESCE(#{playCount}, 0))
+    </insert>
+
+    <!-- 更新歌曲 -->
+    <update id="update">
+        UPDATE song
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="artistId != null">artist_id = #{artistId},</if>
+            <if test="albumId != null">album_id = #{albumId},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="audioUrl != null">audio_url = #{audioUrl},</if>
+            <if test="coverUrl != null">cover_url = #{coverUrl},</if>
+            <if test="lyricUrl != null">lyric_url = #{lyricUrl},</if>
+            <if test="genre != null">genre = #{genre},</if>
+            <if test="language != null">language = #{language},</if>
+            <if test="releaseYear != null">release_year = #{releaseYear},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 批量更新播放量（定时任务使用，单语句 CASE WHEN 避免 JDBC 多语句问题） -->
+    <update id="batchUpdatePlayCount" parameterType="java.util.List">
+        UPDATE song SET play_count = play_count + CASE id
+        <foreach collection="updates" item="item">
+            WHEN #{item.id} THEN #{item.playCount}
+        </foreach>
+        ELSE 0 END
+        WHERE id IN
+        <foreach collection="updates" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <!-- 删除歌曲 -->
+    <delete id="deleteById">
+        DELETE FROM song WHERE id = #{id}
+    </delete>
+
+    <!-- 更新审核状态 -->
+    <update id="updateStatus">
+        UPDATE song SET status = #{status} WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,21 @@
+# =============================================================
+# 生产环境配置
+# 激活方式：spring.profiles.active=prod
+# 或设置环境变量：SPRING_PROFILES_ACTIVE=prod
+# =============================================================
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+logging:
+  level:
+    com.example.music: warn
+    org.springframework: warn
+    org.mybatis: warn
+
+# 生产环境建议使用环境变量覆盖以下配置：
+# MUSIC_JWT_SECRET - JWT 签名密钥（必须）
+# MYSQL_PASSWORD  - 数据库密码（必须）
+# REDIS_PASSWORD  - Redis 密码（如果设置了）
+# SERVER_PORT     - 服务端口（可选，默认 8888）

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.music.mapper.SongCategoryMapper">
+    <resultMap id="BaseResultMap" type="com.example.music.entity.SongCategory">
+        <id column="id" property="id"/>
+        <result column="song_id" property="songId"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="created_time" property="createdTime"/>
+    </resultMap>
+
+    <sql id="BaseColumns">
+        id, song_id, category_id, created_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO song_category (song_id, category_id)
+        VALUES (#{songId}, #{categoryId})
+    </insert>
+
+    <insert id="insertBatch">
+        INSERT INTO song_category (song_id, category_id) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.songId}, #{item.categoryId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBySongId">
+        DELETE FROM song_category WHERE song_id = #{songId}
+    </delete>
+
+    <delete id="deleteByCategoryId">
+        DELETE FROM song_category WHERE category_id = #{categoryId}
+    </delete>
+
+    <select id="selectBySongId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM song_category WHERE song_id = #{songId}
+    </select>
+
+    <select id="selectByCategoryId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM song_category WHERE category_id = #{categoryId}
+    </select>
+
+    <select id="selectCategoryIdsBySongId" resultType="java.lang.Long">
+        SELECT category_id FROM song_category WHERE song_id = #{songId}
+    </select>
+
+    <select id="countByCategoryId" resultType="int">
+        SELECT COUNT(*) FROM song_category WHERE category_id = #{categoryId}
+    </select>
+</mapper>

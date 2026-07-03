@@ -1,0 +1,14 @@
+# =============================================================
+# 开发环境配置
+# 激活方式：spring.profiles.active=dev (默认)
+# =============================================================
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.example.music: debug
+    org.springframework: warn
+    org.mybatis: warn

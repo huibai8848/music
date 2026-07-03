@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.music.mapper.UserMapper">
+
+    <!-- 通用结果映射 -->
+    <resultMap id="BaseResultMap" type="com.example.music.entity.User">
+        <id column="id" property="id"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <result column="avatar" property="avatar"/>
+        <result column="bio" property="bio"/>
+        <result column="background" property="background"/>
+        <result column="role" property="role"/>
+        <result column="vip_expire_time" property="vipExpireTime"/>
+        <result column="status" property="status"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+    </resultMap>
+
+    <!-- 通用查询列 -->
+    <sql id="BaseColumns">
+        id, email, password, nickname, avatar, bio, background,
+        role, vip_expire_time, status, created_time, updated_time
+    </sql>
+
+    <!-- 根据 ID 查询 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM `user` WHERE id = #{id}
+    </select>
+
+    <!-- 根据邮箱查询 -->
+    <select id="selectByEmail" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM `user` WHERE email = #{email}
+    </select>
+
+    <!-- 新增用户 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `user` (email, password, nickname, role, status)
+        VALUES (#{email}, #{password}, #{nickname}, #{role}, #{status})
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="update">
+        UPDATE `user`
+        <set>
+            <if test="nickname != null">nickname = #{nickname},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="bio != null">bio = #{bio},</if>
+            <if test="background != null">background = #{background},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 更新密码 -->
+    <update id="updatePassword">
+        UPDATE `user` SET password = #{password} WHERE id = #{id}
+    </update>
+
+    <!-- 更新会员信息 -->
+    <update id="updateVip">
+        UPDATE `user` SET role = #{role}, vip_expire_time = #{vipExpireTime} WHERE id = #{id}
+    </update>
+
+    <!-- 更新状态 -->
+    <update id="updateStatus">
+        UPDATE `user` SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <!-- 统计总用户数 -->
+    <select id="countTotal" resultType="long">
+        SELECT COUNT(*) FROM `user`
+    </select>
+
+    <!-- 统计今日新增 -->
+    <select id="countToday" resultType="long">
+        SELECT COUNT(*) FROM `user`
+        WHERE DATE(created_time) = CURDATE()
+    </select>
+
+    <!-- 统计指定日期注册用户数 -->
+    <select id="countByDate" resultType="long">
+        SELECT COUNT(*) FROM `user`
+        WHERE DATE(created_time) = #{date}
+    </select>
+
+    <!-- 统计会员总数 -->
+    <select id="countVip" resultType="long">
+        SELECT COUNT(*) FROM `user` WHERE role = 'VIP'
+    </select>
+
+    <!-- 分页查询所有用户（管理端，支持搜索） -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM `user`
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (nickname LIKE CONCAT('%', #{keyword}, '%') OR email LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 统计所有用户数（管理端，支持搜索） -->
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM `user`
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (nickname LIKE CONCAT('%', #{keyword}, '%') OR email LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+</mapper>

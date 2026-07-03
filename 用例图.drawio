@@ -1,0 +1,154 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36">
+  <diagram id="diagram1" name="Page-1">
+    <mxGraphModel dx="1030" dy="626" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="650" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-4" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-register">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-5" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-6" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-search">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-8" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-favorite">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-9" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-play">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-10" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-playlist">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-11" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-ranking">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-12" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-report">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="user-actor" parent="1" style="shape=umlActor;whiteSpace=wrap;html=1;verticalLabelPosition=bottom;labelBackgroundColor=none;fontSize=12;align=center;" value="&lt;div style=&quot;&quot;&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="30" x="270" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-14" edge="1" parent="1" source="vip-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-musiclib">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-15" edge="1" parent="1" source="vip-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-upload">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-16" edge="1" parent="1" source="vip-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-room">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-17" edge="1" parent="1" source="vip-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-voice">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-18" edge="1" parent="1" source="vip-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-chat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-19" edge="1" parent="1" source="vip-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-recharge">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vip-actor" parent="1" style="shape=umlActor;whiteSpace=wrap;html=1;verticalLabelPosition=bottom;labelBackgroundColor=none;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="60" width="30" x="270" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-20" edge="1" parent="1" source="admin-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-admin-song">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-21" edge="1" parent="1" source="admin-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-admin-user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-22" edge="1" parent="1" source="admin-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-admin-content">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-23" edge="1" parent="1" source="admin-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-admin-ops">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-24" edge="1" parent="1" source="admin-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-admin-log">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-25" edge="1" parent="1" source="admin-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-admin-stats">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="admin-actor" parent="1" style="shape=umlActor;whiteSpace=wrap;html=1;verticalLabelPosition=bottom;labelBackgroundColor=none;fontSize=12;" value="" vertex="1">
+          <mxGeometry height="60" width="30" x="270" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-comment" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="发表评论" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-favorite" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="收藏/喜欢" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-musiclib" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="个人音乐库" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-voice" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="歌房语音" vertex="1">
+          <mxGeometry height="40" width="110" x="105" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-chat" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="房间聊天" vertex="1">
+          <mxGeometry height="40" width="100" x="110" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-register" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="注册" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-login" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="登录/登出" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-search" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="搜索歌曲" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-play" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="播放音乐" vertex="1">
+          <mxGeometry height="40" width="100" x="110" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-playlist" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="管理歌单" vertex="1">
+          <mxGeometry height="40" width="100" x="110" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-ranking" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="查看排行榜" vertex="1">
+          <mxGeometry height="40" width="100" x="110" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-report" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="提交举报" vertex="1">
+          <mxGeometry height="40" width="100" x="110" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="kQiRLVpomU3Oq6RpHaAY-7" edge="1" parent="1" source="user-actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.044;entryY=0.31;entryDx=0;entryDy=0;entryPerimeter=0;labelBackgroundColor=none;fontColor=default;endArrow=none;endFill=0;" target="uc-comment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-upload" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="上传音乐" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-room" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="创建/加入歌房" vertex="1">
+          <mxGeometry height="40" width="110" x="365" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-recharge" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="充值会员" vertex="1">
+          <mxGeometry height="40" width="100" x="110" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-admin-song" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="音乐管理" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-admin-user" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="用户管理" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-admin-content" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="内容管理" vertex="1">
+          <mxGeometry height="40" width="100" x="370" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-admin-ops" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="运营配置" vertex="1">
+          <mxGeometry height="40" width="100" x="120" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-admin-log" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="操作日志" vertex="1">
+          <mxGeometry height="40" width="100" x="120" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-admin-stats" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;labelBackgroundColor=none;" value="数据看板" vertex="1">
+          <mxGeometry height="40" width="100" x="120" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="xD0vhd3L50teDB0VzZdu-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="普通用户" vertex="1">
+          <mxGeometry height="30" width="60" x="255" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="xD0vhd3L50teDB0VzZdu-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="VIP会员" vertex="1">
+          <mxGeometry height="30" width="60" x="252" y="378" as="geometry" />
+        </mxCell>
+        <mxCell id="xD0vhd3L50teDB0VzZdu-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="管理员" vertex="1">
+          <mxGeometry height="30" width="60" x="255" y="550" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

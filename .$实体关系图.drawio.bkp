@@ -1,0 +1,235 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36">
+  <diagram id="diagram1" name="Page-1">
+    <mxGraphModel dx="900" dy="500" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=18;fontColor=#1A237E;fontStyle=1;" value="在线音乐平台 — 实体关系图 (ER Diagram)" vertex="1">
+          <mxGeometry height="30" width="450" x="475" y="10" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 核心实体：User ==================== -->
+        <mxCell id="entity-user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;arcSize=8;fontSize=11;" value="&lt;b&gt;User（用户）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;email: VARCHAR(100) UNIQUE&#xd;password: VARCHAR(255)&#xd;nickname: VARCHAR(50)&#xd;role: ENUM(USER/VIP/ADMIN)&#xd;status: ENUM(ACTIVE/BANNED)" vertex="1">
+          <mxGeometry height="120" width="170" x="80" y="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 核心实体：Song ==================== -->
+        <mxCell id="entity-song" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;arcSize=8;fontSize=11;" value="&lt;b&gt;Song（歌曲）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;title: VARCHAR(200)&#xd;duration: INT&#xd;audio_url: VARCHAR(255)&#xd;play_count: BIGINT&#xd;FK artist_id&#xd;FK album_id (nullable)" vertex="1">
+          <mxGeometry height="150" width="170" x="620" y="60" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 核心实体：Artist ==================== -->
+        <mxCell id="entity-artist" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;arcSize=8;fontSize=11;" value="&lt;b&gt;Artist（艺人）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;name: VARCHAR(100)&#xd;avatar: VARCHAR(255)&#xd;bio: TEXT&#xd;country: VARCHAR(50)" vertex="1">
+          <mxGeometry height="110" width="150" x="860" y="80" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关联实体：Album ==================== -->
+        <mxCell id="entity-album" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;arcSize=8;fontSize=11;" value="&lt;b&gt;Album（专辑）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;title: VARCHAR(200)&#xd;cover_url: VARCHAR(255)&#xd;release_date: DATE&#xd;FK artist_id" vertex="1">
+          <mxGeometry height="110" width="150" x="860" y="260" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系线：Artist 1 ── N Album ==================== -->
+        <mxCell id="rel-artist-album" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" source="entity-artist" target="entity-album" value="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="195" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-album-n" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" value="N" target="entity-album">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="235" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== 关系线：Album 1 ── N Song ==================== -->
+        <mxCell id="rel-album-song" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" source="entity-album" target="entity-song" value="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="215" as="sourcePoint" />
+            <mxPoint x="690" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-song-n" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" target="entity-song" value="N">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="200" as="sourcePoint" />
+            <mxPoint x="690" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== 关系线：Artist 1 ── N Song ==================== -->
+        <mxCell id="rel-artist-song1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" source="entity-artist" target="entity-song" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-artist-song2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" target="entity-song" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 连接实体：Playlist（歌单） ==================== -->
+        <mxCell id="entity-playlist" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;arcSize=8;fontSize=11;" value="&lt;b&gt;Playlist（歌单）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;title: VARCHAR(100)&#xd;is_public: TINYINT&#xd;song_count: INT&#xd;FK user_id" vertex="1">
+          <mxGeometry height="110" width="150" x="310" y="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：User 1 ── N Playlist ==================== -->
+        <mxCell id="rel-user-playlist1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" source="entity-user" target="entity-playlist" value="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="130" as="sourcePoint" />
+            <mxPoint x="310" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-playlist2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" target="entity-playlist" value="N">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="145" as="sourcePoint" />
+            <mxPoint x="310" y="145" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== 连接实体：PlaylistSong（M:N 关联表） ==================== -->
+        <mxCell id="entity-playlist-song" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;arcSize=8;fontSize=10;fontColor=#E65100;" value="&lt;b&gt;PlaylistSong（关联表）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;FK playlist_id&#xd;FK song_id&#xd;sort_order: INT&#xd;─────────────&#xd;★ 将 Playlist N:M Song&#xd;   分解为：&#xd;  Playlist 1 ── N PlaylistSong&#xd;  Song 1 ── N PlaylistSong" vertex="1">
+          <mxGeometry height="110" width="190" x="440" y="60" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：Playlist 1 ── N PlaylistSong ==================== -->
+        <mxCell id="rel-ps1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" source="entity-playlist" target="entity-playlist-song" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-ps2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" target="entity-playlist-song" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：Song 1 ── N PlaylistSong ==================== -->
+        <mxCell id="rel-ps3" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" source="entity-song" target="entity-playlist-song" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-ps4" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" target="entity-playlist-song" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 连接实体：SongCategory（M:N 关联表） ==================== -->
+        <mxCell id="entity-sg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;arcSize=8;fontSize=10;fontColor=#E65100;" value="&lt;b&gt;SongCategory（关联表）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;FK song_id&#xd;FK category_id&#xd;─────────────&#xd;★ 分解 Song N:M Category" vertex="1">
+          <mxGeometry height="85" width="180" x="430" y="230" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 核心实体：Category ==================== -->
+        <mxCell id="entity-category" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;arcSize=8;fontSize=11;" value="&lt;b&gt;Category（分类）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;name: VARCHAR(50)&#xd;type: ENUM(GENRE/LANG/YEAR)&#xd;sort_order: INT" vertex="1">
+          <mxGeometry height="100" width="150" x="120" y="280" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：Song 1 ── N SongCategory ==================== -->
+        <mxCell id="rel-sg1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" source="entity-song" target="entity-sg" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-sg2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" target="entity-sg" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：Category 1 ── N SongCategory ==================== -->
+        <mxCell id="rel-sg3" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" source="entity-category" target="entity-sg" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-sg4" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=11;fontColor=#1565C0;" edge="1" target="entity-sg" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 子实体：Comment ==================== -->
+        <mxCell id="entity-comment" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=8;fontSize=10;" value="&lt;b&gt;Comment（评论）&lt;/b&gt;&#xd;─────────────&#xd;PK id: BIGINT&#xd;F K user_id&#xd;target_type + target_id&#xd;(多态：SONG/PLAYLIST)&#xd;content: VARCHAR(500)&#xd;parent_id: BIGINT (nullable)" vertex="1">
+          <mxGeometry height="120" width="150" x="100" y="460" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：User 1 ── N Comment ==================== -->
+        <mxCell id="rel-uc1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontColor=#6A1B9A;" edge="1" source="entity-user" target="entity-comment" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-uc2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontColor=#6A1B9A;" edge="1" target="entity-comment" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 子实体：Favorite ==================== -->
+        <mxCell id="entity-fav" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=8;fontSize=10;" value="&lt;b&gt;Favorite（收藏）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;FK user_id&#xd;target_type + target_id&#xd;(多态：SONG/PLAYLIST/ALBUM)" vertex="1">
+          <mxGeometry height="90" width="140" x="310" y="460" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：User 1 ── N Favorite ==================== -->
+        <mxCell id="rel-uf1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;" edge="1" source="entity-user" target="entity-fav" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-uf2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;" edge="1" target="entity-fav" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 子实体：Likes ==================== -->
+        <mxCell id="entity-like" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=8;fontSize=10;" value="&lt;b&gt;Likes（喜欢）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;FK user_id&#xd;target_type + target_id&#xd;(多态：SONG/PLAYLIST/COMMENT)" vertex="1">
+          <mxGeometry height="90" width="140" x="510" y="460" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 子实体：Notification ==================== -->
+        <mxCell id="entity-notify" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=8;fontSize=10;" value="&lt;b&gt;Notification（通知）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;FK user_id&#xd;type: ENUM&#xd;title + content&#xd;is_read: TINYINT" vertex="1">
+          <mxGeometry height="100" width="140" x="710" y="460" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：User 1 ── N Notification ==================== -->
+        <mxCell id="rel-un1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;" edge="1" source="entity-user" target="entity-notify" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-un2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;" edge="1" target="entity-notify" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 子实体：Report ==================== -->
+        <mxCell id="entity-report" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=8;fontSize=10;" value="&lt;b&gt;Report（举报）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;FK reporter_id&#xd;target_type + target_id&#xd;reason + status" vertex="1">
+          <mxGeometry height="90" width="140" x="910" y="460" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 子实体：RechargeRecord ==================== -->
+        <mxCell id="entity-recharge" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=8;fontSize=10;" value="&lt;b&gt;RechargeRecord&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;FK user_id&#xd;plan + amount&#xd;expire_time&#xd;status" vertex="1">
+          <mxGeometry height="100" width="140" x="260" y="630" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 关系：User 1 ── N Recharge ==================== -->
+        <mxCell id="rel-ur1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;" edge="1" source="entity-user" target="entity-recharge" value="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-ur2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;" edge="1" target="entity-recharge" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 子实体：PlayHistory ==================== -->
+        <mxCell id="entity-history" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=8;fontSize=10;" value="&lt;b&gt;PlayHistory（播放历史）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;FK user_id&#xd;FK song_id&#xd;played_time" vertex="1">
+          <mxGeometry height="90" width="140" x="470" y="630" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 子实体：RoomMessage ==================== -->
+        <mxCell id="entity-roommsg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=8;fontSize=10;" value="&lt;b&gt;RoomMessage（房间消息）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;room_id&#xd;FK user_id&#xd;type + content" vertex="1">
+          <mxGeometry height="90" width="140" x="680" y="630" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 管理实体：OperationLog ==================== -->
+        <mxCell id="entity-operlog" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;arcSize=8;fontSize=10;" value="&lt;b&gt;OperationLog（操作日志）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;FK operator_id&#xd;action + target&#xd;detail(JSON) + ip" vertex="1">
+          <mxGeometry height="90" width="140" x="920" y="630" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 管理实体：Banner / SystemNotice ==================== -->
+        <mxCell id="entity-banner" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;arcSize=8;fontSize=10;" value="&lt;b&gt;Banner（轮播图）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;image_url + link_url&#xd;sort_order&#xd;is_active" vertex="1">
+          <mxGeometry height="90" width="140" x="1080" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="entity-notice" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;arcSize=8;fontSize=10;" value="&lt;b&gt;SystemNotice（公告）&lt;/b&gt;&#xd;─────────────&#xd;PK id&#xd;title + content&#xd;type + is_active" vertex="1">
+          <mxGeometry height="90" width="140" x="1080" y="230" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 图例 ==================== -->
+        <mxCell id="legend-core" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;arcSize=6;fontSize=9;fontColor=#1565C0;" value="核心实体" vertex="1">
+          <mxGeometry height="18" width="70" x="30" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-junction" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;arcSize=6;fontSize=9;fontColor=#E65100;" value="关联实体（M:N分解）" vertex="1">
+          <mxGeometry height="18" width="120" x="120" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-sub" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;arcSize=6;fontSize=9;fontColor=#6A1B9A;" value="子实体（从属User）" vertex="1">
+          <mxGeometry height="18" width="110" x="260" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-admin-entity" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;arcSize=6;fontSize=9;fontColor=#2E7D32;" value="管理实体" vertex="1">
+          <mxGeometry height="18" width="75" x="390" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-marker" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#999;" value="PK=主键  FK=外键  ★=连接实体（M:N → 1:N + N:1）  (多态)=通过 type+id 字段实现多态关联" vertex="1">
+          <mxGeometry height="16" width="600" x="30" y="820" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

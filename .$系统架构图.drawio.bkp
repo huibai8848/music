@@ -1,0 +1,186 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36">
+  <diagram id="diagram1" name="Page-1">
+    <mxGraphModel dx="900" dy="500" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="860" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=18;fontColor=#1A237E;fontStyle=1;" value="在线音乐平台 — 系统架构图（技术视角）" vertex="1">
+          <mxGeometry height="30" width="400" x="400" y="10" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Layer 1: 展示层 ==================== -->
+        <mxCell id="layer1-bg" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontStyle=0;fillColor=#E3F2FD;strokeColor=#1565C0;startSize=30;verticalAlign=top;rounded=1;fontSize=13;fontColor=#1565C0;fontStyle=1;" value="&lt;b&gt;1. 展示层 (Presentation)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="1100" x="50" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="l1-vue" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;arcSize=8;" value="&lt;b&gt;Vue 3&lt;/b&gt;&#xd;Composition API&#xd;单页应用" vertex="1">
+          <mxGeometry height="45" width="100" x="70" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l1-pinia" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;arcSize=8;" value="&lt;b&gt;Pinia&lt;/b&gt;&#xd;状态管理&#xd;(播放/用户/队列)" vertex="1">
+          <mxGeometry height="45" width="100" x="190" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l1-router" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;arcSize=8;" value="&lt;b&gt;Vue Router&lt;/b&gt;&#xd;前端路由&#xd;路由守卫鉴权" vertex="1">
+          <mxGeometry height="45" width="100" x="310" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l1-axios" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;arcSize=8;" value="&lt;b&gt;Axios&lt;/b&gt;&#xd;HTTP请求&#xd;拦截器/Token刷新" vertex="1">
+          <mxGeometry height="45" width="100" x="430" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l1-websocket" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;arcSize=8;" value="&lt;b&gt;WebSocket&lt;/b&gt;&#xd;实时通信&#xd;歌房/通知" vertex="1">
+          <mxGeometry height="45" width="100" x="550" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l1-components" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;arcSize=8;" value="&lt;b&gt;UI组件库&lt;/b&gt;&#xd;播放器/歌词/歌单&#xd;黑胶碟片/排行榜" vertex="1">
+          <mxGeometry height="45" width="120" x="670" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l1-echarts" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;arcSize=8;" value="&lt;b&gt;ECharts&lt;/b&gt;&#xd;管理后台图表&#xd;统计看板" vertex="1">
+          <mxGeometry height="45" width="100" x="810" y="80" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Layer 2: 网关 ==================== -->
+        <mxCell id="layer2-bg" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontStyle=0;fillColor=#E8EAF6;strokeColor=#283593;startSize=30;verticalAlign=top;rounded=1;fontSize=13;fontColor=#283593;fontStyle=1;" value="&lt;b&gt;2. 网关与反向代理 (Gateway)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="65" width="1100" x="50" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="l2-nginx" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#283593;fontSize=10;arcSize=8;" value="&lt;b&gt;Nginx&lt;/b&gt;&#xd;静态资源服务 + API反向代理" vertex="1">
+          <mxGeometry height="35" width="150" x="70" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="l2-cors" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#283593;fontSize=10;arcSize=8;" value="&lt;b&gt;CORS跨域&lt;/b&gt;&#xd;开发环境允许前端跨域" vertex="1">
+          <mxGeometry height="35" width="130" x="250" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="l2-ngrok" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#283593;fontSize=10;arcSize=8;" value="&lt;b&gt;Ngrok&lt;/b&gt;&#xd;内网穿透，外网可访" vertex="1">
+          <mxGeometry height="35" width="130" x="410" y="170" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Layer 3: 控制层 ==================== -->
+        <mxCell id="layer3-bg" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontStyle=0;fillColor=#FFF3E0;strokeColor=#E65100;startSize=30;verticalAlign=top;rounded=1;fontSize=13;fontColor=#E65100;fontStyle=1;" value="&lt;b&gt;3. 控制层 (Controller) — Spring Boot REST API&lt;/b&gt;" vertex="1">
+          <mxGeometry height="85" width="1100" x="50" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="l3-auth" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;arcSize=8;" value="&lt;b&gt;AuthController&lt;/b&gt;&#xd;注册/登录/刷新/登出" vertex="1">
+          <mxGeometry height="40" width="120" x="70" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="l3-user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;arcSize=8;" value="&lt;b&gt;UserController&lt;/b&gt;&#xd;个人信息/会员/主页" vertex="1">
+          <mxGeometry height="40" width="120" x="210" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="l3-song" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;arcSize=8;" value="&lt;b&gt;Song/Album/Artist&lt;/b&gt;&#xd;音乐管理/搜索/热门" vertex="1">
+          <mxGeometry height="40" width="130" x="350" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="l3-interact" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;arcSize=8;" value="&lt;b&gt;InteractionController&lt;/b&gt;&#xd;评论/收藏/喜欢/歌单" vertex="1">
+          <mxGeometry height="40" width="130" x="500" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="l3-room" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;arcSize=8;" value="&lt;b&gt;RoomController&lt;/b&gt;&#xd;歌房CRUD + WebSocket" vertex="1">
+          <mxGeometry height="40" width="120" x="650" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="l3-admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;arcSize=8;" value="&lt;b&gt;AdminController&lt;/b&gt;&#xd;管理后台所有接口" vertex="1">
+          <mxGeometry height="40" width="120" x="790" y="260" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Layer 4: 业务层 ==================== -->
+        <mxCell id="layer4-bg" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontStyle=0;fillColor=#E8F5E9;strokeColor=#2E7D32;startSize=30;verticalAlign=top;rounded=1;fontSize=13;fontColor=#2E7D32;fontStyle=1;" value="&lt;b&gt;4. 业务层 (Service)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="100" width="1100" x="50" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="l4-user-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;arcSize=8;" value="&lt;b&gt;UserService&lt;/b&gt;&#xd;注册·登录·鉴权·会员" vertex="1">
+          <mxGeometry height="35" width="100" x="70" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="l4-song-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;arcSize=8;" value="&lt;b&gt;SongService&lt;/b&gt;&#xd;歌曲·专辑·艺人·搜索" vertex="1">
+          <mxGeometry height="35" width="100" x="190" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="l4-interact-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;arcSize=8;" value="&lt;b&gt;InteractionService&lt;/b&gt;&#xd;评论·收藏·喜欢·歌单" vertex="1">
+          <mxGeometry height="35" width="120" x="310" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="l4-room-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;arcSize=8;" value="&lt;b&gt;RoomService&lt;/b&gt;&#xd;歌房·WebSocket·同步" vertex="1">
+          <mxGeometry height="35" width="110" x="450" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="l4-notify-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;arcSize=8;" value="&lt;b&gt;NotificationService&lt;/b&gt;&#xd;通知·公告·推送" vertex="1">
+          <mxGeometry height="35" width="120" x="580" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="l4-file-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;arcSize=8;" value="&lt;b&gt;FileService&lt;/b&gt;&#xd;上传·校验·存储" vertex="1">
+          <mxGeometry height="35" width="100" x="720" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="l4-report-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;arcSize=8;" value="&lt;b&gt;ReportService&lt;/b&gt;&#xd;举报·处理·反馈" vertex="1">
+          <mxGeometry height="35" width="100" x="840" y="370" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== AOP 横切层 ==================== -->
+        <mxCell id="layer-aop-bg" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontStyle=0;fillColor=#FCE4EC;strokeColor=#C62828;startSize=24;verticalAlign=top;rounded=1;fontSize=11;fontColor=#C62828;fontStyle=1;" value="&lt;b&gt;AOP 横切关注点 (Cross-cutting)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="45" width="1100" x="50" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="l-aop-ratelimit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;fontSize=9;arcSize=8;" value="@RateLimit 限流 | @OperationLog 审计 | JwtInterceptor 鉴权 | XSS Filter 过滤" vertex="1">
+          <mxGeometry height="28" width="500" x="350" y="456" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Layer 5: 数据访问层 ==================== -->
+        <mxCell id="layer5-bg" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontStyle=0;fillColor=#F3E5F5;strokeColor=#6A1B9A;startSize=30;verticalAlign=top;rounded=1;fontSize=13;fontColor=#6A1B9A;fontStyle=1;" value="&lt;b&gt;5. 数据访问层 (DAO &amp; Mapper)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="1100" x="50" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="l5-mybatis" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=10;arcSize=8;" value="&lt;b&gt;MyBatis Mapper&lt;/b&gt;&#xd;UserMapper / SongMapper / PlaylistMapper / ..." vertex="1">
+          <mxGeometry height="35" width="180" x="70" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="l5-redis" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=10;arcSize=8;" value="&lt;b&gt;RedisTemplate&lt;/b&gt;&#xd;缓存 / Session / 限流 / Pub-Sub" vertex="1">
+          <mxGeometry height="35" width="160" x="280" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="l5-file" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=10;arcSize=8;" value="&lt;b&gt;文件访问层&lt;/b&gt;&#xd;本地文件系统 / MinIO客户端" vertex="1">
+          <mxGeometry height="35" width="150" x="470" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="l5-websocket-dao" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=10;arcSize=8;" value="&lt;b&gt;WebSocket管理器&lt;/b&gt;&#xd;连接池 / Session映射 / 广播" vertex="1">
+          <mxGeometry height="35" width="150" x="650" y="530" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Layer 6: 持久层 ==================== -->
+        <mxCell id="layer6-bg" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontStyle=0;fillColor=#ECEFF1;strokeColor=#37474F;startSize=30;verticalAlign=top;rounded=1;fontSize=13;fontColor=#37474F;fontStyle=1;" value="&lt;b&gt;6. 持久层 &amp; 基础设施 (Persistence &amp; Infrastructure)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="1100" x="50" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="l6-mysql" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#37474F;fontSize=10;arcSize=8;" value="&lt;b&gt;MySQL 8.0&lt;/b&gt;&#xd;关系型数据库（20张表）" vertex="1">
+          <mxGeometry height="35" width="130" x="70" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="l6-redis" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#37474F;fontSize=10;arcSize=8;" value="&lt;b&gt;Redis 7.x&lt;/b&gt;&#xd;缓存 / 实时状态 / 消息队列" vertex="1">
+          <mxGeometry height="35" width="150" x="230" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="l6-filesys" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#37474F;fontSize=10;arcSize=8;" value="&lt;b&gt;本地文件系统&lt;/b&gt;&#xd;/data/music/ 音频·封面·歌词" vertex="1">
+          <mxGeometry height="35" width="150" x="410" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="l6-ngrok" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#37474F;fontSize=10;arcSize=8;" value="&lt;b&gt;Ngrok&lt;/b&gt;&#xd;内网穿透，外网访问" vertex="1">
+          <mxGeometry height="35" width="110" x="590" y="615" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 数据流箭头（左侧） ==================== -->
+        <mxCell id="flow-arrow" parent="1" style="edgeStyle=elbowEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666;strokeWidth=2;dashed=1;endArrow=none;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="95" as="sourcePoint" />
+            <mxPoint x="30" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#999;align=center;rotate=0;" value="数据流向 →" vertex="1">
+          <mxGeometry height="20" width="60" x="2" y="360" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 右侧交互标注 ==================== -->
+        <mxCell id="interact-arrow1" parent="1" style="edgeStyle=elbowEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;strokeWidth=1;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="105" as="sourcePoint" />
+            <mxPoint x="1170" y="175" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="interact-label1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#E65100;align=center;rotate=0;" value="HTTP / WS" vertex="1">
+          <mxGeometry height="16" width="50" x="1175" y="135" as="geometry" />
+        </mxCell>
+
+        <mxCell id="interact-arrow2" parent="1" style="edgeStyle=elbowEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2E7D32;strokeWidth=1;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="205" as="sourcePoint" />
+            <mxPoint x="1170" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="interact-label2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#2E7D32;align=center;rotate=0;" value="注入" vertex="1">
+          <mxGeometry height="16" width="30" x="1180" y="235" as="geometry" />
+        </mxCell>
+
+        <mxCell id="interact-arrow3" parent="1" style="edgeStyle=elbowEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;strokeWidth=1;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="300" as="sourcePoint" />
+            <mxPoint x="1170" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="interact-label3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#6A1B9A;align=center;rotate=0;" value="JDBC / Redis / IO" vertex="1">
+          <mxGeometry height="16" width="70" x="1175" y="410" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

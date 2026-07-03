@@ -1,0 +1,239 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36">
+  <diagram id="diagram1" name="Page-1">
+    <mxGraphModel dx="900" dy="500" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=18;fontColor=#1A237E;fontStyle=1;" value="在线音乐平台 — 功能结构图（业务视角）" vertex="1">
+          <mxGeometry height="30" width="400" x="400" y="10" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Root: 在线音乐平台 ==================== -->
+        <mxCell id="root" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A237E;fontColor=#FFFFFF;fontSize=13;arcSize=10;fontStyle=1;" value="在线音乐平台" vertex="1">
+          <mxGeometry height="34" width="160" x="520" y="55" as="geometry" />
+        </mxCell>
+
+        <!-- ########## Level 1 — 七大子系统 ########## -->
+        <!-- ============ 1. 用户系统 ============ -->
+        <mxCell id="m1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;fontColor=#FFFFFF;fontSize=11;arcSize=8;fontStyle=1;" value="1. 用户系统" vertex="1">
+          <mxGeometry height="32" width="120" x="40" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="m1a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 注册/登录/登出" vertex="1">
+          <mxGeometry height="22" width="110" x="45" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="m1b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ JWT Token鉴权" vertex="1">
+          <mxGeometry height="22" width="110" x="45" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="m1c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 个人信息管理" vertex="1">
+          <mxGeometry height="22" width="110" x="45" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="m1d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 修改/重置密码" vertex="1">
+          <mxGeometry height="22" width="110" x="45" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="m1e" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 公开主页展示" vertex="1">
+          <mxGeometry height="22" width="110" x="45" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="m1f" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="└ 会员充值/续费" vertex="1">
+          <mxGeometry height="22" width="110" x="45" y="290" as="geometry" />
+        </mxCell>
+
+        <!-- ============ 2. 音乐管理 ============ -->
+        <mxCell id="m2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;fontColor=#FFFFFF;fontSize=11;arcSize=8;fontStyle=1;" value="2. 音乐管理" vertex="1">
+          <mxGeometry height="32" width="120" x="190" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="m2a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 歌曲CRUD" vertex="1">
+          <mxGeometry height="22" width="110" x="195" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="m2b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 专辑聚合管理" vertex="1">
+          <mxGeometry height="22" width="110" x="195" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="m2c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 艺人信息管理" vertex="1">
+          <mxGeometry height="22" width="110" x="195" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="m2d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 分类标签体系" vertex="1">
+          <mxGeometry height="22" width="110" x="195" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="m2e" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 会员上传/审核" vertex="1">
+          <mxGeometry height="22" width="110" x="195" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="m2f" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="└ 播放量统计" vertex="1">
+          <mxGeometry height="22" width="110" x="195" y="290" as="geometry" />
+        </mxCell>
+
+        <!-- ============ 3. 搜索发现 ============ -->
+        <mxCell id="m3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;fontColor=#FFFFFF;fontSize=11;arcSize=8;fontStyle=1;" value="3. 搜索发现" vertex="1">
+          <mxGeometry height="32" width="120" x="340" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="m3a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 全局模糊搜索" vertex="1">
+          <mxGeometry height="22" width="110" x="345" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="m3b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 热门歌曲推荐" vertex="1">
+          <mxGeometry height="22" width="110" x="345" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="m3c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 分类浏览筛选" vertex="1">
+          <mxGeometry height="22" width="110" x="345" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="m3d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 播放排行榜单" vertex="1">
+          <mxGeometry height="22" width="110" x="345" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="m3e" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="└ 最近播放记录" vertex="1">
+          <mxGeometry height="22" width="110" x="345" y="265" as="geometry" />
+        </mxCell>
+
+        <!-- ============ 4. 音乐播放 ============ -->
+        <mxCell id="m4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;fontColor=#FFFFFF;fontSize=11;arcSize=8;fontStyle=1;" value="4. 音乐播放" vertex="1">
+          <mxGeometry height="32" width="120" x="490" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="m4a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 全局音频播放器" vertex="1">
+          <mxGeometry height="22" width="120" x="490" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="m4b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ LRC歌词同步" vertex="1">
+          <mxGeometry height="22" width="120" x="490" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="m4c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 播放队列管理" vertex="1">
+          <mxGeometry height="22" width="120" x="490" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="m4d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 播放模式切换" vertex="1">
+          <mxGeometry height="22" width="120" x="490" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="m4e" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 进度记忆续播" vertex="1">
+          <mxGeometry height="22" width="120" x="490" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="m4f" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="└ 黑胶碟片动画" vertex="1">
+          <mxGeometry height="22" width="120" x="490" y="290" as="geometry" />
+        </mxCell>
+
+        <!-- ============ 5. 社交互动 ============ -->
+        <mxCell id="m5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;fontColor=#FFFFFF;fontSize=11;arcSize=8;fontStyle=1;" value="5. 社交互动" vertex="1">
+          <mxGeometry height="32" width="120" x="640" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="m5a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 评论系统" vertex="1">
+          <mxGeometry height="22" width="110" x="645" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="m5b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 收藏/取消收藏" vertex="1">
+          <mxGeometry height="22" width="110" x="645" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="m5c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 喜欢/红心点赞" vertex="1">
+          <mxGeometry height="22" width="110" x="645" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="m5d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="├ 歌单CRUD" vertex="1">
+          <mxGeometry height="22" width="110" x="645" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="m5e" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;fontSize=10;" value="└ 举报违规内容" vertex="1">
+          <mxGeometry height="22" width="110" x="645" y="265" as="geometry" />
+        </mxCell>
+
+        <!-- ============ 6. 歌房功能 ============ -->
+        <mxCell id="m6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;fontColor=#FFFFFF;fontSize=11;arcSize=8;fontStyle=1;" value="6. 歌房功能" vertex="1">
+          <mxGeometry height="32" width="120" x="790" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="m6a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;fontSize=10;" value="├ 创建/加入/解散" vertex="1">
+          <mxGeometry height="22" width="120" x="790" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="m6b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;fontSize=10;" value="├ 播放同步控制" vertex="1">
+          <mxGeometry height="22" width="120" x="790" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="m6c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;fontSize=10;" value="├ 文字实时聊天" vertex="1">
+          <mxGeometry height="22" width="120" x="790" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="m6d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;fontSize=10;" value="├ 语音通讯" vertex="1">
+          <mxGeometry height="22" width="120" x="790" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="m6e" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;fontSize=10;" value="├ 房间管理(踢人/移交)" vertex="1">
+          <mxGeometry height="22" width="120" x="790" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="m6f" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;fontSize=10;" value="└ 队列点歌" vertex="1">
+          <mxGeometry height="22" width="120" x="790" y="290" as="geometry" />
+        </mxCell>
+
+        <!-- ============ 7. 管理后台 ============ -->
+        <mxCell id="m7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6A1B9A;fontColor=#FFFFFF;fontSize=11;arcSize=8;fontStyle=1;" value="7. 管理后台" vertex="1">
+          <mxGeometry height="32" width="120" x="940" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="m7a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;fontSize=10;" value="├ 数据看板" vertex="1">
+          <mxGeometry height="22" width="110" x="945" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="m7b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;fontSize=10;" value="├ 用户管理" vertex="1">
+          <mxGeometry height="22" width="110" x="945" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="m7c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;fontSize=10;" value="├ 音乐审核" vertex="1">
+          <mxGeometry height="22" width="110" x="945" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="m7d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;fontSize=10;" value="├ 内容监管" vertex="1">
+          <mxGeometry height="22" width="110" x="945" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="m7e" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;fontSize=10;" value="├ 运营配置" vertex="1">
+          <mxGeometry height="22" width="110" x="945" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="m7f" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;fontSize=10;" value="├ 统计报表" vertex="1">
+          <mxGeometry height="22" width="110" x="945" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="m7g" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;fontSize=10;" value="└ 操作日志" vertex="1">
+          <mxGeometry height="22" width="110" x="945" y="315" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 横向连接线：Root → 子系统 ==================== -->
+        <mxCell id="conn-root-m1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1A237E;exitX=0.08;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" source="root" target="m1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-root-m2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1A237E;exitX=0.22;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" source="root" target="m2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-root-m3" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1A237E;exitX=0.36;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" source="root" target="m3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-root-m4" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1A237E;exitX=0.50;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" source="root" target="m4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-root-m5" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1A237E;exitX=0.64;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" source="root" target="m5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-root-m6" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1A237E;exitX=0.78;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" source="root" target="m6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-root-m7" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1A237E;exitX=0.92;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" source="root" target="m7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 竖线连接：子系统 → 功能项 ==================== -->
+        <mxCell id="line-m1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;exitX=0.5;exitY=1;" edge="1" source="m1" target="m1a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line-m2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;exitX=0.5;exitY=1;" edge="1" source="m2" target="m2a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line-m3" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;exitX=0.5;exitY=1;" edge="1" source="m3" target="m3a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line-m4" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;exitX=0.5;exitY=1;" edge="1" source="m4" target="m4a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line-m5" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;exitX=0.5;exitY=1;" edge="1" source="m5" target="m5a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line-m6" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;exitX=0.5;exitY=1;" edge="1" source="m6" target="m6a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line-m7" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;exitX=0.5;exitY=1;" edge="1" source="m7" target="m7a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 底部说明 ==================== -->
+        <mxCell id="legend" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#999;" value="说明：蓝色(1-5)为用户端功能，橙色(6)为VIP专属功能，紫色(7)为管理员功能" vertex="1">
+          <mxGeometry height="20" width="600" x="300" y="370" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 用户端 / 管理端分区标签 ==================== -->
+        <mxCell id="tag-user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;fontColor=#1565C0;fontSize=9;arcSize=6;fontStyle=1;" value="用户端" vertex="1">
+          <mxGeometry height="20" width="50" x="45" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tag-admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D1C4E9;fontColor=#6A1B9A;fontSize=9;arcSize=6;fontStyle=1;" value="管理端" vertex="1">
+          <mxGeometry height="20" width="50" x="945" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tag-vip" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;fontColor=#E65100;fontSize=9;arcSize=6;fontStyle=1;" value="VIP" vertex="1">
+          <mxGeometry height="20" width="35" x="795" y="150" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

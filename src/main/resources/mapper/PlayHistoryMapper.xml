@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.music.mapper.PlayHistoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.music.entity.PlayHistory">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="song_id" property="songId"/>
+        <result column="played_time" property="playedTime"/>
+    </resultMap>
+
+    <sql id="BaseColumns">
+        id, user_id, song_id, played_time
+    </sql>
+
+    <!-- 查询最近播放记录（按时间降序） -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM play_history
+        WHERE user_id = #{userId}
+        ORDER BY played_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 插入播放记录 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO play_history (user_id, song_id, played_time)
+        VALUES (#{userId}, #{songId}, NOW())
+    </insert>
+
+    <!-- 清空播放历史 -->
+    <delete id="deleteByUserId">
+        DELETE FROM play_history WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 统计历史记录数 -->
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*) FROM play_history WHERE user_id = #{userId}
+    </select>
+
+    <!-- 统计指定日期的播放记录数 -->
+    <select id="countByDate" resultType="long">
+        SELECT COUNT(*) FROM play_history
+        WHERE DATE(played_time) = #{date}
+    </select>
+
+    <!-- 删除超出限制的旧记录 -->
+    <delete id="deleteOldRecords">
+        DELETE FROM play_history
+        WHERE user_id = #{userId}
+          AND id NOT IN (
+              SELECT id FROM (
+                  SELECT id FROM play_history
+                  WHERE user_id = #{userId}
+                  ORDER BY played_time DESC
+                  LIMIT #{keepCount}
+              ) AS keep_ids
+          )
+    </delete>
+
+</mapper>

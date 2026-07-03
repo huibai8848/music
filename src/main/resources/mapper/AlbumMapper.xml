@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.music.mapper.AlbumMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.music.entity.Album">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="artist_id" property="artistId"/>
+        <result column="cover_url" property="coverUrl"/>
+        <result column="description" property="description"/>
+        <result column="release_date" property="releaseDate"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+    </resultMap>
+
+    <sql id="BaseColumns">
+        id, title, artist_id, cover_url, description, release_date, created_time, updated_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM album WHERE id = #{id}
+    </select>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM album
+        ORDER BY created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countTotal" resultType="long">
+        SELECT COUNT(*) FROM album
+    </select>
+
+    <select id="selectByArtistId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM album
+        WHERE artist_id = #{artistId}
+        ORDER BY release_date DESC
+    </select>
+
+    <select id="selectByTitleAndArtist" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM album
+        WHERE title = #{title} AND artist_id = #{artistId}
+    </select>
+
+    <select id="searchByName" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM album
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY created_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO album (title, artist_id, cover_url, description, release_date)
+        VALUES (#{title}, #{artistId}, #{coverUrl}, #{description}, #{releaseDate})
+    </insert>
+
+    <update id="update">
+        UPDATE album
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="coverUrl != null">cover_url = #{coverUrl},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="releaseDate != null">release_date = #{releaseDate},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM album WHERE id = #{id}
+    </delete>
+
+</mapper>

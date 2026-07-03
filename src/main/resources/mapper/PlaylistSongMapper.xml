@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.music.mapper.PlaylistSongMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.music.entity.PlaylistSong">
+        <id column="id" property="id"/>
+        <result column="playlist_id" property="playlistId"/>
+        <result column="song_id" property="songId"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="added_time" property="addedTime"/>
+    </resultMap>
+
+    <select id="selectSongIdsByPlaylistId" resultType="long">
+        SELECT song_id FROM playlist_song
+        WHERE playlist_id = #{playlistId}
+        ORDER BY sort_order ASC, added_time ASC
+    </select>
+
+    <select id="selectMaxSortOrder" resultType="int">
+        SELECT COALESCE(MAX(sort_order), 0) FROM playlist_song WHERE playlist_id = #{playlistId}
+    </select>
+
+    <select id="countByPlaylistId" resultType="int">
+        SELECT COUNT(*) FROM playlist_song WHERE playlist_id = #{playlistId}
+    </select>
+
+    <select id="exist" resultType="int">
+        SELECT COUNT(*) FROM playlist_song
+        WHERE playlist_id = #{playlistId} AND song_id = #{songId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO playlist_song (playlist_id, song_id, sort_order)
+        VALUES (#{playlistId}, #{songId}, #{sortOrder})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM playlist_song
+        WHERE playlist_id = #{playlistId} AND song_id = #{songId}
+    </delete>
+
+    <delete id="deleteByPlaylistId">
+        DELETE FROM playlist_song WHERE playlist_id = #{playlistId}
+    </delete>
+
+</mapper>
