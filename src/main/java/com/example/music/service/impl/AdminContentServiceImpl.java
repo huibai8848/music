@@ -64,8 +64,8 @@ public class AdminContentServiceImpl implements AdminContentService {
             songs = songMapper.search(keyword, offset, size);
             total = songMapper.countSearch(keyword);
         } else {
-            songs = songMapper.selectList(offset, size, null, status);
-            total = songMapper.countTotal(null, status);
+            songs = songMapper.selectList(offset, size, null, null, null, null, null, status);
+            total = songMapper.countTotal(null, null, null, null, null, status);
         }
 
         List<SongVO> voList = songs.stream()

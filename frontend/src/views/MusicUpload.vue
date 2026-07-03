@@ -107,12 +107,6 @@
           </div>
         </div>
 
-        <!-- 艺人简介 -->
-        <div class="form-group">
-          <label>艺人简介</label>
-          <textarea v-model="form.artistBio" placeholder="艺人简介（可选）" rows="2" maxlength="500"></textarea>
-        </div>
-
         <!-- 专辑 -->
         <div class="form-group">
           <label>专辑名</label>
@@ -199,7 +193,6 @@ const coverPreview = ref('')
 const form = reactive({
   title: '',
   artistName: '',
-  artistBio: '',
   albumTitle: '',
   genre: '',
   language: '',
@@ -327,7 +320,6 @@ async function handleSubmit() {
     const songInfo = {
       title: form.title.trim(),
       artistName: form.artistName.trim(),
-      artistBio: form.artistBio.trim() || undefined,
       albumTitle: form.albumTitle.trim() || undefined,
       genre: form.genre || undefined,
       language: form.language || undefined,
@@ -371,7 +363,6 @@ function resetForm() {
   removeFile('lyric')
   form.title = ''
   form.artistName = ''
-  form.artistBio = ''
   form.albumTitle = ''
   form.genre = ''
   form.language = ''

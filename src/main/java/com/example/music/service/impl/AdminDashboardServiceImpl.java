@@ -36,14 +36,14 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
     public DashboardVO getDashboard() {
         long totalUsers = userMapper.countTotal();
         long totalVipUsers = userMapper.countVip();
-        long totalSongs = songMapper.countTotal(null, null);
+        long totalSongs = songMapper.countTotal(null, null, null, null, null, null);
         long totalAlbums = albumMapper.countTotal();
         long totalArtists = artistMapper.countTotal();
         long totalPlaylists = playlistMapper.countTotal();
         long totalComments = commentMapper.countAllForAdmin(null);
         long todayNewUsers = userMapper.countToday();
         long pendingReports = reportMapper.countByStatus("PENDING");
-        long pendingSongs = songMapper.countTotal(null, "PENDING");
+        long pendingSongs = songMapper.countTotal(null, null, null, null, null, "PENDING");
         long totalPlayCount = songMapper.sumPlayCount();
 
         log.debug("管理员查看看板数据: {} 用户, {} 歌曲, {} 播放量",

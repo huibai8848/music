@@ -40,6 +40,10 @@
         SELECT <include refid="BaseColumns"/> FROM song
         <where>
             <if test="genre != null and genre != ''">AND genre = #{genre}</if>
+            <if test="language != null and language != ''">AND language = #{language}</if>
+            <if test="releaseYear != null">AND release_year = #{releaseYear}</if>
+            <if test="artistId != null">AND artist_id = #{artistId}</if>
+            <if test="albumId != null">AND album_id = #{albumId}</if>
             <if test="status != null and status != ''">AND status = #{status}</if>
         </where>
         ORDER BY created_time DESC
@@ -51,6 +55,10 @@
         SELECT COUNT(*) FROM song
         <where>
             <if test="genre != null and genre != ''">AND genre = #{genre}</if>
+            <if test="language != null and language != ''">AND language = #{language}</if>
+            <if test="releaseYear != null">AND release_year = #{releaseYear}</if>
+            <if test="artistId != null">AND artist_id = #{artistId}</if>
+            <if test="albumId != null">AND album_id = #{albumId}</if>
             <if test="status != null and status != ''">AND status = #{status}</if>
         </where>
     </select>
@@ -99,10 +107,11 @@
         LIMIT #{limit}
     </select>
 
-    <!-- 按艺人查询 -->
+    <!-- 按艺人查询（仅返回审核通过的歌曲） -->
     <select id="selectByArtistId" resultMap="BaseResultMap">
         SELECT <include refid="BaseColumns"/>
         FROM song WHERE artist_id = #{artistId}
+          AND status = 'ACTIVE'
         ORDER BY created_time DESC
     </select>
 
@@ -113,10 +122,11 @@
         ORDER BY created_time DESC
     </select>
 
-    <!-- 按专辑查询 -->
+    <!-- 按专辑查询（仅返回审核通过的歌曲） -->
     <select id="selectByAlbumId" resultMap="BaseResultMap">
         SELECT <include refid="BaseColumns"/>
         FROM song WHERE album_id = #{albumId}
+          AND status = 'ACTIVE'
         ORDER BY created_time ASC
     </select>
 

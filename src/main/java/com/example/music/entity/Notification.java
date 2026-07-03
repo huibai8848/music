@@ -26,6 +26,7 @@ public class Notification {
      *   <li>SYSTEM — 系统公告</li>
      *   <li>MEMBERSHIP — 会员到期提醒</li>
      *   <li>REPORT_RESULT — 举报处理结果</li>
+     *   <li>SONG_REVIEW — 歌曲审核提醒</li>
      * </ul>
      */
     private String type;

@@ -52,4 +52,7 @@ public interface UserMapper {
 
     /** 统计所有用户数（管理端，支持按昵称/邮箱搜索） */
     long countAll(@Param("keyword") String keyword);
+
+    /** 按角色查询用户列表 */
+    List<User> selectByRole(@Param("role") String role);
 }

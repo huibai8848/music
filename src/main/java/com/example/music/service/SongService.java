@@ -14,10 +14,10 @@ public interface SongService {
     SongVO getSongDetail(Long id);
 
     /** 分页查询歌曲列表 */
-    List<SongVO> listSongs(int page, int size, String genre, String status);
+    List<SongVO> listSongs(int page, int size, String genre, String language, Integer releaseYear, Long artistId, Long albumId, String status);
 
     /** 统计歌曲总数 */
-    long countSongs(String genre, String status);
+    long countSongs(String genre, String language, Integer releaseYear, Long artistId, Long albumId, String status);
 
     /** 搜索歌曲 */
     List<SongVO> searchSongs(String keyword, int page, int size);

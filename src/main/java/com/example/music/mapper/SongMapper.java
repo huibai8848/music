@@ -21,10 +21,18 @@ public interface SongMapper {
     List<Song> selectList(@Param("offset") int offset,
                           @Param("limit") int limit,
                           @Param("genre") String genre,
+                          @Param("language") String language,
+                          @Param("releaseYear") Integer releaseYear,
+                          @Param("artistId") Long artistId,
+                          @Param("albumId") Long albumId,
                           @Param("status") String status);
 
     /** 统计总数 */
     long countTotal(@Param("genre") String genre,
+                    @Param("language") String language,
+                    @Param("releaseYear") Integer releaseYear,
+                    @Param("artistId") Long artistId,
+                    @Param("albumId") Long albumId,
                     @Param("status") String status);
 
     /** 模糊搜索（歌曲名/艺人名/专辑名） */

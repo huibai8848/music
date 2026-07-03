@@ -4,11 +4,17 @@ import cn.hutool.core.util.StrUtil;
 import com.example.music.constant.ErrorCode;
 import com.example.music.constant.RedisKeys;
 import com.example.music.dto.SongUploadDTO;
+import cn.hutool.core.util.StrUtil;
+import com.example.music.constant.ErrorCode;
+import com.example.music.constant.RedisKeys;
+import com.example.music.dto.SongUploadDTO;
 import com.example.music.entity.Album;
 import com.example.music.entity.Artist;
+import com.example.music.entity.Category;
 import com.example.music.entity.Song;
 import com.example.music.entity.SystemConfig;
 import com.example.music.exception.BusinessException;
+import com.example.music.mapper.CategoryMapper;
 import com.example.music.mapper.SystemConfigMapper;
 import com.example.music.service.FileService;
 import com.example.music.service.SongService;
@@ -26,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +58,7 @@ public class MemberController {
     private final CacheUtil cacheUtil;
     private final ObjectMapper objectMapper;
     private final SystemConfigMapper systemConfigMapper;
+    private final CategoryMapper categoryMapper;
 
     /** 会员存储空间上限（500MB） */
     private static final long MEMBER_STORAGE_LIMIT = 500L * 1024 * 1024;
@@ -82,7 +90,6 @@ public class MemberController {
      *   title       – 歌曲名（必填）
      *   artistId    – 艺人 ID（与 artistName 二选一）
      *   artistName  – 艺人名（新建艺人时使用）
-     *   artistBio   – 艺人简介（可选）
      *   albumId     – 专辑 ID（与 albumTitle 二选一）
      *   albumTitle  – 专辑名（新建专辑时使用）
      *   genre       – 风格（可选）
@@ -173,6 +180,9 @@ public class MemberController {
         song.setReleaseYear(songInfo.getReleaseYear());
         song.setUploaderId(userId);
         song.setStatus("PENDING");
+
+        // 7.1 解析分类 ID（从 genre/language/releaseYear 映射到 category 表）
+        song.setCategoryIds(resolveCategoryIds(songInfo));
 
         // 8. 事务性提交到数据库（艺人/专辑/歌曲原子写入）
         SongVO result = songService.submitSongForReview(song, artist, album);
@@ -362,8 +372,42 @@ public class MemberController {
         }
         Artist artist = new Artist();
         artist.setName(dto.getArtistName().trim());
-        artist.setBio(dto.getArtistBio());
         return artist;
+    }
+
+    /**
+     * 解析分类 ID 列表（从 genre/language/releaseYear 映射到 category 表）
+     * <p>
+     * 将前端传入的风格、语种、发行年份文本，转换为 category 表中对应的 ID，
+     * 后续由 {@link SongService#submitSongForReview} 在事务中写入 song_category 关联表。
+     *
+     * @param dto 歌曲上传 DTO
+     * @return 分类 ID 列表（可能为空）
+     */
+    private List<Long> resolveCategoryIds(SongUploadDTO dto) {
+        List<Long> ids = new ArrayList<>();
+        try {
+            // 风格 → GENRE 分类
+            if (StrUtil.isNotBlank(dto.getGenre())) {
+                Category cat = categoryMapper.selectByNameAndType(dto.getGenre().trim(), "GENRE");
+                if (cat != null) ids.add(cat.getId());
+            }
+            // 语种 → LANGUAGE 分类
+            if (StrUtil.isNotBlank(dto.getLanguage())) {
+                Category cat = categoryMapper.selectByNameAndType(dto.getLanguage().trim(), "LANGUAGE");
+                if (cat != null) ids.add(cat.getId());
+            }
+            // 发行年份 → YEAR 分类（如 2020 → "20年代"）
+            if (dto.getReleaseYear() != null) {
+                int decade = (dto.getReleaseYear() / 10) * 10;
+                String yearCategory = decade + "年代";
+                Category cat = categoryMapper.selectByNameAndType(yearCategory, "YEAR");
+                if (cat != null) ids.add(cat.getId());
+            }
+        } catch (Exception e) {
+            log.warn("解析分类 ID 失败，跳过分类关联: {}", e.getMessage());
+        }
+        return ids;
     }
 
     /**

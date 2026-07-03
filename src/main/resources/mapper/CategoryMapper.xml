@@ -25,6 +25,12 @@
         ORDER BY sort_order ASC
     </select>
 
+    <select id="selectByNameAndType" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM category
+        WHERE name = #{name} AND type = #{type}
+        LIMIT 1
+    </select>
+
     <select id="selectAll" resultMap="BaseResultMap">
         SELECT <include refid="BaseColumns"/> FROM category
         ORDER BY type, sort_order ASC

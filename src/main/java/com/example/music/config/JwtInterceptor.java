@@ -75,8 +75,12 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 2. 白名单路径直接放行（不注入用户信息）
+        // 2. 白名单路径直接放行
         if (isWhiteList(uri, method)) {
+            // 对于白名单 GET 请求，尝试注入用户上下文（如 /api/likes 需要知道当前用户是否已点赞）
+            // 不会因 Token 无效而阻止请求，仅用于可选的用户信息注入
+            String authToken = extractToken(request.getHeader("Authorization"));
+            tryInjectUserContext(authToken);
             return true;
         }
 
@@ -165,5 +169,43 @@ public class JwtInterceptor implements HandlerInterceptor {
             }
         }
         return false;
+    }
+
+    // ==================== 白名单可选用户上下文注入 ====================
+
+    /**
+     * 从 Authorization 头中提取 Token（去掉 Bearer 前缀）
+     */
+    private String extractToken(String authHeader) {
+        if (authHeader == null || authHeader.isEmpty()) return null;
+        if (authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return authHeader;
+    }
+
+    /**
+     * 尝试解析 Token 并注入用户上下文（用于白名单接口）。
+     * 解析失败时不抛出异常，仅跳过注入，不影响请求继续处理。
+     */
+    private void tryInjectUserContext(String token) {
+        if (token == null || token.isEmpty()) return;
+        try {
+            if (!jwtUtil.validateToken(token)) return;
+
+            // 检查是否在黑名单中（已登出）
+            String jti = jwtUtil.getJtiFromToken(token);
+            if (jti != null && cacheUtil.exists(RedisKeys.BL_TOKEN + jti)) return;
+
+            Long userId = jwtUtil.getUserIdFromToken(token);
+            if (userId == null) return;
+
+            RequestContext.setUserId(userId);
+            RequestContext.setUserRole(jwtUtil.getRoleFromToken(token));
+            log.debug("白名单请求：可选 Token 注入成功, userId={}", userId);
+        } catch (Exception e) {
+            // Token 解析失败不阻止白名单请求，仅 debug 日志记录
+            log.debug("白名单请求：可选 Token 注入失败（不影响请求）", e);
+        }
     }
 }

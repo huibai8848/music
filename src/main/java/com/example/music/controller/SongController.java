@@ -27,20 +27,28 @@ public class SongController {
     private final SongService songService;
 
     /**
-     * 歌曲列表（分页，可选按风格/状态筛选）
+     * 歌曲列表（分页，可选按风格/语种/年代/艺人/专辑/状态筛选）
      *
-     * @param page  页码（默认 1）
-     * @param size  每页条数（默认 20）
-     * @param genre 风格筛选（可选）
+     * @param page        页码（默认 1）
+     * @param size        每页条数（默认 20）
+     * @param genre       风格筛选（可选）
+     * @param language    语种筛选（可选）
+     * @param releaseYear 年代筛选（可选）
+     * @param artistId    艺人 ID 筛选（可选）
+     * @param albumId     专辑 ID 筛选（可选）
      */
     @GetMapping
     public R<Map<String, Object>> listSongs(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false) String genre) {
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) String language,
+            @RequestParam(required = false) Integer releaseYear,
+            @RequestParam(required = false) Long artistId,
+            @RequestParam(required = false) Long albumId) {
 
-        List<SongVO> songs = songService.listSongs(page, size, genre, "ACTIVE");
-        long total = songService.countSongs(genre, "ACTIVE");
+        List<SongVO> songs = songService.listSongs(page, size, genre, language, releaseYear, artistId, albumId, "ACTIVE");
+        long total = songService.countSongs(genre, language, releaseYear, artistId, albumId, "ACTIVE");
 
         Map<String, Object> result = new HashMap<>();
         result.put("records", songs);

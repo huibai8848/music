@@ -101,6 +101,13 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <!-- 按角色查询用户列表 -->
+    <select id="selectByRole" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM `user`
+        WHERE role = #{role}
+        ORDER BY created_time DESC
+    </select>
+
     <!-- 统计所有用户数（管理端，支持搜索） -->
     <select id="countAll" resultType="long">
         SELECT COUNT(*) FROM `user`

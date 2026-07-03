@@ -7,19 +7,27 @@ import com.example.music.entity.Album;
 import com.example.music.entity.Artist;
 import com.example.music.entity.Song;
 import com.example.music.entity.SongCategory;
+import com.example.music.entity.User;
 import com.example.music.exception.BusinessException;
 import com.example.music.mapper.AlbumMapper;
 import com.example.music.mapper.ArtistMapper;
 import com.example.music.mapper.SongCategoryMapper;
 import com.example.music.mapper.SongMapper;
+import com.example.music.mapper.UserMapper;
+import com.example.music.service.NotificationService;
 import com.example.music.service.SongService;
 import com.example.music.utils.CacheUtil;
 import com.example.music.vo.SongVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import jakarta.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -51,6 +59,21 @@ public class SongServiceImpl implements SongService {
     private final com.example.music.mapper.LikesMapper likesMapper;
     private final com.example.music.mapper.FavoriteMapper favoriteMapper;
     private final CacheUtil cacheUtil;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final UserMapper userMapper;
+    private final NotificationService notificationService;
+
+    /** 文件上传根路径（从配置注入，用于歌词路径转换） */
+    @Value("${music.file.upload-dir:data/music}")
+    private String uploadDir;
+
+    @PostConstruct
+    public void initUploadDir() {
+        java.io.File dir = new java.io.File(uploadDir);
+        if (!dir.isAbsolute()) {
+            uploadDir = new java.io.File(System.getProperty("user.dir"), uploadDir).getAbsolutePath();
+        }
+    }
 
     /**
      * LRC 时间戳正则：匹配 [mm:ss.xx] 或 [mm:ss]
@@ -75,19 +98,18 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public List<SongVO> listSongs(int page, int size, String genre, String status) {
+    public List<SongVO> listSongs(int page, int size, String genre, String language, Integer releaseYear, Long artistId, Long albumId, String status) {
         int offset = (page - 1) * size;
-        // 默认只查 ACTIVE 状态的歌曲
         String queryStatus = (status != null && !status.isEmpty()) ? status : "ACTIVE";
-        return songMapper.selectList(offset, size, genre, queryStatus).stream()
+        return songMapper.selectList(offset, size, genre, language, releaseYear, artistId, albumId, queryStatus).stream()
                 .map(this::enrichSongVO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public long countSongs(String genre, String status) {
+    public long countSongs(String genre, String language, Integer releaseYear, Long artistId, Long albumId, String status) {
         String queryStatus = (status != null && !status.isEmpty()) ? status : "ACTIVE";
-        return songMapper.countTotal(genre, queryStatus);
+        return songMapper.countTotal(genre, language, releaseYear, artistId, albumId, queryStatus);
     }
 
     @Override
@@ -348,7 +370,20 @@ public class SongServiceImpl implements SongService {
         song.setPlayCount(0L);
         songMapper.insert(song);
 
-        // 4. 如果提供了 LRC 歌词文件，立即解析并回写 lyrics 字段
+        // 4. 保存歌曲分类关联
+        if (song.getCategoryIds() != null && !song.getCategoryIds().isEmpty()) {
+            List<SongCategory> scList = song.getCategoryIds().stream()
+                    .map(catId -> {
+                        SongCategory sc = new SongCategory();
+                        sc.setSongId(song.getId());
+                        sc.setCategoryId(catId);
+                        return sc;
+                    })
+                    .collect(Collectors.toList());
+            songCategoryMapper.insertBatch(scList);
+        }
+
+        // 5. 如果提供了 LRC 歌词文件，立即解析并回写 lyrics 字段
         if (StrUtil.isNotBlank(song.getLyricUrl())) {
             String lyricsJson = parseLrcFile(song.getLyricUrl());
             if (lyricsJson != null) {
@@ -358,7 +393,44 @@ public class SongServiceImpl implements SongService {
         }
 
         log.info("歌曲提审成功: id={}, title={}, artistId={}", song.getId(), song.getTitle(), artistId);
+
+        // 6. 通知所有管理员审核新歌曲 —— 延迟到事务提交后执行
+        Long songId = song.getId();
+        String songTitle = song.getTitle();
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                notifyAdminsForReview(songId, songTitle);
+            }
+        });
+
         return enrichSongVO(song);
+    }
+
+    /**
+     * 通知所有管理员有新歌曲等待审核
+     */
+    private void notifyAdminsForReview(Long songId, String songTitle) {
+        try {
+            List<User> admins = userMapper.selectByRole("ADMIN");
+            if (admins == null || admins.isEmpty()) {
+                log.debug("没有管理员账号，跳过审核通知");
+                return;
+            }
+            for (User admin : admins) {
+                notificationService.createNotification(
+                        admin.getId(),
+                        "SONG_REVIEW",
+                        "新歌曲待审核",
+                        "会员上传了新歌曲《" + songTitle + "》，请前往审核",
+                        "SONG",
+                        songId
+                );
+            }
+            log.info("已通知 {} 位管理员审核歌曲: id={}, title={}", admins.size(), songId, songTitle);
+        } catch (Exception e) {
+            log.error("通知管理员审核歌曲失败: id={}, title={}", songId, songTitle, e);
+        }
     }
 
     /**
@@ -427,13 +499,19 @@ public class SongServiceImpl implements SongService {
 
     /**
      * 丰富 SongVO：填充艺人名、专辑名、分类 ID 列表、喜欢/收藏数
+     * <p>
+     * 注意：如果歌曲状态不是 ACTIVE（审核中/已驳回），则不填充艺人名和专辑名，
+     * 避免审核中的歌曲暴露关联的艺人/专辑信息。
      */
     private SongVO enrichSongVO(Song song) {
         if (song == null) return null;
         SongVO vo = SongVO.fromEntity(song);
 
+        // 仅 ACTIVE 状态的歌曲才填充艺人名和专辑名
+        boolean isActive = "ACTIVE".equals(song.getStatus());
+
         // 填充艺人名
-        if (song.getArtistId() != null) {
+        if (isActive && song.getArtistId() != null) {
             var artist = artistMapper.selectById(song.getArtistId());
             if (artist != null) {
                 vo.setArtistName(artist.getName());
@@ -441,7 +519,7 @@ public class SongServiceImpl implements SongService {
         }
 
         // 填充专辑名
-        if (song.getAlbumId() != null) {
+        if (isActive && song.getAlbumId() != null) {
             var album = albumMapper.selectById(song.getAlbumId());
             if (album != null) {
                 vo.setAlbumTitle(album.getTitle());
@@ -456,6 +534,23 @@ public class SongServiceImpl implements SongService {
         if (songId != null) {
             vo.setLikeCount(likesMapper.countByTarget("SONG", songId));
             vo.setFavoriteCount(favoriteMapper.countByTarget("SONG", songId));
+        }
+
+        // 叠加 Redis 缓冲中尚未刷入数据库的播放计数，使播放量接近实时
+        if (songId != null) {
+            try {
+                String bufVal = stringRedisTemplate.opsForValue()
+                        .get(RedisKeys.PLAY_COUNT_BUFFER + songId);
+                if (bufVal != null) {
+                    long bufferCount = Long.parseLong(bufVal);
+                    if (bufferCount > 0) {
+                        long dbCount = vo.getPlayCount() != null ? vo.getPlayCount() : 0L;
+                        vo.setPlayCount(dbCount + bufferCount);
+                    }
+                }
+            } catch (Exception e) {
+                log.debug("叠加 Redis 播放计数缓冲失败, songId={}", songId, e);
+            }
         }
 
         return vo;
@@ -474,8 +569,14 @@ public class SongServiceImpl implements SongService {
     private String parseLrcFile(String filePath) {
         List<Map<String, Object>> lyricsList = new ArrayList<>();
 
+        // 将 URL 路径（/api/files/lyric/...）转换为实际文件系统路径
+        String fsPath = filePath;
+        if (fsPath.startsWith("/api/files/")) {
+            fsPath = uploadDir + fsPath.substring("/api/files".length());
+        }
+
         try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(fsPath), StandardCharsets.UTF_8))) {
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -494,14 +595,14 @@ public class SongServiceImpl implements SongService {
                     int seconds = Integer.parseInt(timeMatcher.group(2));
                     String millisStr = timeMatcher.group(3);
 
-                    // 计算总秒数（保留一位小数）
+                    // 计算总秒数（保留两位小数）
                     double totalSeconds = minutes * 60.0 + seconds;
                     if (millisStr != null) {
                         totalSeconds += millisStr.length() == 2
                                 ? Integer.parseInt(millisStr) / 100.0
                                 : Integer.parseInt(millisStr) / 1000.0;
                     }
-                    totalSeconds = Math.round(totalSeconds * 10.0) / 10.0;
+                    totalSeconds = Math.round(totalSeconds * 100.0) / 100.0;
                     timestamps.add(totalSeconds);
                     lastEnd = timeMatcher.end(); // 记录最后一个时间戳的结束位置
                 }

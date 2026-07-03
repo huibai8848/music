@@ -54,8 +54,12 @@ public class PlayCountFlushTask {
             while (cursor.hasNext()) {
                 String key = cursor.next();
 
-                // 使用 GETDEL 原子读取并删除（避免 flush 期间新计数丢失）
-                String value = stringRedisTemplate.opsForValue().getAndDelete(key);
+                // 读取当前缓冲值（兼容 Redis 6.2 以下版本，用 get + delete 替代 GETDEL）
+                String value = stringRedisTemplate.opsForValue().get(key);
+                if (value != null) {
+                    // 删除已读取的键（两次操作，但在播放量场景下可接受）
+                    stringRedisTemplate.delete(key);
+                }
                 if (value == null) continue;
 
                 long count = Long.parseLong(value);

@@ -18,6 +18,9 @@ public interface CategoryMapper {
     /** 按类型查询分类列表 */
     List<Category> selectByType(@Param("type") String type);
 
+    /** 按名称和类型查询分类 */
+    Category selectByNameAndType(@Param("name") String name, @Param("type") String type);
+
     /** 查询所有分类 */
     List<Category> selectAll();
 

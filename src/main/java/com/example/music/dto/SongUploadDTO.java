@@ -20,9 +20,6 @@ public class SongUploadDTO {
     /** 艺人名（新建艺人时使用，与 artistId 二选一） */
     private String artistName;
 
-    /** 艺人简介（新建艺人时可选） */
-    private String artistBio;
-
     /** 专辑 ID（与 albumTitle 二选一，优先使用 ID） */
     private Long albumId;
 
