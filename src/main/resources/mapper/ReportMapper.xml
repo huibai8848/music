@@ -77,7 +77,7 @@
             handler_id = #{handlerId},
             handle_note = #{handleNote},
             handled_time = #{handledTime}
-        WHERE id = #{id}
+        WHERE id = #{id} AND status = 'PENDING'
     </update>
 
 </mapper>

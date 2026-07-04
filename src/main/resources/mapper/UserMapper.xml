@@ -108,6 +108,16 @@
         ORDER BY created_time DESC
     </select>
 
+    <!-- 按多个角色查询用户列表 -->
+    <select id="selectByRoles" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM `user`
+        WHERE role IN
+        <foreach collection="roles" item="role" open="(" separator="," close=")">
+            #{role}
+        </foreach>
+        ORDER BY created_time DESC
+    </select>
+
     <!-- 统计所有用户数（管理端，支持搜索） -->
     <select id="countAll" resultType="long">
         SELECT COUNT(*) FROM `user`

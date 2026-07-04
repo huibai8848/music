@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import request from '../utils/request'
+import { usePlaybackStore } from './playback'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
@@ -62,6 +63,8 @@ export const useAuthStore = defineStore('auth', () => {
   // 登出
   function logout() {
     try { request.post('/auth/logout') } catch {}
+    // 停止全局音乐播放
+    try { usePlaybackStore().stop() } catch {}
     user.value = null
     accessToken.value = ''
     refreshToken.value = ''

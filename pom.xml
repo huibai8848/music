@@ -154,6 +154,18 @@
             <version>${hutool.version}</version>
         </dependency>
 
+        <!-- Apache Tika：音频格式解析，提供健壮的时长提取（MP3/AAC/FLAC/WAV 等） -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parser-audiovideo-module</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
         <!-- ==================== 对象存储（可选） ==================== -->
         <!-- MinIO：文件存储（音乐/封面/头像等），后期可替换为 OSS -->
         <dependency>

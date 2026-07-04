@@ -10,6 +10,8 @@ import com.example.music.exception.BusinessException;
 import com.example.music.entity.Artist;
 import com.example.music.entity.Song;
 import com.example.music.mapper.ArtistMapper;
+import com.example.music.mapper.FavoriteMapper;
+import com.example.music.mapper.PlaylistSongMapper;
 import com.example.music.mapper.RoomMessageMapper;
 import com.example.music.mapper.SongMapper;
 import com.example.music.mapper.UserMapper;
@@ -17,6 +19,7 @@ import com.example.music.service.RoomService;
 import com.example.music.vo.RoomMemberVO;
 import com.example.music.vo.RoomMessageVO;
 import com.example.music.vo.RoomVO;
+import com.example.music.vo.WebSocketMessage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -54,12 +57,17 @@ public class RoomServiceImpl implements RoomService {
     private final UserMapper userMapper;
     private final SongMapper songMapper;
     private final ArtistMapper artistMapper;
+    private final PlaylistSongMapper playlistSongMapper;
+    private final FavoriteMapper favoriteMapper;
 
     /** 房间 TTL（12 小时无活跃自动过期） */
     private static final long ROOM_TTL_SECONDS = 43200;
 
     /** 房间成员 TTL */
     private static final long MEMBER_TTL_SECONDS = 43200;
+
+    /** 加入顺序 List key 后缀 */
+    private static final String JOIN_ORDER_SUFFIX = ":joinOrder";
 
     /** Snowflake 工作节点 ID */
     private static final long SNOWFLAKE_WORKER_ID = 1;
@@ -77,6 +85,12 @@ public class RoomServiceImpl implements RoomService {
         User user = userMapper.selectById(userId);
         if (user == null) {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        // 检查角色权限：仅 VIP 和管理员可创建歌房
+        String role = user.getRole();
+        if (!"VIP".equals(role) && !"ADMIN".equals(role)) {
+            throw new BusinessException(ErrorCode.ROOM_PERMISSION_DENIED);
         }
 
         // 生成房间 ID（Snowflake 算法，保证全局唯一且趋势递增）
@@ -131,9 +145,14 @@ public class RoomServiceImpl implements RoomService {
                 // 只处理 room:{数字} 格式，排除 room:{数字}:members / :queue 等
                 if (key.matches(RedisKeys.ROOM + "\\d+$")) {
                     Long id = Long.parseLong(key.substring(RedisKeys.ROOM.length()));
-                    RoomVO vo = getRoomDetail(id);
-                    if (vo != null && Boolean.TRUE.equals(vo.getIsPublic())) {
-                        rooms.add(vo);
+                    try {
+                        RoomVO vo = getRoomDetail(id);
+                        if (vo != null) {
+                            rooms.add(vo);
+                        }
+                    } catch (BusinessException e) {
+                        // 房间可能在 SCAN 和 HGETALL 之间被删除，跳过
+                        log.debug("歌房已解散，跳过: roomId={}", id);
                     }
                 }
             }
@@ -237,6 +256,11 @@ public class RoomServiceImpl implements RoomService {
         stringRedisTemplate.opsForSet().add(memberKey, String.valueOf(userId));
         stringRedisTemplate.expire(memberKey, MEMBER_TTL_SECONDS, TimeUnit.SECONDS);
 
+        // 记录加入顺序
+        String joinOrderKey = roomKey + JOIN_ORDER_SUFFIX;
+        stringRedisTemplate.opsForList().rightPush(joinOrderKey, String.valueOf(userId));
+        stringRedisTemplate.expire(joinOrderKey, MEMBER_TTL_SECONDS, TimeUnit.SECONDS);
+
         log.info("加入歌房: roomId={}, userId={}", roomId, userId);
 
         // 发送系统消息
@@ -254,9 +278,12 @@ public class RoomServiceImpl implements RoomService {
     public void leaveRoom(Long userId, Long roomId) {
         String roomKey = RedisKeys.ROOM + roomId;
         String memberKey = String.format(RedisKeys.ROOM_MEMBERS, roomId);
+        String joinOrderKey = roomKey + JOIN_ORDER_SUFFIX;
 
         // 移除成员
         stringRedisTemplate.opsForSet().remove(memberKey, String.valueOf(userId));
+        // 移除加入顺序记录
+        stringRedisTemplate.opsForList().remove(joinOrderKey, 0, String.valueOf(userId));
 
         // 检查房间是否还有成员
         Long memberCount = stringRedisTemplate.opsForSet().size(memberKey);
@@ -267,34 +294,39 @@ public class RoomServiceImpl implements RoomService {
             stringRedisTemplate.delete(roomKey);
             stringRedisTemplate.delete(memberKey);
             stringRedisTemplate.delete(roomKey + ":queue");
+            stringRedisTemplate.delete(joinOrderKey);
             log.info("房间全员离开，自动解散: roomId={}, name={}", roomId, roomName);
         } else {
             // 检查离开者是不是房主
             Object ownerObj = stringRedisTemplate.opsForHash().get(roomKey, "ownerId");
             if (ownerObj != null && ownerObj.toString().equals(String.valueOf(userId))) {
-                // 房主离开，自动移交
-                Set<String> members = stringRedisTemplate.opsForSet().members(memberKey);
-                if (members != null && !members.isEmpty()) {
-                    String newOwnerId = members.iterator().next();
-                    stringRedisTemplate.opsForHash().put(roomKey, "ownerId", newOwnerId);
-                    log.info("房主离开，自动移交: roomId={}, newOwnerId={}", roomId, newOwnerId);
-
-                    User newOwner = userMapper.selectById(Long.parseLong(newOwnerId));
-                    String newOwnerName = newOwner != null ? newOwner.getNickname() : "未知用户";
-                    saveMessage(roomId, 0L, "SYSTEM", "房主已变更为 " + newOwnerName);
-                }
+                // 房主离开：直接解散房间，所有成员回到列表页
+                stringRedisTemplate.delete(roomKey);
+                stringRedisTemplate.delete(memberKey);
+                stringRedisTemplate.delete(roomKey + ":queue");
+                stringRedisTemplate.delete(joinOrderKey);
+                log.info("房主离开，房间解散: roomId={}, name={}", roomId, roomName);
+                saveMessage(roomId, 0L, "SYSTEM", "房主已离开，房间已解散");
+                // 广播解散通知，让其他成员立即跳转
+                broadcastDismiss(roomId);
+                return; // 房间已删除，不再执行后续逻辑
             }
 
             // 更新 memberCount
+            Long newCount = stringRedisTemplate.opsForSet().size(memberKey);
             stringRedisTemplate.opsForHash().put(roomKey, "memberCount",
-                    String.valueOf(memberCount));
+                    String.valueOf(newCount != null ? newCount : 0));
         }
 
         log.info("离开歌房: roomId={}, userId={}", roomId, userId);
 
-        User user = userMapper.selectById(userId);
-        String nickname = user != null ? user.getNickname() : "未知用户";
-        saveMessage(roomId, userId, "SYSTEM", nickname + " 离开了房间");
+        // 如果房间还在且成员有变动，发送系统消息
+        Boolean roomExists = stringRedisTemplate.hasKey(roomKey);
+        if (Boolean.TRUE.equals(roomExists)) {
+            User user = userMapper.selectById(userId);
+            String nickname = user != null ? user.getNickname() : "未知用户";
+            saveMessage(roomId, userId, "SYSTEM", nickname + " 离开了房间");
+        }
     }
 
     @Override
@@ -305,6 +337,10 @@ public class RoomServiceImpl implements RoomService {
 
         String memberKey = String.format(RedisKeys.ROOM_MEMBERS, roomId);
         stringRedisTemplate.opsForSet().remove(memberKey, String.valueOf(targetId));
+
+        // 同时从加入顺序列表中移除
+        String joinOrderKey = RedisKeys.ROOM + roomId + JOIN_ORDER_SUFFIX;
+        stringRedisTemplate.opsForList().remove(joinOrderKey, 0, String.valueOf(targetId));
 
         // 更新 memberCount
         String roomKey = RedisKeys.ROOM + roomId;
@@ -342,12 +378,38 @@ public class RoomServiceImpl implements RoomService {
         String roomKey = RedisKeys.ROOM + roomId;
         String memberKey = String.format(RedisKeys.ROOM_MEMBERS, roomId);
         String queueKey = roomKey + ":queue";
+        String joinOrderKey = roomKey + JOIN_ORDER_SUFFIX;
 
         stringRedisTemplate.delete(roomKey);
         stringRedisTemplate.delete(memberKey);
         stringRedisTemplate.delete(queueKey);
+        stringRedisTemplate.delete(joinOrderKey);
+
+        // 广播房间解散通知，让其他成员立即跳转
+        broadcastDismiss(roomId);
 
         log.info("解散歌房: roomId={}, operatorId={}", roomId, operatorId);
+    }
+
+    /**
+     * 广播房间解散消息给所有在线成员
+     */
+    private void broadcastDismiss(Long roomId) {
+        try {
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("action", "DISMISS");
+            payload.put("roomId", roomId);
+            WebSocketMessage msg = WebSocketMessage.builder()
+                    .type("SYSTEM")
+                    .payload(payload)
+                    .timestamp(System.currentTimeMillis())
+                    .build();
+            String json = objectMapper.writeValueAsString(msg);
+            stringRedisTemplate.convertAndSend(RedisChannels.ROOM_MEMBER, json);
+            log.info("已广播解散通知: roomId={}", roomId);
+        } catch (Exception e) {
+            log.error("广播解散通知失败: roomId={}", roomId, e);
+        }
     }
 
     // ==================== 成员列表 ====================
@@ -369,12 +431,18 @@ public class RoomServiceImpl implements RoomService {
             try {
                 Long uid = Long.parseLong(idStr);
                 User user = userMapper.selectById(uid);
+                boolean isVip = false;
+                if (user != null && "VIP".equals(user.getRole())) {
+                    isVip = user.getVipExpireTime() == null
+                            || user.getVipExpireTime().isAfter(java.time.LocalDateTime.now());
+                }
                 members.add(RoomMemberVO.builder()
                         .userId(uid)
                         .nickname(user != null ? user.getNickname() : "未知用户")
                         .avatar(user != null ? user.getAvatar() : null)
                         .isOwner(ownerId.equals(idStr))
                         .isOnline(true)
+                        .isVip(isVip)
                         .build());
             } catch (NumberFormatException ignored) {
             }
@@ -501,11 +569,109 @@ public class RoomServiceImpl implements RoomService {
             return Collections.emptyList();
         }
         try {
-            return objectMapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
+            List<Map<String, Object>> queue = objectMapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
+            // 丰富歌曲信息
+            for (Map<String, Object> item : queue) {
+                Object songIdObj = item.get("songId");
+                if (songIdObj != null) {
+                    Long sid = toLong(songIdObj);
+                    if (sid != null) {
+                        Song song = songMapper.selectById(sid);
+                        if (song != null) {
+                            item.put("songTitle", song.getTitle());
+                            item.put("songArtist", song.getArtistId() != null ?
+                                    Optional.ofNullable(artistMapper.selectById(song.getArtistId()))
+                                            .map(Artist::getName).orElse(null) : null);
+                            item.put("coverUrl", song.getCoverUrl());
+                            item.put("duration", song.getDuration());
+                            item.put("audioUrl", song.getAudioUrl());
+                        } else {
+                            item.put("songTitle", "歌曲已删除");
+                        }
+                    }
+                }
+            }
+            return queue;
         } catch (Exception e) {
             log.error("获取队列失败", e);
             return Collections.emptyList();
         }
+    }
+
+    // ==================== 私有方法 ====================
+
+    /**
+     * 批量添加歌曲 ID 到房间队列（去重）
+     */
+    private void batchAddToQueue(Long roomId, List<Long> songIds, Long userId) {
+        String queueKey = RedisKeys.ROOM + roomId + ":queue";
+        String json = stringRedisTemplate.opsForValue().get(queueKey);
+        try {
+            List<Map<String, Object>> queue;
+            if (json == null || json.isEmpty()) {
+                queue = new ArrayList<>();
+            } else {
+                queue = objectMapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
+            }
+
+            // 收集现有 songId 集合
+            Set<Long> existingIds = queue.stream()
+                    .map(item -> toLong(item.get("songId")))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+
+            for (Long songId : songIds) {
+                if (songId != null && !existingIds.contains(songId)) {
+                    Map<String, Object> entry = new HashMap<>();
+                    entry.put("songId", songId);
+                    entry.put("addedBy", userId);
+                    queue.add(entry);
+                    existingIds.add(songId);
+                }
+            }
+
+            stringRedisTemplate.opsForValue().set(queueKey,
+                    objectMapper.writeValueAsString(queue), ROOM_TTL_SECONDS, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("批量添加队列失败", e);
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR, "批量添加队列失败");
+        }
+    }
+
+    // ==================== 批量队列加载 ====================
+
+    @Override
+    public void addPlaylistToQueue(Long roomId, Long userId, Long playlistId) {
+        List<Long> songIds = playlistSongMapper.selectSongIdsByPlaylistId(playlistId);
+        if (songIds.isEmpty()) return;
+        batchAddToQueue(roomId, songIds, userId);
+        log.info("加载歌单到队列: roomId={}, playlistId={}, count={}", roomId, playlistId, songIds.size());
+    }
+
+    @Override
+    public void addAlbumToQueue(Long roomId, Long userId, Long albumId) {
+        List<com.example.music.entity.Song> songs = songMapper.selectAllByAlbumId(albumId);
+        List<Long> songIds = songs.stream()
+                .map(com.example.music.entity.Song::getId)
+                .collect(Collectors.toList());
+        if (songIds.isEmpty()) return;
+        batchAddToQueue(roomId, songIds, userId);
+        log.info("加载专辑到队列: roomId={}, albumId={}, count={}", roomId, albumId, songIds.size());
+    }
+
+    @Override
+    public void addFavoriteSongsToQueue(Long roomId, Long userId) {
+        List<Long> songIds = favoriteMapper.selectSongIdsByUserId(userId);
+        if (songIds.isEmpty()) return;
+        batchAddToQueue(roomId, songIds, userId);
+        log.info("加载收藏歌曲到队列: roomId={}, userId={}, count={}", roomId, userId, songIds.size());
+    }
+
+    @Override
+    public boolean isOwner(Long roomId, Long userId) {
+        String roomKey = RedisKeys.ROOM + roomId;
+        String ownerField = getRoomField(roomKey, "ownerId");
+        return ownerField != null && ownerField.equals(String.valueOf(userId));
     }
 
     // ==================== 私有方法 ====================

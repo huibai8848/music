@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户信息 VO（脱敏，不返回密码等敏感字段）
@@ -27,6 +28,10 @@ public class UserVO {
     private LocalDateTime vipExpireTime;
     private String status;
     private LocalDateTime createdTime;
+    /** 公开歌单列表（公开主页用） */
+    private List<PlaylistVO> playlists;
+    /** 收藏总数（公开主页用） */
+    private Long favoriteCount;
 
     /**
      * 从 User 实体构建 VO

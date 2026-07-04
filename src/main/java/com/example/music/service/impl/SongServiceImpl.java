@@ -117,17 +117,26 @@ public class SongServiceImpl implements SongService {
         if (StrUtil.isBlank(keyword)) {
             return Collections.emptyList();
         }
-
         int offset = (page - 1) * size;
-        return songMapper.search(keyword, offset, size).stream()
-                .map(this::enrichSongVO)
-                .collect(Collectors.toList());
+        try {
+            return songMapper.search(keyword, offset, size).stream()
+                    .map(this::enrichSongVO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("歌曲搜索查询失败, keyword={}, page={}, size={}", keyword, page, size, e);
+            return Collections.emptyList();
+        }
     }
 
     @Override
     public long countSearch(String keyword) {
         if (StrUtil.isBlank(keyword)) return 0;
-        return songMapper.countSearch(keyword);
+        try {
+            return songMapper.countSearch(keyword);
+        } catch (Exception e) {
+            log.error("歌曲搜索计数查询失败, keyword={}", keyword, e);
+            return 0;
+        }
     }
 
     @Override
@@ -394,15 +403,37 @@ public class SongServiceImpl implements SongService {
 
         log.info("歌曲提审成功: id={}, title={}, artistId={}", song.getId(), song.getTitle(), artistId);
 
-        // 6. 通知所有管理员审核新歌曲 —— 延迟到事务提交后执行
+        // 6. 通知上传者（歌曲正在审核）+ 通知所有管理员审核新歌曲 —— 延迟到事务提交后执行
+        //    如果歌曲已经是 ACTIVE（管理员上传），跳过所有通知
         Long songId = song.getId();
         String songTitle = song.getTitle();
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                notifyAdminsForReview(songId, songTitle);
-            }
-        });
+        Long uploaderId = song.getUploaderId();
+        boolean needsReview = !"ACTIVE".equals(song.getStatus());
+        if (needsReview) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    // 6a. 通知上传者：歌曲正在审核
+                    if (uploaderId != null) {
+                        try {
+                            notificationService.createNotification(
+                                    uploaderId,
+                                    "SONG_REVIEW",
+                                    "歌曲审核中",
+                                    "您上传的歌曲《" + songTitle + "》已提交，正在审核中，请耐心等待。",
+                                    "SONG",
+                                    songId
+                            );
+                        } catch (Exception e) {
+                            log.error("通知上传者审核中失败: songId={}, uploaderId={}", songId, uploaderId, e);
+                        }
+                    }
+
+                    // 6b. 通知所有管理员审核新歌曲
+                    notifyAdminsForReview(songId, songTitle);
+                }
+            });
+        }
 
         return enrichSongVO(song);
     }
@@ -503,40 +534,71 @@ public class SongServiceImpl implements SongService {
      * 注意：如果歌曲状态不是 ACTIVE（审核中/已驳回），则不填充艺人名和专辑名，
      * 避免审核中的歌曲暴露关联的艺人/专辑信息。
      */
+    /**
+     * 丰富 SongVO：填充艺人名、专辑名、分类 ID 列表、喜欢/收藏数
+     * <p>
+     * 每个数据库查询单独包裹 try-catch，防止单个歌曲的关联数据异常
+     * （如艺人/专辑被物理删除、分类/点赞表数据损坏）导致整个搜索结果返回 500。
+     * 查询失败的字段保留默认值（null/0），不影响其他字段和其他歌曲。
+     */
     private SongVO enrichSongVO(Song song) {
         if (song == null) return null;
         SongVO vo = SongVO.fromEntity(song);
 
         // 仅 ACTIVE 状态的歌曲才填充艺人名和专辑名
         boolean isActive = "ACTIVE".equals(song.getStatus());
-
-        // 填充艺人名
-        if (isActive && song.getArtistId() != null) {
-            var artist = artistMapper.selectById(song.getArtistId());
-            if (artist != null) {
-                vo.setArtistName(artist.getName());
-            }
-        }
-
-        // 填充专辑名
-        if (isActive && song.getAlbumId() != null) {
-            var album = albumMapper.selectById(song.getAlbumId());
-            if (album != null) {
-                vo.setAlbumTitle(album.getTitle());
-            }
-        }
-
-        // 填充分类 ID 列表
-        vo.setCategoryIds(songCategoryMapper.selectCategoryIdsBySongId(song.getId()));
-
-        // 填充喜欢数 / 收藏数
         Long songId = song.getId();
-        if (songId != null) {
-            vo.setLikeCount(likesMapper.countByTarget("SONG", songId));
-            vo.setFavoriteCount(favoriteMapper.countByTarget("SONG", songId));
+
+        // — 以下每个 Mapper 调用均独立 try-catch，单项失败不影响整体 —
+
+        // 1. 填充艺人名
+        if (isActive && song.getArtistId() != null) {
+            try {
+                var artist = artistMapper.selectById(song.getArtistId());
+                if (artist != null) {
+                    vo.setArtistName(artist.getName());
+                }
+            } catch (Exception e) {
+                log.warn("填充艺人名失败, songId={}, artistId={}", songId, song.getArtistId(), e);
+            }
         }
 
-        // 叠加 Redis 缓冲中尚未刷入数据库的播放计数，使播放量接近实时
+        // 2. 填充专辑名
+        if (isActive && song.getAlbumId() != null) {
+            try {
+                var album = albumMapper.selectById(song.getAlbumId());
+                if (album != null) {
+                    vo.setAlbumTitle(album.getTitle());
+                }
+            } catch (Exception e) {
+                log.warn("填充专辑名失败, songId={}, albumId={}", songId, song.getAlbumId(), e);
+            }
+        }
+
+        // 3. 填充分类 ID 列表
+        if (songId != null) {
+            try {
+                vo.setCategoryIds(songCategoryMapper.selectCategoryIdsBySongId(songId));
+            } catch (Exception e) {
+                log.warn("填充分类 ID 列表失败, songId={}", songId, e);
+            }
+        }
+
+        // 4. 填充喜欢数 / 收藏数
+        if (songId != null) {
+            try {
+                vo.setLikeCount(likesMapper.countByTarget("SONG", songId));
+            } catch (Exception e) {
+                log.warn("填充喜欢数失败, songId={}", songId, e);
+            }
+            try {
+                vo.setFavoriteCount(favoriteMapper.countByTarget("SONG", songId));
+            } catch (Exception e) {
+                log.warn("填充收藏数失败, songId={}", songId, e);
+            }
+        }
+
+        // 5. 叠加 Redis 缓冲中尚未刷入数据库的播放计数，使播放量接近实时
         if (songId != null) {
             try {
                 String bufVal = stringRedisTemplate.opsForValue()

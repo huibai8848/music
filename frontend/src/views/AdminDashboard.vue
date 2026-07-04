@@ -147,38 +147,127 @@
           </select>
           <input v-model="songKeyword" placeholder="搜索歌曲名..." class="search-input" @keyup.enter="loadSongs(1)" />
           <button class="btn-primary" @click="loadSongs(1)">搜索</button>
+          <span class="toolbar-spacer"></span>
         </div>
         <div v-if="loading.songs" class="loading">加载中...</div>
-        <table v-else class="admin-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>歌曲名</th>
-              <th>艺人</th>
-              <th>状态</th>
-              <th>上传者</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="s in songList" :key="s.id">
-              <td>{{ s.id }}</td>
-              <td>{{ s.title }}</td>
-              <td>{{ s.artistName || '-' }}</td>
-              <td>
-                <span :class="statusClass(s.status)">{{ statusLabel(s.status) }}</span>
-              </td>
-              <td>{{ s.uploaderNickname || '-' }}</td>
-              <td class="action-cell">
-                <button class="btn-sm" @click="$router.push('/songs/' + s.id)">查看</button>
-                <button v-if="s.status === 'PENDING'" class="btn-success-sm" @click="auditSong(s, 'ACTIVE')">通过</button>
-                <button v-if="s.status === 'PENDING'" class="btn-danger-sm" @click="showAuditReject(s)">驳回</button>
-                <button class="btn-danger-sm" @click="deleteSong(s.id)">删除</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <Pagination v-if="songPages > 1" :page="songPage" :total="songPages" @change="loadSongs" />
+        <div v-else>
+          <div class="table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>歌曲名</th>
+                  <th>艺人</th>
+                  <th>风格</th>
+                  <th>语种</th>
+                  <th>时长</th>
+                  <th>播放量</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="s in songList" :key="s.id">
+                  <td>{{ s.id }}</td>
+                  <td class="cell-title">{{ s.title }}</td>
+                  <td>{{ s.artistName || '-' }}</td>
+                  <td>{{ s.genre || '-' }}</td>
+                  <td>{{ s.language || '-' }}</td>
+                  <td>{{ formatDuration(s.duration) }}</td>
+                  <td>{{ s.playCount || 0 }}</td>
+                  <td>
+                    <span :class="statusClass(s.status)">{{ statusLabel(s.status) }}</span>
+                  </td>
+                  <td>{{ formatTime(s.createdTime) }}</td>
+                  <td class="action-cell">
+                    <button class="btn-sm" @click="openSongEdit(s)">编辑</button>
+                    <button class="btn-sm" @click="$router.push('/songs/' + s.id)">查看</button>
+                    <button v-if="s.status === 'PENDING'" class="btn-success-sm" @click="auditSong(s, 'ACTIVE')">通过</button>
+                    <button v-if="s.status === 'PENDING'" class="btn-danger-sm" @click="showAuditReject(s)">驳回</button>
+                    <button class="btn-danger-sm" @click="deleteSong(s.id)">删除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <Pagination v-if="songPages > 1" :page="songPage" :total="songPages" @change="loadSongs" />
+        </div>
+
+        <!-- 歌曲编辑弹窗 -->
+        <div v-if="showSongModal" class="modal-overlay" @click.self="showSongModal = false">
+          <div class="modal-card wide">
+            <h3>{{ songEditing ? '编辑歌曲' : '新增歌曲' }}</h3>
+            <div class="song-form-grid">
+              <input v-model="songForm.title" placeholder="歌曲名 *" class="modal-input" maxlength="200" />
+              <div class="select-wrapper">
+                <input v-model="songForm.artistKeyword" placeholder="搜索艺人..." class="modal-input" @input="searchArtists" />
+                <ul v-if="artistSearchResults.length" class="search-dropdown">
+                  <li v-for="a in artistSearchResults" :key="a.id" @click="selectArtist(a)">
+                    {{ a.name }}
+                  </li>
+                </ul>
+                <span v-if="songForm.artistName" class="select-tag" @click="songForm.artistId = null; songForm.artistName = ''">
+                  {{ songForm.artistName }} ✕
+                </span>
+              </div>
+              <div class="select-wrapper">
+                <input v-model="songForm.albumKeyword" placeholder="搜索专辑..." class="modal-input" @input="searchAlbums" />
+                <ul v-if="albumSearchResults.length" class="search-dropdown">
+                  <li v-for="a in albumSearchResults" :key="a.id" @click="selectAlbum(a)">
+                    {{ a.title }}
+                  </li>
+                </ul>
+                <span v-if="songForm.albumTitle" class="select-tag" @click="songForm.albumId = null; songForm.albumTitle = ''">
+                  {{ songForm.albumTitle }} ✕
+                </span>
+              </div>
+              <select v-model="songForm.genre" class="modal-input">
+                <option value="">选择风格</option>
+                <option v-for="g in genreOptions" :key="g" :value="g">{{ g }}</option>
+              </select>
+              <select v-model="songForm.language" class="modal-input">
+                <option value="">选择语种</option>
+                <option v-for="l in languageOptions" :key="l" :value="l">{{ l }}</option>
+              </select>
+              <div class="input-row">
+                <input v-model.number="songForm.duration" type="number" min="0" placeholder="时长(秒)" class="modal-input half" />
+                <input v-model.number="songForm.releaseYear" type="number" min="1900" max="2099" placeholder="发行年份" class="modal-input half" />
+              </div>
+              <input v-model="songForm.audioUrl" placeholder="音频 URL（或选择上传）" class="modal-input" />
+              <div class="upload-inline">
+                <label class="upload-btn-sm">
+                  上传音频
+                  <input type="file" accept="audio/mpeg" hidden @change="e => uploadSongFile(e, 'audio')" />
+                </label>
+              </div>
+              <input v-model="songForm.coverUrl" placeholder="封面 URL（或选择上传）" class="modal-input" />
+              <div class="upload-inline">
+                <label class="upload-btn-sm">
+                  上传封面
+                  <input type="file" accept="image/jpeg,image/png" hidden @change="e => uploadSongFile(e, 'cover')" />
+                </label>
+              </div>
+              <input v-model="songForm.lyricUrl" placeholder="歌词 URL（或选择上传）" class="modal-input" />
+              <div class="upload-inline">
+                <label class="upload-btn-sm">
+                  上传歌词
+                  <input type="file" accept=".lrc,.txt,text/plain" hidden @change="e => uploadSongFile(e, 'lyric')" />
+                </label>
+              </div>
+              <select v-model="songForm.status" class="modal-input">
+                <option value="ACTIVE">已通过</option>
+                <option value="PENDING">待审核</option>
+                <option value="REJECTED">已驳回</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button class="btn-cancel" @click="showSongModal = false">取消</button>
+              <button class="btn-confirm" @click="saveSong">{{ songEditing ? '保存' : '创建' }}</button>
+            </div>
+            <p v-if="songError" class="error">{{ songError }}</p>
+          </div>
+        </div>
 
         <!-- 驳回弹窗 -->
         <div v-if="showRejectModal" class="modal-overlay" @click.self="showRejectModal = false">
@@ -222,13 +311,20 @@
         <div v-if="loading.artists" class="loading">加载中...</div>
         <table v-else class="admin-table">
           <thead>
-            <tr><th>ID</th><th>艺人名</th><th>操作</th></tr>
+            <tr><th>ID</th><th>头像</th><th>艺人名</th><th>简介</th><th>国籍</th><th>操作</th></tr>
           </thead>
           <tbody>
             <tr v-for="a in artistList" :key="a.id">
               <td>{{ a.id }}</td>
-              <td>{{ a.name }}</td>
               <td>
+                <img :src="a.avatar || defaultAvatar" class="avatar-preview"
+                     @error="e => e.target.src = defaultAvatar" alt="">
+              </td>
+              <td>{{ a.name }}</td>
+              <td class="cell-content">{{ a.bio || '-' }}</td>
+              <td>{{ a.country || '-' }}</td>
+              <td>
+                <button class="btn-sm" @click="showArtistEdit(a)">编辑</button>
                 <button class="btn-sm" @click="$router.push('/artists/' + a.id)">查看</button>
                 <button class="btn-danger-sm" @click="deleteArtist(a.id)">删除</button>
               </td>
@@ -236,6 +332,25 @@
           </tbody>
         </table>
         <Pagination v-if="artistPages > 1" :page="artistPage" :total="artistPages" @change="loadArtists" />
+
+        <!-- 艺人编辑弹窗 -->
+        <div v-if="showArtistModal" class="modal-overlay" @click.self="showArtistModal = false">
+          <div class="modal-card">
+            <h3>编辑艺人</h3>
+            <input v-model="artistForm.name" placeholder="艺人名" class="modal-input" maxlength="100" />
+            <input v-model="artistForm.avatar" placeholder="头像 URL" class="modal-input" />
+            <div v-if="artistForm.avatar" class="avatar-preview-wrapper">
+              <img :src="artistForm.avatar" class="avatar-preview-lg" @error="e => e.target.src = defaultAvatar" alt="">
+            </div>
+            <input v-model="artistForm.country" placeholder="国籍/地区（可选）" class="modal-input" maxlength="50" />
+            <textarea v-model="artistForm.bio" placeholder="艺人简介（可选）" class="modal-textarea" rows="4" maxlength="500"></textarea>
+            <div class="modal-actions">
+              <button class="btn-cancel" @click="showArtistModal = false">取消</button>
+              <button class="btn-confirm" @click="saveArtist">保存</button>
+            </div>
+            <p v-if="artistError" class="error">{{ artistError }}</p>
+          </div>
+        </div>
       </div>
 
       <!-- ==================== 6. 评论管理 ==================== -->
@@ -305,7 +420,7 @@
       <!-- ==================== 8. 轮播图管理 ==================== -->
       <div v-if="activeTab === 'banners'" class="tab-content">
         <div class="toolbar">
-          <button class="btn-primary" @click="showBannerModal = true; bannerForm = { imageUrl: '', linkUrl: '', sortOrder: 0, isActive: true, title: '' }; bannerEditing = false">+ 新增轮播图</button>
+          <button class="btn-primary" @click="openBannerCreate()">+ 新增轮播图</button>
         </div>
         <div v-if="loading.banners" class="loading">加载中...</div>
         <table v-else class="admin-table">
@@ -359,7 +474,7 @@
             <option value="MAINTENANCE">维护通知</option>
             <option value="ACTIVITY">活动公告</option>
           </select>
-          <button class="btn-primary" @click="showNoticeModal = true; noticeForm = { title: '', content: '', type: 'SYSTEM', isActive: true }; noticeEditing = false">+ 新增公告</button>
+          <button class="btn-primary" @click="openNoticeCreate()">+ 新增公告</button>
         </div>
         <div v-if="loading.notices" class="loading">加载中...</div>
         <table v-else class="admin-table">
@@ -550,11 +665,14 @@ async function loadDashboard() {
     const res = await request.get('/admin/dashboard')
     if (res.code === 200 && res.data) {
       Object.assign(dash, res.data)
-      await nextTick()
-      renderCharts()
     }
   } catch { /* ignore */ }
-  finally { loading.dashboard = false }
+  finally {
+    loading.dashboard = false
+  }
+  // 等待 loading.dashboard = false 后 v-else 分支渲染出 canvas，再初始化图表
+  await nextTick()
+  renderCharts()
 }
 
 // ====== 2. 用户管理 ======
@@ -595,6 +713,165 @@ const songKeyword = ref('')
 const showRejectModal = ref(false)
 const rejectingSong = ref(null)
 const rejectReason = ref('')
+
+// 歌曲编辑弹窗状态
+const showSongModal = ref(false)
+const songEditing = ref(false)
+const songError = ref('')
+const songForm = reactive({
+  title: '', artistId: null, artistName: '', artistKeyword: '',
+  albumId: null, albumTitle: '', albumKeyword: '',
+  genre: '', language: '', duration: 0, releaseYear: null,
+  audioUrl: '', coverUrl: '', lyricUrl: '', status: 'ACTIVE'
+})
+let editingSongId = null
+
+// 艺人/专辑搜索
+const artistSearchResults = ref([])
+const albumSearchResults = ref([])
+let searchTimer = null
+
+// 风格/语种选项（从后端动态加载）
+const genreOptions = ref([])
+const languageOptions = ref([])
+
+/** 从后端加载风格和语种分类 */
+async function loadCategoryOptions() {
+  try {
+    const res = await request.get('/categories')
+    if (res.code === 200 && res.data) {
+      genreOptions.value = (res.data.GENRE || []).map(g => g.name)
+      languageOptions.value = (res.data.LANGUAGE || []).map(l => l.name)
+    }
+  } catch { /* ignore */ }
+}
+
+/** 格式化时长 */
+function formatDuration(seconds) {
+  if (!seconds && seconds !== 0) return '-'
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return m + ':' + String(s).padStart(2, '0')
+}
+
+/** 搜索艺人（输入时触发） */
+async function searchArtists() {
+  clearTimeout(searchTimer)
+  const kw = songForm.artistKeyword?.trim()
+  if (!kw) { artistSearchResults.value = []; return }
+  searchTimer = setTimeout(async () => {
+    try {
+      const res = await request.get('/admin/artists', { params: { keyword: kw, page: 1, size: 10 } })
+      if (res.code === 200) {
+        artistSearchResults.value = res.data?.records || []
+      }
+    } catch { /* ignore */ }
+  }, 300)
+}
+
+/** 选中艺人 */
+function selectArtist(a) {
+  songForm.artistId = a.id
+  songForm.artistName = a.name
+  songForm.artistKeyword = ''
+  artistSearchResults.value = []
+}
+
+/** 搜索专辑 */
+async function searchAlbums() {
+  clearTimeout(searchTimer)
+  const kw = songForm.albumKeyword?.trim()
+  if (!kw) { albumSearchResults.value = []; return }
+  searchTimer = setTimeout(async () => {
+    try {
+      const res = await request.get('/admin/albums', { params: { keyword: kw, page: 1, size: 10 } })
+      if (res.code === 200) {
+        albumSearchResults.value = res.data?.records || []
+      }
+    } catch { /* ignore */ }
+  }, 300)
+}
+
+/** 选中专辑 */
+function selectAlbum(a) {
+  songForm.albumId = a.id
+  songForm.albumTitle = a.title
+  songForm.albumKeyword = ''
+  albumSearchResults.value = []
+}
+
+/** 打开编辑歌曲弹窗 */
+async function openSongEdit(song) {
+  songEditing.value = true
+  editingSongId = song.id
+  songError.value = ''
+  // 先填充已有数据
+  Object.assign(songForm, {
+    title: song.title || '',
+    artistId: song.artistId || null,
+    artistName: song.artistName || '',
+    artistKeyword: '',
+    albumId: song.albumId || null,
+    albumTitle: song.albumTitle || '',
+    albumKeyword: '',
+    genre: song.genre || '',
+    language: song.language || '',
+    duration: song.duration || 0,
+    releaseYear: song.releaseYear || null,
+    audioUrl: song.audioUrl || '',
+    coverUrl: song.coverUrl || '',
+    lyricUrl: song.lyricUrl || '',
+    status: song.status || 'ACTIVE'
+  })
+  showSongModal.value = true
+}
+
+/** 上传歌曲相关文件 */
+async function uploadSongFile(e, fileType) {
+  const file = e.target.files[0]
+  if (!file) return
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('type', fileType)
+  try {
+    const res = await request.post('/files/upload', formData)
+    if (res.code === 200 && res.data) {
+      const url = res.data.url || res.data
+      if (fileType === 'audio') songForm.audioUrl = url
+      else if (fileType === 'cover') songForm.coverUrl = url
+      else if (fileType === 'lyric') songForm.lyricUrl = url
+    }
+  } catch { alert('上传失败') }
+  e.target.value = ''
+}
+
+/** 保存/创建歌曲 */
+async function saveSong() {
+  if (!songForm.title.trim()) { songError.value = '歌曲名不能为空'; return }
+  songError.value = ''
+  try {
+    const body = {
+      title: songForm.title.trim(),
+      artistId: songForm.artistId,
+      albumId: songForm.albumId,
+      genre: songForm.genre || null,
+      language: songForm.language || null,
+      duration: songForm.duration || null,
+      releaseYear: songForm.releaseYear || null,
+      audioUrl: songForm.audioUrl || null,
+      coverUrl: songForm.coverUrl || null,
+      lyricUrl: songForm.lyricUrl || null,
+      status: songForm.status
+    }
+    if (songEditing.value) {
+      await request.put(`/admin/songs/${editingSongId}`, body)
+    } else {
+      await request.post('/admin/songs', body)
+    }
+    showSongModal.value = false
+    loadSongs(songPage.value)
+  } catch (e) { songError.value = e.message || '保存失败' }
+}
 
 async function loadSongs(page) {
   songPage.value = page || 1
@@ -670,6 +947,14 @@ const artistList = ref([])
 const artistPage = ref(1)
 const artistPages = ref(1)
 
+/** 艺人编辑弹窗 */
+const showArtistModal = ref(false)
+const artistForm = reactive({ name: '', avatar: '', bio: '', country: '' })
+const artistError = ref('')
+const defaultAvatar = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><rect fill="#e0e0e0" width="60" height="60"/><text x="30" y="38" text-anchor="middle" font-size="24">🎤</text></svg>')
+let editingArtistId = null
+
 async function loadArtists(page) {
   artistPage.value = page || 1
   loading.artists = true
@@ -681,6 +966,33 @@ async function loadArtists(page) {
     }
   } catch { /* ignore */ }
   finally { loading.artists = false }
+}
+
+/** 打开艺人编辑弹窗，填充当前数据 */
+function showArtistEdit(artist) {
+  editingArtistId = artist.id
+  artistForm.name = artist.name || ''
+  artistForm.avatar = artist.avatar || ''
+  artistForm.bio = artist.bio || ''
+  artistForm.country = artist.country || ''
+  artistError.value = ''
+  showArtistModal.value = true
+}
+
+/** 保存艺人编辑 */
+async function saveArtist() {
+  if (!artistForm.name.trim()) { artistError.value = '艺人名不能为空'; return }
+  artistError.value = ''
+  try {
+    await request.put(`/admin/artists/${editingArtistId}`, {
+      name: artistForm.name.trim(),
+      avatar: artistForm.avatar.trim() || null,
+      bio: artistForm.bio.trim() || null,
+      country: artistForm.country.trim() || null
+    })
+    showArtistModal.value = false
+    loadArtists(artistPage.value)
+  } catch (e) { artistError.value = e.message || '保存失败' }
 }
 
 async function deleteArtist(id) {
@@ -753,6 +1065,17 @@ const bannerForm = reactive({ imageUrl: '', linkUrl: '', sortOrder: 0, isActive:
 const bannerError = ref('')
 let editingBannerId = null
 
+/** 打开新增轮播图弹窗 */
+function openBannerCreate() {
+  editingBannerId = null
+  bannerEditing.value = false
+  Object.assign(bannerForm, {
+    imageUrl: '', linkUrl: '', sortOrder: 0, isActive: true, title: ''
+  })
+  bannerError.value = ''
+  showBannerModal.value = true
+}
+
 async function loadBanners() {
   loading.banners = true
   try {
@@ -821,6 +1144,17 @@ async function loadNotices(page) {
     }
   } catch { /* ignore */ }
   finally { loading.notices = false }
+}
+
+/** 打开新增公告弹窗 */
+function openNoticeCreate() {
+  editingNoticeId = null
+  noticeEditing.value = false
+  Object.assign(noticeForm, {
+    title: '', content: '', type: 'SYSTEM', isActive: true
+  })
+  noticeError.value = ''
+  showNoticeModal.value = true
 }
 
 function editNotice(notice) {
@@ -916,7 +1250,7 @@ function switchTab() {
   switch (activeTab.value) {
     case 'dashboard': loadDashboard(); break
     case 'users': loadUsers(1); break
-    case 'songs': loadSongs(1); break
+    case 'songs': loadSongs(1); loadCategoryOptions(); break
     case 'albums': loadAlbums(1); break
     case 'artists': loadArtists(1); break
     case 'comments': loadComments(1); break
@@ -1042,6 +1376,11 @@ onUnmounted(() => {
 /* 轮播图预览 */
 .banner-preview { width: 60px; height: 34px; object-fit: cover; border-radius: 4px; }
 
+/* 艺人头像预览 */
+.avatar-preview { width: 36px; height: 36px; object-fit: cover; border-radius: 50%; }
+.avatar-preview-wrapper { text-align: center; margin-bottom: 12px; }
+.avatar-preview-lg { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid #eee; }
+
 /* 弹窗 */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.5);
@@ -1127,4 +1466,42 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .charts-row { grid-template-columns: 1fr; }
 }
+
+/* 歌曲管理 — 增强表格 */
+.table-wrapper { overflow-x: auto; }
+.cell-title { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toolbar-spacer { flex: 1; }
+
+/* 歌曲表单网格 */
+.song-form-grid { display: flex; flex-direction: column; gap: 4px; }
+
+/* 搜索下拉 */
+.select-wrapper { position: relative; margin-bottom: 12px; }
+.select-wrapper .modal-input { margin-bottom: 0; }
+.search-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+  background: #fff; border: 1px solid #ddd; border-top: none;
+  border-radius: 0 0 8px 8px; max-height: 180px; overflow-y: auto;
+  list-style: none; padding: 0; margin: 0;
+}
+.search-dropdown li {
+  padding: 8px 14px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #f5f5f5;
+}
+.search-dropdown li:hover { background: #f0f4ff; }
+.select-tag {
+  display: inline-block; margin-top: 4px; padding: 2px 8px; background: #E3F2FD;
+  color: #1565C0; border-radius: 4px; font-size: 12px; cursor: pointer;
+}
+
+/* 输入行 */
+.input-row { display: flex; gap: 8px; }
+.input-row .half { flex: 1; }
+
+/* 上传按钮 */
+.upload-inline { margin-top: -8px; margin-bottom: 8px; }
+.upload-btn-sm {
+  display: inline-block; padding: 4px 12px; background: #f5f5f5; border: 1px dashed #ccc;
+  border-radius: 6px; font-size: 12px; cursor: pointer; color: #666;
+}
+.upload-btn-sm:hover { background: #eee; border-color: #999; }
 </style>

@@ -1,5 +1,7 @@
 package com.example.music.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +22,7 @@ import java.util.Map;
 public class RoomVO {
 
     /** 房间 ID */
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /** 房间名称 */

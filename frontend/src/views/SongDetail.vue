@@ -8,9 +8,19 @@
         </div>
         <div class="hero-info">
           <h2>{{ song.title }}</h2>
-          <p class="hero-artist">{{ song.artistName || '未知艺人' }}</p>
+          <p class="hero-artist">
+            <router-link v-if="song.artistId" :to="'/artists/' + song.artistId" class="hero-link">
+              {{ song.artistName || '未知艺人' }}
+            </router-link>
+            <span v-else>{{ song.artistName || '未知艺人' }}</span>
+          </p>
           <p class="hero-meta">
-            <span>{{ song.albumTitle || '未知专辑' }}</span>
+            <span>
+              <router-link v-if="song.albumId" :to="'/albums/' + song.albumId" class="hero-link">
+                {{ song.albumTitle || '未知专辑' }}
+              </router-link>
+              <span v-else>{{ song.albumTitle || '未知专辑' }}</span>
+            </span>
             <span>·</span>
             <span>{{ song.genre || '-' }}</span>
             <span>·</span>
@@ -262,10 +272,12 @@ onUnmounted(() => {
 .main { max-width: 800px; margin: 0 auto; padding: 24px 20px; }
 
 .song-hero { display: flex; gap: 24px; background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
-.hero-cover { width: 200px; height: 200px; flex-shrink: 0; }
+.hero-cover { width: 140px; height: 140px; flex-shrink: 0; }
 .hero-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .hero-info h2 { font-size: 24px; margin-bottom: 8px; }
 .hero-artist { font-size: 16px; color: #666; margin-bottom: 12px; }
+.hero-link { color: #1565C0; text-decoration: none; cursor: pointer; }
+.hero-link:hover { text-decoration: underline; color: #0D47A1; }
 .hero-meta { font-size: 13px; color: #999; display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
 .hero-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 

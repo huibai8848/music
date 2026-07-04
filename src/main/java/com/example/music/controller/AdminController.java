@@ -5,6 +5,8 @@ import com.example.music.dto.AuditSongDTO;
 import com.example.music.dto.BannerDTO;
 import com.example.music.dto.HandleReportDTO;
 import com.example.music.dto.NoticeDTO;
+import com.example.music.entity.Artist;
+import com.example.music.entity.Song;
 import com.example.music.service.*;
 import com.example.music.utils.RequestContext;
 import com.example.music.vo.*;
@@ -99,6 +101,35 @@ public class AdminController {
     }
 
     /**
+     * 获取歌曲详情（管理端，含艺人名）
+     */
+    @GetMapping("/songs/{id}")
+    public R<SongVO> getSong(@PathVariable Long id) {
+        return R.ok(adminContentService.getSongDetail(id));
+    }
+
+    /**
+     * 创建歌曲（管理员直接添加）
+     */
+    @OperationLog(value = "创建歌曲", targetType = "SONG")
+    @PostMapping("/songs")
+    public R<SongVO> createSong(@RequestBody Song song) {
+        Long adminId = RequestContext.getUserId();
+        return R.ok("歌曲已创建", adminContentService.createSong(adminId, song));
+    }
+
+    /**
+     * 更新歌曲信息
+     */
+    @OperationLog(value = "更新歌曲", targetType = "SONG")
+    @PutMapping("/songs/{id}")
+    public R<SongVO> updateSong(@PathVariable Long id,
+                                 @RequestBody Song song) {
+        Long adminId = RequestContext.getUserId();
+        return R.ok("歌曲已更新", adminContentService.updateSong(adminId, id, song));
+    }
+
+    /**
      * 审核歌曲（会员上传审核）
      *
      * @param id  歌曲 ID
@@ -148,9 +179,10 @@ public class AdminController {
      */
     @GetMapping("/albums")
     public R<Map<String, Object>> listAlbums(
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
-        return R.ok(adminContentService.listAlbums(page, size));
+        return R.ok(adminContentService.listAlbums(keyword, page, size));
     }
 
     /**
@@ -171,9 +203,24 @@ public class AdminController {
      */
     @GetMapping("/artists")
     public R<Map<String, Object>> listArtists(
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
-        return R.ok(adminContentService.listArtists(page, size));
+        return R.ok(adminContentService.listArtists(keyword, page, size));
+    }
+
+    /**
+     * 更新艺人信息（名称 / 头像 / 简介 / 国籍）
+     * <p>
+     * 管理员可修改艺人基本信息，头像 URL 由前端上传后传入。
+     */
+    @OperationLog(value = "更新艺人", targetType = "ARTIST")
+    @PutMapping("/artists/{id}")
+    public R<ArtistVO> updateArtist(@PathVariable Long id,
+                                    @RequestBody Artist artist) {
+        artist.setId(id);
+        ArtistVO vo = adminContentService.updateArtist(artist);
+        return R.ok("艺人信息已更新", vo);
     }
 
     /**

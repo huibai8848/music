@@ -17,6 +17,18 @@
       </div>
     </div>
 
+    <!-- 系统公告 -->
+    <div v-if="notices.length > 0" class="notice-bar">
+      <div v-for="n in notices" :key="n.id" class="notice-item" :class="'notice-' + (n.type || 'SYSTEM').toLowerCase()">
+        <span class="notice-icon">{{ noticeIcon(n.type) }}</span>
+        <div class="notice-content">
+          <span class="notice-label">{{ noticeTypeLabel(n.type) }}：</span>
+          <span class="notice-title">{{ n.title }}</span>
+          <span v-if="n.content" class="notice-text">—— {{ n.content }}</span>
+        </div>
+      </div>
+    </div>
+
     <!-- 导航快捷入口 -->
     <div class="quick-nav">
       <router-link to="/songs" class="quick-item">
@@ -111,6 +123,7 @@ const playbackStore = usePlaybackStore()
 const banners = ref([])
 const hotSongs = ref([])
 const playlists = ref([])
+const notices = ref([])
 const bannerIndex = ref(0)
 let bannerTimer = null
 
@@ -120,16 +133,25 @@ const defaultCover = 'data:image/svg+xml,' + encodeURIComponent(
 function onCoverError(e) { e.target.src = defaultCover }
 function onBannerError(e) { e.target.style.display = 'none' }
 
+const NOTICE_ICONS = { SYSTEM: '📢', MAINTENANCE: '🔧', ACTIVITY: '🎉' }
+function noticeIcon(type) { return NOTICE_ICONS[type] || '📢' }
+function noticeTypeLabel(t) {
+  const map = { SYSTEM: '系统公告', MAINTENANCE: '维护通知', ACTIVITY: '活动公告' }
+  return map[t] || t || '公告'
+}
+
 async function loadData() {
   try {
-    const [bannerRes, hotRes, plRes] = await Promise.all([
+    const [bannerRes, hotRes, plRes, noticeRes] = await Promise.all([
       request.get('/banners'),
       request.get('/songs/hot', { params: { limit: 8 } }),
-      request.get('/playlists', { params: { page: 1, size: 6 } })
+      request.get('/playlists', { params: { page: 1, size: 6 } }),
+      request.get('/notices')
     ])
     if (bannerRes.code === 200) banners.value = bannerRes.data || []
     if (hotRes.code === 200) hotSongs.value = hotRes.data || []
     if (plRes.code === 200) playlists.value = plRes.data?.records || []
+    if (noticeRes.code === 200) notices.value = noticeRes.data || []
   } catch (e) {
     console.warn('加载首页数据失败', e)
   }
@@ -229,6 +251,57 @@ onUnmounted(() => {
   width: 20px;
   border-radius: 4px;
 }
+
+/* ===== 系统公告 ===== */
+.notice-bar {
+  max-width: 1000px;
+  margin: 12px auto 0;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.notice-system {
+  background: #e3f2fd;
+  color: #1565C0;
+  border: 1px solid #bbdefb;
+}
+
+.notice-maintenance {
+  background: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffe0b2;
+}
+
+.notice-activity {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border: 1px solid #e1bee7;
+}
+
+.notice-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+.notice-content {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.notice-label { font-weight: 600; }
+.notice-title { font-weight: 500; }
+.notice-text { color: inherit; opacity: 0.85; }
 
 /* ===== 快捷导航 ===== */
 .quick-nav {

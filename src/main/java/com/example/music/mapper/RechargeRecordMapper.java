@@ -13,4 +13,6 @@ public interface RechargeRecordMapper {
     int insert(RechargeRecord record);
     List<RechargeRecord> selectByUserId(@Param("userId") Long userId, @Param("offset") int offset, @Param("limit") int limit);
     int countByUserId(@Param("userId") Long userId);
+    RechargeRecord selectByOutTradeNo(@Param("outTradeNo") String outTradeNo);
+    int updateByOutTradeNo(RechargeRecord record);
 }

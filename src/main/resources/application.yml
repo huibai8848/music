@@ -68,6 +68,61 @@ music:
     access-token-expiration: 7200000
     refresh-token-expiration: 604800000
 
+# =============================================================
+# 支付宝沙箱支付配置
+# 使用前请替换以下所有配置项为你在支付宝开放平台沙箱环境获取的值
+#
+# 前置条件：
+# 1. 登录 https://open.alipay.com → 控制台 → 沙箱环境
+# 2. 获取 APP_ID、生成 RSA2 密钥、上传公钥
+# 3. 启动 ngrok 内网穿透以便支付宝回调你的本地服务
+# 4. 设置 notify-url 为 ngrok 生成的公网地址
+# =============================================================
+# 支付宝沙箱网关（不可变，新版沙箱地址）
+# ⚠️ 注意：旧版网关 https://openapi.alipaydev.com/gateway.do 已废弃（返回502）
+# 如果你尚未升级沙箱环境，请立即执行升级操作（见上方说明）
+alipay:
+  # ⚠️ 关键变更：支付宝沙箱环境网关已升级
+  # 旧版网关 https://openapi.alipaydev.com/gateway.do 已废弃（返回502）
+  # 新版网关为 https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  #
+  # 升级步骤（必须）：
+  # 1. 登录 https://open.alipay.com → 控制台 → 沙箱环境
+  # 2. 点击「升级沙箱环境」按钮（如未看到升级按钮，可能已自动升级）
+  # 3. 获取新的 APP_ID（旧版 APP_ID 无法在新版网关使用！）
+  # 4. 重新生成 RSA2 密钥对，上传新公钥到沙箱控制台
+  # 5. 下载新私钥，更新 merchant-private-key 配置
+  # 6. 从沙箱控制台复制新的支付宝公钥，更新 alipay-public-key 配置
+  # 7. 重启后端服务
+  # =============================================================
+  gateway-url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  # 沙箱应用 APP_ID（必填）
+  # 升级沙箱环境后，控制台会提供新的 APP_ID
+  # 通过环境变量 ALIPAY_APP_ID 设置：
+  #   $env:ALIPAY_APP_ID="新APP_ID"
+  app-id: ${ALIPAY_APP_ID:9021000165631979}
+  # 商户应用私钥 PKCS8 格式（必填，通过环境变量 ALIPAY_MERCHANT_PRIVATE_KEY 设置）
+  # 设置方式（PowerShell）：
+  #   $env:ALIPAY_MERCHANT_PRIVATE_KEY=@"
+  #   -----BEGIN PRIVATE KEY-----
+  #   MIIEvQIBADANBg...
+  #   -----END PRIVATE KEY-----
+  #   "@
+  merchant-private-key: ${ALIPAY_MERCHANT_PRIVATE_KEY:MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCAokJpLWGSmlOYJlqz8GLOjsquWTnoAiwiCzWMDhCgd+2rokiIZRTDhFwrt0OYWForogzPgRyuNM7iIKeeNux03QTbDyeeGCFnanqrCpdShRu5e/kDSbGKGqCmxoBVTwfpen5UN6c67ehR37P+qW704i0GcMBB0yCAAn/vPzbhI4rJ2DqDHvzBPkJi0F4LvaZizRFSrEjCRW6y7ydZB2WQibCLFf4kru1bICVfsCMga8i+vZi9IZhUuUu/TcDacYInMke98QJyflmTEHGAZ734h98zjruYExSMV1XV5XOIxwqE7Vkq9d15oGq2mjylP+JkT/OBf+j6cwTx6MEFRC8RAgMBAAECggEAAP0+dYCb13zIV8szt16J4/zFIkIdZ+NcY4aiiskw54sEkOVWmXXtivNhohRuuKU1TFCauJ3NkqllTefiYh0aBGwOtYCQVW7qEtmGx/n03/WWGP8TEytl6iH6Sk4Mfpt0/B6tCgjDiHh76OVHhRXYfJmgrwP+9oKhJVrfkP9zdJfGltWreLIcsZ/cPvIJeVrmgXiBYQgvVh+1KmlWgnVdJXbIg2TBrYRif3sbS/sTxyjIRc6f4cmabUcx/dD3uFUfn/CLCGdZp5MTHS+nFniC+mhNJUGL52Xs5WvMBPFTsnP/FPgfkz4QUGOXX4Lmry+KXiUACiROE7a/Gao0IbFOAQKBgQC4k+C379KHb7Ze86r+tQjsbiP35tEVAeXPWFYA9z9TzQwsgG9qjt1uHf/RdpJGAkITVWzGbofM8m64WvBSFpM/WQFmcdP2Czn99HIb0bg2SDxL/QzOZS/0GEdXPaTkhNeqZBbKR4GiGIyBwUiNVd3tuzqKYDP+CPWsAX2GR+FwCQKBgQCyaKEBX7NfGmRmEo7PZLzsj5NVl8KiUyUQDibngFJtyZ8NGDpZipyp+UN9AlLPypOl37eVJTYhSRYfEZeSrRcr6ozUoDyCynPBEw3xDFl187Vz8hevxD5n5Xz6J9KE9+Z4BMwfdvBkzM7zkqPfAxP11hplgJ0TkZRMiitVNId4yQKBgQCrftqgjHdz11v/RS9vkQ1Ff+BziUZi2myIBm+CXje8yRuyjXL38t3SXpU+LYki+x4hkJGMnU4YIni1WelInCkcBrrCUKi8RxoO13zeVDFwXhWIFQo9Cs9PYO+II4J9wOARNQXn1CCiV2TVepzKlSmqpPdzcodcVT7OHmRey5Ku4QKBgEe/dCCNUCGLB51VEUGujZvFEcd2RLvrHBic2GB5ZqzoTKKDf9PKvr5MlCuN56fRHBe1JKtCT8aLEe5ksMQ3//2VUhWgazVeHbcj5pNuF/wrimmajpQNI9u8msovgaYf2/ugUkbFGmAvTXr/Gg/xuPFArVTsqD7aaP1vA4Y8nc6hAoGBAIsTTxHdA3tZZD9STELusz5dghb8xzRjjqEz84b2OV6VPLVECJENH4r590eSYGqIdRB/h/+dNX+CA1XmglEhq2mEs/dLxHKPw5mRUkXV7Xmb8MR5XOrrQSfoZiDDtXTnpkkMEdDjlsI6hUyRsacqLUYWb13l6GUjsgSwpHtrv424}
+  # 支付宝公钥（必填，通过环境变量 ALIPAY_PUBLIC_KEY 设置）
+  alipay-public-key: ${ALIPAY_PUBLIC_KEY:MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvNFd+1xiWAM+Dd+JcmYadGRPPi43B+hZw7x/L6Qn8zC79c/cXUZTykgwn7TM1hL+NDSEqzXw1aYdr2Ad+KSxjI9pFKuNHEdUG6WYD6adidwS0Dgr/ssDn7tydHh+mKT2TsF+8lmWy+r0m4VnnOjA5Pj0izDXfBl26/JKEqw0oXlpWKWKvBbN/3IbVAPzF1Wce+taO2Jx6U/5QicE90QX4RwIWRiL4ABjhcUvkMOmAxsgvEi2S7JDRxK0GTohh4U6JgT7ifpCjvVqugX9nLFfP96kNsyAhB+/wfJoDRHCLr1lgnZJrn6MIvABR04POgWVTFW1AKOViWXaTUPOsdrv+QIDAQAB}
+  # 异步通知地址（必填，需公网可访问）
+  # 支付宝支付成功后通过 POST 回调此地址，用于更新订单状态
+  # 建议使用 ngrok 内网穿透：启动 ngrok http 8888 后，将地址复制到此处
+  # 或通过环境变量设置：$env:ALIPAY_NOTIFY_URL="https://你的ngrok地址.ngrok-free.dev/api/payment/alipay/notify"
+  notify-url: ${ALIPAY_NOTIFY_URL:https://elliptic-geography-varnish.ngrok-free.dev/api/payment/alipay/notify}
+  # 同步跳转地址（支付完成后支付宝将浏览器重定向到此地址）
+  # 此地址指向后端，后端再重定向到前端 frontend-url
+  # 注意：支付宝沙箱环境要求 return-url 必须与沙箱应用配置中的"授权回调地址"一致
+  return-url: ${ALIPAY_RETURN_URL:https://elliptic-geography-varnish.ngrok-free.dev/api/payment/alipay/return}
+  # 前端页面地址（支付完成后后端重定向到此地址，默认 Vite 开发服务器）
+  frontend-url: ${ALIPAY_FRONTEND_URL:http://localhost:5173}
+
 # 服务器配置
 server:
   port: ${SERVER_PORT:8888}

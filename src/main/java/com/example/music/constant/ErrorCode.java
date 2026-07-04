@@ -87,6 +87,8 @@ public enum ErrorCode {
     ROOM_PASSWORD_WRONG(3004, "房间密码错误"),
     /** 已在房间中 */
     ROOM_ALREADY_JOINED(3005, "您已在房间中"),
+    /** 无权限创建歌房 */
+    ROOM_PERMISSION_DENIED(3006, "仅 VIP 会员和管理员可创建歌房"),
 
     // ==================== 文件模块（4xxx） ====================
     /** 文件类型不支持 */
@@ -130,7 +132,11 @@ public enum ErrorCode {
     /** 评论不存在 */
     ADMIN_COMMENT_NOT_FOUND(8004, "评论不存在"),
     /** 操作日志不存在 */
-    ADMIN_LOG_NOT_FOUND(8005, "操作日志不存在");
+    ADMIN_LOG_NOT_FOUND(8005, "操作日志不存在"),
+    /** 举报已被处理 */
+    ADMIN_REPORT_ALREADY_HANDLED(8006, "该举报已被处理，请刷新后重试"),
+    /** 歌曲已被审核 */
+    ADMIN_SONG_ALREADY_AUDITED(8007, "该歌曲已被审核，请刷新后重试");
 
     /** HTTP 状态码（辅助前端/网关判断） */
     private final int httpStatus;

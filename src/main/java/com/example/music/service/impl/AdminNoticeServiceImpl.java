@@ -4,10 +4,15 @@ import com.example.music.config.RedisMessagePublisher;
 import com.example.music.constant.ErrorCode;
 import com.example.music.constant.RedisChannels;
 import com.example.music.dto.NoticeDTO;
+import com.example.music.entity.Notification;
 import com.example.music.entity.SystemNotice;
+import com.example.music.entity.User;
 import com.example.music.exception.BusinessException;
+import com.example.music.mapper.NotificationMapper;
 import com.example.music.mapper.SystemNoticeMapper;
+import com.example.music.mapper.UserMapper;
 import com.example.music.service.AdminNoticeService;
+import com.example.music.service.NotificationService;
 import com.example.music.vo.SystemNoticeVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +40,9 @@ public class AdminNoticeServiceImpl implements AdminNoticeService {
     private final SystemNoticeMapper noticeMapper;
     private final RedisMessagePublisher redisPublisher;
     private final ObjectMapper objectMapper;
+    private final NotificationMapper notificationMapper;
+    private final UserMapper userMapper;
+    private final NotificationService notificationService;
 
     @Override
     public Map<String, Object> listNotices(String type, int page, int size) {
@@ -90,10 +99,48 @@ public class AdminNoticeServiceImpl implements AdminNoticeService {
                 } catch (JsonProcessingException e) {
                     log.error("系统公告序列化失败，id={}", finalNotice.getId(), e);
                 }
+
+                // 向所有 USER 和 VIP 用户发送数据库通知
+                notifyAllUsers(finalNotice);
             }
         });
 
         return SystemNoticeVO.fromEntity(notice);
+    }
+
+    /**
+     * 系统公告发布后，向所有普通用户和 VIP 用户发送通知
+     */
+    private void notifyAllUsers(SystemNotice notice) {
+        try {
+            List<User> users = userMapper.selectByRoles(Arrays.asList("USER", "VIP"));
+            if (users == null || users.isEmpty()) {
+                log.debug("没有需要通知的普通/VIP用户");
+                return;
+            }
+
+            List<Notification> notifications = users.stream().map(user -> {
+                Notification n = new Notification();
+                n.setUserId(user.getId());
+                n.setType("SYSTEM");
+                n.setTitle(notice.getTitle());
+                n.setContent(notice.getContent());
+                n.setIsRead(false);
+                n.setRelatedType("NOTICE");
+                n.setRelatedId(notice.getId());
+                return n;
+            }).collect(Collectors.toList());
+
+            // 分批插入（每批 500 条）
+            int batchSize = 500;
+            for (int i = 0; i < notifications.size(); i += batchSize) {
+                int end = Math.min(i + batchSize, notifications.size());
+                notificationMapper.insertBatch(notifications.subList(i, end));
+            }
+            log.info("系统公告已通知 {} 位用户: id={}, title={}", users.size(), notice.getId(), notice.getTitle());
+        } catch (Exception e) {
+            log.error("发送系统公告通知失败: id={}, title={}", notice.getId(), notice.getTitle(), e);
+        }
     }
 
     @Override

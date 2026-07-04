@@ -10,9 +10,12 @@ import com.example.music.dto.RegisterDTO;
 import com.example.music.entity.RechargeRecord;
 import com.example.music.entity.User;
 import com.example.music.exception.BusinessException;
+import com.example.music.mapper.FavoriteMapper;
+import com.example.music.mapper.PlaylistMapper;
 import com.example.music.mapper.RechargeRecordMapper;
 import com.example.music.mapper.UserMapper;
 import com.example.music.service.UserService;
+import com.example.music.vo.PlaylistVO;
 import com.example.music.utils.CacheUtil;
 import com.example.music.utils.JwtUtil;
 import com.example.music.vo.LoginVO;
@@ -25,7 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 用户服务实现
@@ -40,6 +45,8 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
     private final CacheUtil cacheUtil;
     private final RechargeRecordMapper rechargeRecordMapper;
+    private final PlaylistMapper playlistMapper;
+    private final FavoriteMapper favoriteMapper;
 
     // ==================== 注册 ====================
 
@@ -339,13 +346,23 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
-        // 公开主页返回基本信息
+        // 查询用户公开歌单
+        List<PlaylistVO> playlistVOs = playlistMapper.selectPublicByUserId(userId)
+                .stream()
+                .map(PlaylistVO::fromEntity)
+                .collect(Collectors.toList());
+        // 查询用户收藏总数
+        long favoriteCount = favoriteMapper.countByUserId(userId);
+        // 公开主页返回基本信息 + 歌单 + 收藏数
         return UserVO.builder()
                 .id(user.getId())
                 .nickname(user.getNickname())
                 .avatar(user.getAvatar())
                 .bio(user.getBio())
                 .background(user.getBackground())
+                .createdTime(user.getCreatedTime())
+                .playlists(playlistVOs)
+                .favoriteCount(favoriteCount)
                 .build();
     }
 

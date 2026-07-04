@@ -18,6 +18,9 @@ public interface PlaylistMapper {
     /** 查询用户的歌单列表 */
     List<Playlist> selectByUserId(@Param("userId") Long userId);
 
+    /** 查询用户的公开歌单列表（公开主页用） */
+    List<Playlist> selectPublicByUserId(@Param("userId") Long userId);
+
     /** 查询公开歌单列表（分页） */
     List<Playlist> selectPublic(@Param("offset") int offset,
                                 @Param("limit") int limit);

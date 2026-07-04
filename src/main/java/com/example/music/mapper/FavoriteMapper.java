@@ -36,4 +36,11 @@ public interface FavoriteMapper {
     /** 查询某个目标被收藏的次数 */
     long countByTarget(@Param("targetType") String targetType,
                        @Param("targetId") Long targetId);
+
+    /** 查询收藏某个目标的所有用户 ID（用于艺人关注者通知） */
+    List<Long> selectUserIdsByTarget(@Param("targetType") String targetType,
+                                      @Param("targetId") Long targetId);
+
+    /** 查询用户收藏的所有歌曲 ID */
+    List<Long> selectSongIdsByUserId(@Param("userId") Long userId);
 }

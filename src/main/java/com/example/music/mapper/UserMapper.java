@@ -55,4 +55,7 @@ public interface UserMapper {
 
     /** 按角色查询用户列表 */
     List<User> selectByRole(@Param("role") String role);
+
+    /** 按多个角色查询用户列表（用于群发通知等场景） */
+    List<User> selectByRoles(@Param("roles") List<String> roles);
 }

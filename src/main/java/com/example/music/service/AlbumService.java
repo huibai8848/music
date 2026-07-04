@@ -19,8 +19,19 @@ public interface AlbumService {
     /** 统计专辑总数 */
     long countAlbums();
 
-    /** 搜索专辑 */
-    List<AlbumVO> searchAlbums(String keyword);
+    /**
+     * 搜索专辑（分页）
+     * <p>
+     * 根据关键词模糊匹配专辑名和艺人名，仅返回有 ACTIVE 歌曲的专辑。
+     *
+     * @param keyword 搜索关键词
+     * @param page    页码
+     * @param size    每页条数
+     */
+    List<AlbumVO> searchAlbums(String keyword, int page, int size);
+
+    /** 统计专辑搜索结果数 */
+    long countSearchAlbums(String keyword);
 
     /** 获取某艺人的专辑 */
     List<AlbumVO> getAlbumsByArtist(Long artistId);

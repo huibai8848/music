@@ -8,7 +8,12 @@
         </div>
         <div class="hero-info">
           <h2>{{ album.title }}</h2>
-          <p class="hero-artist">{{ album.artistName || '未知艺人' }}</p>
+          <p class="hero-artist">
+            <router-link v-if="album.artistId" :to="'/artists/' + album.artistId" class="hero-link">
+              {{ album.artistName || '未知艺人' }}
+            </router-link>
+            <span v-else>{{ album.artistName || '未知艺人' }}</span>
+          </p>
           <p class="hero-meta">{{ album.songCount || 0 }} 首 · {{ album.releaseDate || '-' }}</p>
           <p class="hero-desc">{{ album.description || '暂无简介' }}</p>
           <div class="hero-actions">
@@ -138,6 +143,8 @@ onMounted(() => {
 .hero-info { flex: 1; }
 .hero-info h2 { font-size: 24px; margin-bottom: 8px; }
 .hero-artist { font-size: 16px; color: #666; margin-bottom: 8px; }
+.hero-link { color: #1565C0; text-decoration: none; cursor: pointer; }
+.hero-link:hover { text-decoration: underline; color: #0D47A1; }
 .hero-meta { font-size: 13px; color: #999; margin-bottom: 12px; }
 .hero-desc { font-size: 14px; color: #666; line-height: 1.6; }
 

@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 艺人 Mapper
@@ -41,4 +42,24 @@ public interface ArtistMapper {
 
     /** 删除艺人 */
     int deleteById(@Param("id") Long id);
+
+    // ==================== 公开查询（仅包含有 ACTIVE 歌曲的艺人） ====================
+
+    /** 分页查询有 ACTIVE 歌曲的艺人 */
+    List<Artist> selectListWithActiveSongs(@Param("offset") int offset,
+                                           @Param("limit") int limit);
+
+    /** 统计有 ACTIVE 歌曲的艺人总数 */
+    long countWithActiveSongs();
+
+    /** 按名称搜索有 ACTIVE 歌曲的艺人 */
+    List<Artist> searchByNameWithActiveSongs(@Param("keyword") String keyword,
+                                             @Param("offset") int offset,
+                                             @Param("limit") int limit);
+
+    /** 统计有 ACTIVE 歌曲的艺人搜索结果数 */
+    long countSearchWithActiveSongs(@Param("keyword") String keyword);
+
+    /** 批量查询艺人的 ACTIVE 歌曲数量，返回 [{artist_id, song_count}, ...] */
+    List<Map<String, Object>> selectSongCountsByArtistIds(@Param("list") List<Long> artistIds);
 }

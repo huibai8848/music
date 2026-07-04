@@ -200,4 +200,42 @@ public class RoomController {
         roomService.removeFromQueue(id, userId, dto.getSongId());
         return R.ok("已从队列移除");
     }
+
+    /**
+     * 加载歌单所有歌曲到房间队列（仅房主）
+     *
+     * @param id         房间 ID
+     * @param playlistId 歌单 ID
+     */
+    @PostMapping("/{id}/queue/playlist/{playlistId}")
+    public R<Object> addPlaylistToQueue(@PathVariable Long id, @PathVariable Long playlistId) {
+        Long userId = RequestContext.getUserId();
+        roomService.addPlaylistToQueue(id, userId, playlistId);
+        return R.ok("歌单歌曲已添加到队列");
+    }
+
+    /**
+     * 加载专辑所有歌曲到房间队列（仅房主）
+     *
+     * @param id      房间 ID
+     * @param albumId 专辑 ID
+     */
+    @PostMapping("/{id}/queue/album/{albumId}")
+    public R<Object> addAlbumToQueue(@PathVariable Long id, @PathVariable Long albumId) {
+        Long userId = RequestContext.getUserId();
+        roomService.addAlbumToQueue(id, userId, albumId);
+        return R.ok("专辑歌曲已添加到队列");
+    }
+
+    /**
+     * 加载用户收藏的歌曲到房间队列（仅房主）
+     *
+     * @param id 房间 ID
+     */
+    @PostMapping("/{id}/queue/favorites")
+    public R<Object> addFavoriteSongsToQueue(@PathVariable Long id) {
+        Long userId = RequestContext.getUserId();
+        roomService.addFavoriteSongsToQueue(id, userId);
+        return R.ok("收藏歌曲已添加到队列");
+    }
 }

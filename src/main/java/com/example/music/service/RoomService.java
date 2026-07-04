@@ -150,4 +150,39 @@ public interface RoomService {
      * @return 队列列表 [{songId, addedBy}]
      */
     List<Map<String, Object>> getQueue(Long roomId);
+
+    /**
+     * 批量将歌单内所有歌曲添加到房间队列
+     *
+     * @param roomId     房间 ID
+     * @param userId     操作者 ID
+     * @param playlistId 歌单 ID
+     */
+    void addPlaylistToQueue(Long roomId, Long userId, Long playlistId);
+
+    /**
+     * 批量将专辑内所有歌曲添加到房间队列
+     *
+     * @param roomId  房间 ID
+     * @param userId  操作者 ID
+     * @param albumId 专辑 ID
+     */
+    void addAlbumToQueue(Long roomId, Long userId, Long albumId);
+
+    /**
+     * 将用户收藏的歌曲添加到房间队列
+     *
+     * @param roomId 房间 ID
+     * @param userId 操作者 ID
+     */
+    void addFavoriteSongsToQueue(Long roomId, Long userId);
+
+    /**
+     * 检查用户是否为房间房主
+     *
+     * @param roomId 房间 ID
+     * @param userId 用户 ID
+     * @return true 如果是房主
+     */
+    boolean isOwner(Long roomId, Long userId);
 }

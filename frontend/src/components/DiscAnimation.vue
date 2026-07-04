@@ -36,15 +36,15 @@ defineProps({
 <style scoped>
 .disc-container {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 140px;
+  height: 140px;
   margin: 0 auto;
 }
 
 /* 黑胶碟片 */
 .disc {
-  width: 200px;
-  height: 200px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   background: conic-gradient(from 0deg, #222, #444, #222, #444, #222);
   display: flex;
@@ -61,8 +61,8 @@ defineProps({
 
 /* 碟片中心标签（封面图位置） */
 .disc-label {
-  width: 80px;
-  height: 80px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background-size: cover;
   background-position: center;
@@ -74,20 +74,20 @@ defineProps({
 }
 
 .disc-placeholder {
-  font-size: 32px;
+  font-size: 22px;
   opacity: 0.5;
 }
 
-/* 唱针 */
+/* 唱针（缩小后移至碟片右侧偏下，不再遮挡右侧文字） */
 .tonearm {
   position: absolute;
-  top: -15px;
-  right: -30px;
-  width: 60px;
-  height: 80px;
+  top: -5px;
+  right: -18px;
+  width: 40px;
+  height: 56px;
   transform-origin: top right;
   transition: transform 0.5s ease;
-  transform: rotate(-30deg) translateX(10px);
+  transform: rotate(-25deg) translateX(6px);
 }
 
 .tonearm.playing {
@@ -95,8 +95,8 @@ defineProps({
 }
 
 .tonearm-head {
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   background: #888;
   border-radius: 50%;
   position: absolute;
@@ -105,12 +105,12 @@ defineProps({
 }
 
 .tonearm-body {
-  width: 4px;
-  height: 70px;
+  width: 3px;
+  height: 50px;
   background: linear-gradient(to bottom, #999, #666);
   position: absolute;
-  bottom: 6px;
-  right: 4px;
+  bottom: 4px;
+  right: 3px;
   transform: rotate(15deg);
   transform-origin: bottom right;
   border-radius: 2px;

@@ -43,8 +43,14 @@ public class JwtInterceptor implements HandlerInterceptor {
             "/api/auth/reset-password",
             "/api/auth/public-key",
             "/api/banners",
+            "/api/notices",
             "/api/rankings",
-            "/api/categories"
+            "/api/categories",
+            // 支付宝支付回调（由支付宝服务器或用户浏览器直接访问，无 JWT Token）
+            "/api/payment/alipay/notify",
+            "/api/payment/alipay/return",
+            // 支付宝支付页面（通过 token 参数鉴权，见 AlipayController.payPage）
+            "/api/payment/alipay/pay-page"
     );
 
     /** GET 请求白名单前缀（仅 GET 方法放行，写操作需认证） */

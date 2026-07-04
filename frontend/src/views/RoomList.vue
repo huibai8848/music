@@ -2,7 +2,7 @@
   <div class="room-list">
     <div class="page-header">
       <h1>🎵 歌房</h1>
-      <button class="btn-create" @click="showCreate = true" v-if="authStore.isLoggedIn">
+      <button class="btn-create" @click="openCreateDialog" v-if="authStore.isVip || authStore.isAdmin">
         + 创建歌房
       </button>
     </div>
@@ -18,10 +18,10 @@
         <div class="form-group">
           <label>
             <input type="checkbox" v-model="createForm.isPublic" />
-            公开房间
+            🔒 加密房间（需要密码才能进入）
           </label>
         </div>
-        <div class="form-group" v-if="!createForm.isPublic">
+        <div class="form-group" v-if="createForm.isPublic">
           <label>房间密码</label>
           <input v-model="createForm.password" type="password" placeholder="设置密码" maxlength="20" />
         </div>
@@ -36,7 +36,7 @@
         </div>
         <div class="modal-actions">
           <button class="btn" @click="showCreate = false">取消</button>
-          <button class="btn btn-primary" @click="handleCreate">创建</button>
+          <button class="btn btn-primary" @click="handleCreate" :disabled="creating">{{ creating ? '创建中...' : '创建' }}</button>
         </div>
         <p class="error" v-if="createError">{{ createError }}</p>
       </div>
@@ -45,7 +45,7 @@
     <!-- 房间列表 -->
     <div class="loading" v-if="loading">加载中...</div>
     <div class="empty" v-else-if="rooms.length === 0">
-      <p>暂无公开歌房</p>
+      <p>暂无歌房</p>
       <p class="hint">创建一个歌房，和朋友一起听歌吧！</p>
     </div>
     <div class="room-grid" v-else>
@@ -60,7 +60,7 @@
           <span v-if="room.currentSongTitle">🎵 {{ room.currentSongTitle }}</span>
         </div>
         <div class="room-meta">
-          <span v-if="room.hasPassword" class="tag-private">🔒 私密</span>
+          <span v-if="room.hasPassword" class="tag-private">🔒 加密</span>
           <span v-else class="tag-public">🌐 公开</span>
         </div>
       </div>
@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import request from '../utils/request'
 import { useAuthStore } from '../stores/auth'
@@ -79,31 +79,53 @@ const authStore = useAuthStore()
 
 const rooms = ref([])
 const loading = ref(true)
+const refreshTimer = ref(null)
 
 // 创建表单
 const showCreate = ref(false)
 const createError = ref('')
+const creating = ref(false)
 const createForm = ref({
   name: '',
-  isPublic: true,
+  isPublic: false,
   password: '',
   maxMembers: 8
 })
 
+// 重置表单
+function resetCreateForm() {
+  createForm.value = { name: '', isPublic: false, password: '', maxMembers: 8 }
+  createError.value = ''
+}
+
+// 打开弹窗时也重置表单
+function openCreateDialog() {
+  resetCreateForm()
+  showCreate.value = true
+}
+
 onMounted(() => {
   fetchRooms()
+  // 每 5 秒自动刷新房间列表，筛除已解散的房间
+  refreshTimer.value = setInterval(fetchRooms, 5000)
+})
+
+onUnmounted(() => {
+  if (refreshTimer.value) {
+    clearInterval(refreshTimer.value)
+    refreshTimer.value = null
+  }
 })
 
 async function fetchRooms() {
-  loading.value = true
   try {
     const res = await request.get('/rooms')
     if (res.code === 200 && res.data) {
       rooms.value = res.data
     }
+    loading.value = false
   } catch (e) {
     console.error('获取房间列表失败', e)
-  } finally {
     loading.value = false
   }
 }
@@ -114,24 +136,30 @@ async function handleCreate() {
     return
   }
   createError.value = ''
+  creating.value = true
   try {
     const body = {
       name: createForm.value.name.trim(),
-      isPublic: createForm.value.isPublic,
+      isPublic: true, // 所有房间都公开显示
       maxMembers: createForm.value.maxMembers
     }
-    if (!createForm.value.isPublic) {
-      body.password = createForm.value.password
+    if (createForm.value.isPublic) {
+      body.password = createForm.value.password // 勾选了"加密房间"才带密码
     }
     const res = await request.post('/rooms', body)
-    if (res.code === 200 && res.data) {
+    if (res.code === 200 && res.data && res.data.id) {
       showCreate.value = false
-      createForm.value = { name: '', isPublic: true, password: '', maxMembers: 8 }
+      resetCreateForm()
       // 进入新创建的房间
-      router.push(`/rooms/${res.data.id}`)
+      router.push({ path: `/rooms/${res.data.id}`, query: { created: '1' } })
+    } else {
+      createError.value = res.message || '创建歌房失败，请重试'
     }
   } catch (e) {
+    console.error('创建歌房失败', e)
     createError.value = e.message || '创建失败'
+  } finally {
+    creating.value = false
   }
 }
 

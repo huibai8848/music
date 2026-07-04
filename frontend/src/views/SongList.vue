@@ -334,8 +334,8 @@ onMounted(() => {
 .row-title { font-size: 14px; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
 .row-title:hover { color: #1565C0; }
 .row-artist { font-size: 12px; color: #999; }
-.row-genre { font-size: 12px; color: #999; width: 50px; text-align: center; flex-shrink: 0; }
-.row-language { font-size: 12px; color: #999; width: 40px; text-align: center; flex-shrink: 0; }
+.row-genre { font-size: 12px; color: #999; min-width: 60px; text-align: center; flex-shrink: 0; }
+.row-language { font-size: 12px; color: #999; min-width: 60px; text-align: center; flex-shrink: 0; }
 .row-duration { font-size: 12px; color: #999; width: 50px; text-align: right; flex-shrink: 0; }
 .play-btn {
   background: none; border: none; font-size: 18px; cursor: pointer;

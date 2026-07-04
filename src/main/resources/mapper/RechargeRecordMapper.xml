@@ -9,17 +9,19 @@
         <result column="duration_days" property="durationDays"/>
         <result column="expire_time" property="expireTime"/>
         <result column="status" property="status"/>
+        <result column="out_trade_no" property="outTradeNo"/>
+        <result column="trade_no" property="tradeNo"/>
         <result column="created_time" property="createdTime"/>
         <result column="updated_time" property="updatedTime"/>
     </resultMap>
 
     <sql id="BaseColumns">
-        id, user_id, plan, amount, duration_days, expire_time, status, created_time, updated_time
+        id, user_id, plan, amount, duration_days, expire_time, status, out_trade_no, trade_no, created_time, updated_time
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO recharge_record (user_id, plan, amount, duration_days, expire_time, status)
-        VALUES (#{userId}, #{plan}, #{amount}, #{durationDays}, #{expireTime}, #{status})
+        INSERT INTO recharge_record (user_id, plan, amount, duration_days, expire_time, status, out_trade_no)
+        VALUES (#{userId}, #{plan}, #{amount}, #{durationDays}, #{expireTime}, #{status}, #{outTradeNo})
     </insert>
 
     <select id="selectByUserId" resultMap="BaseResultMap">
@@ -31,4 +33,17 @@
     <select id="countByUserId" resultType="int">
         SELECT COUNT(*) FROM recharge_record WHERE user_id = #{userId}
     </select>
+
+    <select id="selectByOutTradeNo" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM recharge_record
+        WHERE out_trade_no = #{outTradeNo}
+    </select>
+
+    <update id="updateByOutTradeNo">
+        UPDATE recharge_record
+        SET status = #{status},
+            trade_no = #{tradeNo},
+            updated_time = NOW()
+        WHERE out_trade_no = #{outTradeNo}
+    </update>
 </mapper>

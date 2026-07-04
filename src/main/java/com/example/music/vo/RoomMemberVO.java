@@ -28,4 +28,7 @@ public class RoomMemberVO {
 
     /** 是否在线 */
     private Boolean isOnline;
+
+    /** 是否为 VIP 会员 */
+    private Boolean isVip;
 }

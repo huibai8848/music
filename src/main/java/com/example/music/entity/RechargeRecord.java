@@ -16,6 +16,10 @@ public class RechargeRecord {
     private Integer durationDays;
     private LocalDateTime expireTime;
     private String status;
+    /** 商户订单号（用于支付宝交易追踪） */
+    private String outTradeNo;
+    /** 支付宝交易号 */
+    private String tradeNo;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
 }

@@ -46,4 +46,15 @@
         WHERE target_type = #{targetType} AND target_id = #{targetId}
     </select>
 
+    <select id="selectUserIdsByTarget" resultType="long">
+        SELECT user_id FROM favorite
+        WHERE target_type = #{targetType} AND target_id = #{targetId}
+    </select>
+
+    <select id="selectSongIdsByUserId" resultType="long">
+        SELECT target_id FROM favorite
+        WHERE user_id = #{userId} AND target_type = 'SONG'
+        ORDER BY created_time DESC
+    </select>
+
 </mapper>

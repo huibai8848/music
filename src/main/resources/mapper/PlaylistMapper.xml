@@ -28,6 +28,12 @@
         ORDER BY created_time DESC
     </select>
 
+    <select id="selectPublicByUserId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM playlist
+        WHERE user_id = #{userId} AND is_public = 1
+        ORDER BY created_time DESC
+    </select>
+
     <select id="selectPublic" resultMap="BaseResultMap">
         SELECT <include refid="BaseColumns"/> FROM playlist
         WHERE is_public = 1

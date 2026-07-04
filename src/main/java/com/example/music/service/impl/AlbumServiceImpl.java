@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 
 /**
  * 专辑服务实现
+ * <p>
+ * 提供专辑的 CRUD、列表分页、模糊搜索（专辑名+艺人名）。
+ * 公开查询仅返回有 ACTIVE 歌曲的专辑，避免 PENDING/REJECTED 歌曲导致空专辑展示。
  */
 @Slf4j
 @Service
@@ -48,8 +51,8 @@ public class AlbumServiceImpl implements AlbumService {
             }
         }
 
-        // 获取专辑内歌曲
-        List<SongVO> songs = songMapper.selectByAlbumId(id).stream()
+        // 获取专辑内歌曲（含所有状态，PENDING 歌曲的艺人名在 enrichSongVO 中已屏蔽）
+        List<SongVO> songs = songMapper.selectAllByAlbumId(id).stream()
                 .map(SongVO::fromEntity)
                 .collect(Collectors.toList());
         vo.setSongs(songs);
@@ -61,14 +64,20 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public List<AlbumVO> listAlbums(int page, int size) {
         int offset = (page - 1) * size;
-        List<Album> albums = albumMapper.selectList(offset, size);
+        // 使用 EXISTS 子查询过滤：仅返回有 ACTIVE 歌曲的专辑
+        List<Album> albums = albumMapper.selectListWithActiveSongs(offset, size);
 
         return albums.stream().map(album -> {
             AlbumVO vo = AlbumVO.fromEntity(album);
+            // 填充艺人名（列表页展示用），失败不阻断整体
             if (album.getArtistId() != null) {
-                var artist = artistMapper.selectById(album.getArtistId());
-                if (artist != null) {
-                    vo.setArtistName(artist.getName());
+                try {
+                    var artist = artistMapper.selectById(album.getArtistId());
+                    if (artist != null) {
+                        vo.setArtistName(artist.getName());
+                    }
+                } catch (Exception e) {
+                    log.warn("填充列表艺人名失败, albumId={}, artistId={}", album.getId(), album.getArtistId(), e);
                 }
             }
             return vo;
@@ -77,17 +86,52 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public long countAlbums() {
-        return albumMapper.countTotal();
+        return albumMapper.countWithActiveSongs();
     }
 
     @Override
-    public List<AlbumVO> searchAlbums(String keyword) {
+    public List<AlbumVO> searchAlbums(String keyword, int page, int size) {
         if (StrUtil.isBlank(keyword)) {
             return Collections.emptyList();
         }
-        return albumMapper.searchByName(keyword).stream()
-                .map(AlbumVO::fromEntity)
-                .collect(Collectors.toList());
+
+        int offset = (page - 1) * size;
+        // 模糊搜索：同时匹配专辑名和艺人名，仅返回有 ACTIVE 歌曲的专辑
+        // SQL 已按相关性排序：专辑名匹配优先于艺人名匹配
+        List<Album> albums;
+        try {
+            albums = albumMapper.searchByNameWithActiveSongs(keyword, offset, size);
+        } catch (Exception e) {
+            log.error("专辑搜索查询失败, keyword={}, page={}, size={}", keyword, page, size, e);
+            return Collections.emptyList();
+        }
+
+        return albums.stream().map(album -> {
+            AlbumVO vo = AlbumVO.fromEntity(album);
+            // 填充艺人名（搜索结果展示用），失败不阻断整体搜索
+            if (album.getArtistId() != null) {
+                try {
+                    var artist = artistMapper.selectById(album.getArtistId());
+                    if (artist != null) {
+                        vo.setArtistName(artist.getName());
+                    }
+                } catch (Exception e) {
+                    log.warn("填充专辑艺人名失败, albumId={}, artistId={}", album.getId(), album.getArtistId(), e);
+                }
+            }
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public long countSearchAlbums(String keyword) {
+        if (StrUtil.isBlank(keyword)) return 0;
+        try {
+            return albumMapper.countSearchWithActiveSongs(keyword);
+        } catch (Exception e) {
+            log.error("专辑搜索计数查询失败, keyword={}", keyword, e);
+            return 0;
+        }
     }
 
     @Override

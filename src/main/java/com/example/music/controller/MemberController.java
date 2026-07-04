@@ -24,8 +24,10 @@ import com.example.music.utils.RequestContext;
 import com.example.music.vo.R;
 import com.example.music.vo.SongVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,6 +61,18 @@ public class MemberController {
     private final ObjectMapper objectMapper;
     private final SystemConfigMapper systemConfigMapper;
     private final CategoryMapper categoryMapper;
+
+    /** 文件上传根路径（从配置注入，用于从 audioUrl 反查文件系统路径） */
+    @Value("${music.file.upload-dir:data/music}")
+    private String uploadDir;
+
+    @PostConstruct
+    public void initUploadDir() {
+        java.io.File dir = new java.io.File(uploadDir);
+        if (!dir.isAbsolute()) {
+            uploadDir = new java.io.File(System.getProperty("user.dir"), uploadDir).getAbsolutePath();
+        }
+    }
 
     /** 会员存储空间上限（500MB） */
     private static final long MEMBER_STORAGE_LIMIT = 500L * 1024 * 1024;
@@ -140,16 +154,7 @@ public class MemberController {
             checkMemberStorage(userId, totalFileSize);
         }
 
-        // 5. 提取音频时长（从文件字节流中解析 MP3/AAC 元数据）
-        int duration = 0;
-        try {
-            duration = AudioUtils.extractDuration(audioFile.getBytes());
-        } catch (Exception e) {
-            log.warn("音频时长提取失败，默认 0: userId={}, fileName={}", userId, audioFile.getOriginalFilename(), e);
-        }
-        log.debug("音频时长: {} 秒, file={}", duration, audioFile.getOriginalFilename());
-
-        // 6. 上传文件 → 获取 URL（磁盘 I/O，不参与事务）
+        // 5. 上传文件 → 获取 URL（磁盘 I/O，不参与事务）
         String audioUrl = fileService.upload(audioFile, "audio", null);
         log.info("音频上传完成: {}", audioUrl);
 
@@ -165,13 +170,24 @@ public class MemberController {
             log.info("歌词上传完成: {}", lyricUrl);
         }
 
+        // 6. 从已保存的完整文件中提取音频时长
+        //    音频文件已通过 fileService.upload 写入磁盘，Tika 读取完整文件可准确获取时长
+        int duration = 0;
+        try {
+            String audioFilePath = uploadDir + audioUrl.substring("/api/files".length());
+            duration = AudioUtils.extractDurationFromFile(audioFilePath);
+        } catch (Exception e) {
+            log.warn("从已保存文件提取时长失败，默认 0: userId={}, fileName={}", userId, audioFile.getOriginalFilename(), e);
+        }
+        log.info("音频时长: {} 秒, file={}", duration, audioFile.getOriginalFilename());
+
         // 7. 组装艺人/专辑/歌曲实体，设置音频时长
         Artist artist = buildArtist(songInfo);
         Album album = buildAlbum(songInfo, coverUrl);
 
         Song song = new Song();
         song.setTitle(songInfo.getTitle());
-        song.setDuration(duration);                         // ← 修复：设置音频时长
+        song.setDuration(duration);
         song.setAudioUrl(audioUrl);
         song.setCoverUrl(coverUrl);
         song.setLyricUrl(lyricUrl);
@@ -179,7 +195,8 @@ public class MemberController {
         song.setLanguage(songInfo.getLanguage());
         song.setReleaseYear(songInfo.getReleaseYear());
         song.setUploaderId(userId);
-        song.setStatus("PENDING");
+        // 管理员上传直接 ACTIVE，VIP 用户上传需审核
+        song.setStatus("ADMIN".equals(role) ? "ACTIVE" : "PENDING");
 
         // 7.1 解析分类 ID（从 genre/language/releaseYear 映射到 category 表）
         song.setCategoryIds(resolveCategoryIds(songInfo));
@@ -206,7 +223,8 @@ public class MemberController {
         data.put("remainingUploads", remaining);
         data.put("dailyLimit", dailyLimit);
 
-        return R.ok("上传成功，等待管理员审核（今日还可上传 " + remaining + " 次）", data);
+        return R.ok("上传成功" + ("ADMIN".equals(role) ? "" : "，等待管理员审核")
+                + "（今日还可上传 " + remaining + " 次）", data);
     }
 
     /**

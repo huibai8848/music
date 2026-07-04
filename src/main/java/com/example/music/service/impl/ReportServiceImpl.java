@@ -2,14 +2,19 @@ package com.example.music.service.impl;
 
 import com.example.music.constant.ErrorCode;
 import com.example.music.entity.Report;
+import com.example.music.entity.User;
 import com.example.music.exception.BusinessException;
 import com.example.music.mapper.ReportMapper;
+import com.example.music.mapper.UserMapper;
+import com.example.music.service.NotificationService;
 import com.example.music.service.ReportService;
 import com.example.music.vo.ReportVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -32,6 +37,8 @@ import java.util.stream.Collectors;
 public class ReportServiceImpl implements ReportService {
 
     private final ReportMapper reportMapper;
+    private final NotificationService notificationService;
+    private final UserMapper userMapper;
 
     /** 可用的举报原因 */
     private static final Set<String> VALID_REASONS = Set.of(
@@ -74,6 +81,59 @@ public class ReportServiceImpl implements ReportService {
         reportMapper.insert(report);
         log.info("提交举报: reporterId={}, targetType={}, targetId={}, reason={}",
                 reporterId, targetType, targetId, reason);
+
+        // 4. 通知举报人：正在受理 -> 延迟到事务提交后执行
+        //    同时通知所有管理员有新的待处理举报
+        Long reportId = report.getId();
+        String finalTargetType = targetType;
+        String finalReason = reason;
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                // 4a. 通知举报人：正在受理
+                try {
+                    notificationService.createNotification(
+                            reporterId,
+                            "REPORT_RESULT",
+                            "举报已提交",
+                            "您对 " + finalTargetType + " 的举报（" + finalReason + "）已提交，我们正在受理中，请耐心等待处理结果。",
+                            "REPORT",
+                            reportId
+                    );
+                } catch (Exception e) {
+                    log.error("发送举报受理通知失败: reportId={}", reportId, e);
+                }
+
+                // 4b. 通知所有管理员有新的待处理举报
+                notifyAdminsForReport(reportId, finalTargetType, finalReason);
+            }
+        });
+    }
+
+    /**
+     * 通知所有管理员有新的待处理举报
+     */
+    private void notifyAdminsForReport(Long reportId, String targetType, String reason) {
+        try {
+            List<User> admins = userMapper.selectByRole("ADMIN");
+            if (admins == null || admins.isEmpty()) {
+                log.debug("没有管理员账号，跳过举报通知");
+                return;
+            }
+            for (User admin : admins) {
+                notificationService.createNotification(
+                        admin.getId(),
+                        "REPORT_RESULT",
+                        "新举报待处理",
+                        "有新的 " + targetType + " 举报（" + reason + "），请前往处理",
+                        "REPORT",
+                        reportId
+                );
+            }
+            log.info("已通知 {} 位管理员处理举报: reportId={}", admins.size(), reportId);
+        } catch (Exception e) {
+            log.error("通知管理员处理举报失败: reportId={}", reportId, e);
+        }
     }
 
     @Override

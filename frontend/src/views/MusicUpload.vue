@@ -2,7 +2,7 @@
   <div class="music-upload-page">
     <div class="page-header">
       <h1>🎵 上传音乐</h1>
-      <p class="page-desc">一次性提交歌曲、封面、歌词与元数据，等待管理员审核</p>
+      <p class="page-desc">一次性提交歌曲、封面、歌词与元数据{{ authStore.isAdmin ? '，直接上架' : '，等待管理员审核' }}</p>
       <p v-if="remainingUploads != null" class="page-hint">
         📊 今日还可上传 <strong>{{ remainingUploads }}</strong> 次
       </p>
@@ -119,33 +119,14 @@
             <label>风格</label>
             <select v-model="form.genre">
               <option value="">不限</option>
-              <option>流行</option>
-              <option>摇滚</option>
-              <option>民谣</option>
-              <option>电子</option>
-              <option>嘻哈</option>
-              <option>古典</option>
-              <option>爵士</option>
-              <option>R&amp;B</option>
-              <option>乡村</option>
-              <option>金属</option>
-              <option>古风</option>
-              <option>其他</option>
+              <option v-for="g in genres" :key="g.name" :value="g.name">{{ g.name }}</option>
             </select>
           </div>
           <div class="form-group flex-1">
             <label>语种</label>
             <select v-model="form.language">
               <option value="">不限</option>
-              <option>中文</option>
-              <option>英文</option>
-              <option>日文</option>
-              <option>韩文</option>
-              <option>粤语</option>
-              <option>法语</option>
-              <option>德语</option>
-              <option>西班牙语</option>
-              <option>其他</option>
+              <option v-for="l in languages" :key="l.name" :value="l.name">{{ l.name }}</option>
             </select>
           </div>
           <div class="form-group flex-1">
@@ -211,6 +192,20 @@ const submitSuccess = ref(false)
 /** 当日剩余上传次数（来自上传响应） */
 const remainingUploads = ref(null)
 
+/** 从后端加载的风格和语种分类 */
+const genres = ref([])
+const languages = ref([])
+
+async function loadCategories() {
+  try {
+    const res = await request.get('/categories')
+    if (res.code === 200 && res.data) {
+      genres.value = res.data.GENRE || []
+      languages.value = res.data.LANGUAGE || []
+    }
+  } catch { /* ignore */ }
+}
+
 /**
  * 组件挂载时刷新用户信息（确保 VIP 状态为最新）
  * 解决开通 VIP 后页面未刷新导致仍无法上传的问题
@@ -219,6 +214,7 @@ onMounted(async () => {
   if (authStore.isLoggedIn) {
     await authStore.fetchUser()
   }
+  loadCategories()
 })
 
 /** 处理文件选择 */
@@ -337,11 +333,12 @@ async function handleSubmit() {
       // 从响应中读取剩余上传次数（后端返回 Map: { song, remainingUploads, dailyLimit }）
       const remaining = res.data?.remainingUploads
       const dailyLimit = res.data?.dailyLimit
+      const isAdmin = authStore.isAdmin
       remainingUploads.value = remaining != null ? remaining : null
       if (remaining != null && dailyLimit != null) {
-        submitMsg.value = '✅ 上传成功！等待管理员审核（今日还可上传 ' + remaining + '/' + dailyLimit + ' 次）'
+        submitMsg.value = '✅ 上传成功！' + (isAdmin ? '歌曲已上架。' : '等待管理员审核。') + '（今日还可上传 ' + remaining + '/' + dailyLimit + ' 次）'
       } else {
-        submitMsg.value = '✅ 上传成功！等待管理员审核。'
+        submitMsg.value = '✅ 上传成功！' + (isAdmin ? '歌曲已上架。' : '等待管理员审核。')
       }
       // 清空表单
       resetForm()

@@ -26,8 +26,13 @@
       <div class="profile-actions">
         <button class="btn-action" @click="openEditModal">✏️ 编辑资料</button>
         <button class="btn-action" @click="openPasswordModal">🔑 修改密码</button>
-        <button class="btn-action" @click="openMembershipModal">⭐ 升级会员</button>
+        <button class="btn-action" @click="openMembershipModal" v-if="!authStore.isAdmin">⭐ 升级会员</button>
       </div>
+    </div>
+
+    <!-- 支付宝支付提示（支付中/支付成功） -->
+    <div class="payment-success-banner" v-if="payStatusMsg">
+      {{ payStatusMsg }}
     </div>
 
     <!-- 数据标签页 -->
@@ -217,11 +222,12 @@
  * 6. 播放历史（GET /api/history）
  */
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import request from '../utils/request'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const defaultCover = 'data:image/svg+xml,' + encodeURIComponent(
@@ -309,7 +315,16 @@ async function loadHistory() {
   loadingHist.value = true
   try {
     const res = await request.get('/history')
-    if (res.code === 200) historyList.value = res.data || []
+    if (res.code === 200) {
+      const raw = res.data || []
+      // 去重：同一首歌只保留最近播放的一条记录（列表已按 played_time DESC 排序）
+      const seen = new Set()
+      historyList.value = raw.filter(h => {
+        if (seen.has(h.songId)) return false
+        seen.add(h.songId)
+        return true
+      })
+    }
   } catch { /* ignore */ }
   finally { loadingHist.value = false }
 }
@@ -434,6 +449,8 @@ const showMembershipModal = ref(false)
 const selectedPlan = ref('monthly')
 const upgrading = ref(false)
 const membershipMsg = ref('')
+/** 支付状态提示信息（持久显示，弹窗关闭后仍可见） */
+const payStatusMsg = ref('')
 
 function openMembershipModal() {
   selectedPlan.value = 'monthly'
@@ -442,27 +459,36 @@ function openMembershipModal() {
 }
 
 async function submitMembership() {
-  upgrading.value = true
-  membershipMsg.value = ''
-  try {
-    const res = await request.post('/users/me/membership', null, {
-      params: { plan: selectedPlan.value }
-    })
-    if (res.code === 200) {
-      membershipMsg.value = '🎉 VIP 开通成功！'
-      authStore.fetchUser()
-      setTimeout(() => { showMembershipModal.value = false }, 2000)
-    } else {
-      membershipMsg.value = res.message || '开通失败'
-    }
-  } catch (e) {
-    membershipMsg.value = e.message || '开通失败'
-  } finally {
-    upgrading.value = false
+  console.log('=== submitMembership called ===', selectedPlan.value)
+  const plan = selectedPlan.value.toUpperCase()
+  const token = sessionStorage.getItem('access_token')
+  if (!token) {
+    membershipMsg.value = '登录已过期，请重新登录'
+    return
   }
+  // 直接导航当前页面到后端支付页面
+  // 后端会返回一个自动提交到支付宝的表单页面
+  // 支付完成后支付宝会跳回本页面（通过 return_url）
+  window.location.href = `/api/payment/alipay/pay-page?plan=${plan}&token=${encodeURIComponent(token)}`
 }
 
 onMounted(() => {
+  // 检测是否从支付宝支付成功返回
+  if (route.query.payment === 'success') {
+    const tradeNo = route.query.trade_no || ''
+    payStatusMsg.value = `🎉 支付成功！订单号：${tradeNo}，会员权益正在激活...`
+    // 轮询刷新用户状态，直到 VIP 激活
+    const pollInterval = setInterval(async () => {
+      await authStore.fetchUser()
+      if (authStore.user?.role === 'VIP') {
+        payStatusMsg.value = '🎉 会员已开通成功！'
+        clearInterval(pollInterval)
+      }
+    }, 2000)
+    // 30 秒后停止轮询
+    setTimeout(() => clearInterval(pollInterval), 30000)
+  }
+
   loadFavorites()
   loadHistory()
 })
@@ -553,6 +579,17 @@ onMounted(() => {
 .btn-action:hover { background: #1565C0; color: #fff; border-color: #1565C0; }
 
 .tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+
+.payment-success-banner {
+  background: #d4edda;
+  color: #155724;
+  padding: 14px 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #c3e6cb;
+}
 
 .tab-btn {
   padding: 8px 20px;

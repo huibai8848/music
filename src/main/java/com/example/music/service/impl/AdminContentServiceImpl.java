@@ -10,6 +10,7 @@ import com.example.music.exception.BusinessException;
 import com.example.music.mapper.*;
 import com.example.music.service.AdminContentService;
 import com.example.music.service.FileService;
+import com.example.music.service.NotificationService;
 import com.example.music.vo.AlbumVO;
 import com.example.music.vo.ArtistVO;
 import com.example.music.vo.SongVO;
@@ -19,6 +20,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -51,6 +54,8 @@ public class AdminContentServiceImpl implements AdminContentService {
     private final ArtistMapper artistMapper;
     private final CommentMapper commentMapper;
     private final FileService fileService;
+    private final FavoriteMapper favoriteMapper;
+    private final NotificationService notificationService;
 
     // ==================== 歌曲管理 ====================
 
@@ -98,9 +103,148 @@ public class AdminContentServiceImpl implements AdminContentService {
             throw new BusinessException(ErrorCode.SONG_NOT_FOUND);
         }
 
-        songMapper.updateStatus(songId, status);
+        String oldStatus = song.getStatus();
+        // 使用乐观锁更新：仅 PENDING 状态可被审核，防止并发重复审核
+        int affected = songMapper.auditStatus(songId, status);
+        if (affected == 0) {
+            throw new BusinessException(ErrorCode.ADMIN_SONG_ALREADY_AUDITED);
+        }
         log.info("管理员 {} 审核歌曲 {} ({}): status={}, reason={}",
                 adminId, songId, song.getTitle(), status, rejectReason);
+
+        // 审核后通知上传者和艺人关注者 —— 延迟到事务提交后执行
+        String finalStatus = status;
+        String songTitle = song.getTitle();
+        Long uploaderId = song.getUploaderId();
+        Long artistId = song.getArtistId();
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                // 1. 通知上传者审核结果
+                if (uploaderId != null) {
+                    String resultMsg = "ACTIVE".equals(finalStatus)
+                            ? "您的上传歌曲《" + songTitle + "》已通过审核"
+                            : "您的上传歌曲《" + songTitle + "》未通过审核" +
+                              (rejectReason != null ? "，原因：" + rejectReason : "");
+                    notificationService.createNotification(
+                            uploaderId,
+                            "SONG_REVIEW",
+                            "歌曲审核结果",
+                            resultMsg,
+                            "SONG",
+                            songId
+                    );
+                }
+
+                // 2. 如果审核通过，通知艺人的关注者
+                if ("ACTIVE".equals(finalStatus) && artistId != null) {
+                    notifyArtistFollowers(artistId, songTitle, songId);
+                }
+            }
+        });
+    }
+
+    /**
+     * 通知艺人的关注者：该艺人有新歌发布
+     */
+    private void notifyArtistFollowers(Long artistId, String songTitle, Long songId) {
+        try {
+            List<Long> followerIds = favoriteMapper.selectUserIdsByTarget("ARTIST", artistId);
+            if (followerIds == null || followerIds.isEmpty()) {
+                return;
+            }
+            // 获取艺人名称
+            Artist artist = artistMapper.selectById(artistId);
+            String artistName = artist != null ? artist.getName() : "未知艺人";
+
+            for (Long followerId : followerIds) {
+                notificationService.createNotification(
+                        followerId,
+                        "SYSTEM",
+                        "关注艺人有新歌",
+                        "您关注的艺人 " + artistName + " 发布了新歌曲《" + songTitle + "》",
+                        "SONG",
+                        songId
+                );
+            }
+            log.info("已通知 {} 位关注者关于艺人 {} 的新歌: songId={}",
+                    followerIds.size(), artistName, songId);
+        } catch (Exception e) {
+            log.error("通知艺人关注者失败: artistId={}, songId={}", artistId, songId, e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public SongVO createSong(Long adminId, Song song) {
+        if (song.getTitle() == null || song.getTitle().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "歌曲名不能为空");
+        }
+        // 默认审核通过
+        if (song.getStatus() == null || song.getStatus().isEmpty()) {
+            song.setStatus("ACTIVE");
+        }
+        if (song.getDuration() == null) {
+            song.setDuration(0);
+        }
+        if (song.getPlayCount() == null) {
+            song.setPlayCount(0L);
+        }
+        if (song.getAudioUrl() == null) {
+            song.setAudioUrl("");
+        }
+        if (song.getCoverUrl() == null) {
+            song.setCoverUrl("");
+        }
+        if (song.getLyricUrl() == null) {
+            song.setLyricUrl("");
+        }
+        song.setUploaderId(adminId);
+        songMapper.insert(song);
+        log.info("管理员 {} 创建歌曲: id={}, title={}, status={}", adminId, song.getId(), song.getTitle(), song.getStatus());
+
+        SongVO vo = SongVO.fromEntity(song);
+        fillArtistName(vo);
+        return vo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public SongVO updateSong(Long adminId, Long id, Song song) {
+        Song existing = songMapper.selectById(id);
+        if (existing == null) {
+            throw new BusinessException(ErrorCode.SONG_NOT_FOUND);
+        }
+        song.setId(id);
+        songMapper.update(song);
+        log.info("管理员 {} 更新歌曲: id={}, title={}", adminId, id, song.getTitle());
+
+        SongVO vo = SongVO.fromEntity(songMapper.selectById(id));
+        fillArtistName(vo);
+        return vo;
+    }
+
+    @Override
+    public SongVO getSongDetail(Long id) {
+        Song song = songMapper.selectById(id);
+        if (song == null) {
+            throw new BusinessException(ErrorCode.SONG_NOT_FOUND);
+        }
+        SongVO vo = SongVO.fromEntity(song);
+        fillArtistName(vo);
+        return vo;
+    }
+
+    /**
+     * 填充 SongVO 的艺人名
+     */
+    private void fillArtistName(SongVO vo) {
+        if (vo.getArtistId() != null) {
+            Artist artist = artistMapper.selectById(vo.getArtistId());
+            if (artist != null) {
+                vo.setArtistName(artist.getName());
+            }
+        }
     }
 
     @Override
@@ -117,14 +261,36 @@ public class AdminContentServiceImpl implements AdminContentService {
     // ==================== 专辑管理 ====================
 
     @Override
-    public Map<String, Object> listAlbums(int page, int size) {
+    public Map<String, Object> listAlbums(String keyword, int page, int size) {
         int offset = (page - 1) * size;
 
-        List<Album> albums = albumMapper.selectList(offset, size);
-        long total = albumMapper.countTotal();
+        List<Album> albums;
+        long total;
+        if (keyword != null && !keyword.isEmpty()) {
+            albums = albumMapper.searchByName(keyword);
+            total = albums.size();
+            // 手动内存分页
+            int from = Math.min(offset, albums.size());
+            int to = Math.min(offset + size, albums.size());
+            albums = albums.subList(from, to);
+        } else {
+            albums = albumMapper.selectList(offset, size);
+            total = albumMapper.countTotal();
+        }
 
         List<AlbumVO> voList = albums.stream()
-                .map(AlbumVO::fromEntity)
+                .map(album -> {
+                    AlbumVO vo = AlbumVO.fromEntity(album);
+                    if (album.getArtistId() != null) {
+                        Artist artist = artistMapper.selectById(album.getArtistId());
+                        if (artist != null) {
+                            vo.setArtistName(artist.getName());
+                        }
+                    }
+                    // 填充歌曲数量
+                    vo.setSongCount((int) songMapper.countByAlbumId(album.getId()));
+                    return vo;
+                })
                 .collect(Collectors.toList());
 
         Map<String, Object> result = new HashMap<>();
@@ -149,11 +315,18 @@ public class AdminContentServiceImpl implements AdminContentService {
     // ==================== 艺人管理 ====================
 
     @Override
-    public Map<String, Object> listArtists(int page, int size) {
+    public Map<String, Object> listArtists(String keyword, int page, int size) {
         int offset = (page - 1) * size;
 
-        List<Artist> artists = artistMapper.selectList(offset, size);
-        long total = artistMapper.countTotal();
+        List<Artist> artists;
+        long total;
+        if (keyword != null && !keyword.isEmpty()) {
+            artists = artistMapper.searchByName(keyword, offset, size);
+            total = artistMapper.countSearch(keyword);
+        } else {
+            artists = artistMapper.selectList(offset, size);
+            total = artistMapper.countTotal();
+        }
 
         List<ArtistVO> voList = artists.stream()
                 .map(ArtistVO::fromEntity)
@@ -165,6 +338,20 @@ public class AdminContentServiceImpl implements AdminContentService {
         result.put("page", page);
         result.put("size", size);
         return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ArtistVO updateArtist(Artist artist) {
+        // 校验艺人是否存在
+        Artist existing = artistMapper.selectById(artist.getId());
+        if (existing == null) {
+            throw new BusinessException(ErrorCode.ARTIST_NOT_FOUND);
+        }
+        // 只更新非空字段（name / avatar / bio / country）
+        artistMapper.update(artist);
+        log.info("管理员更新艺人信息: id={}, name={}, avatar={}", artist.getId(), artist.getName(), artist.getAvatar());
+        return ArtistVO.fromEntity(artistMapper.selectById(artist.getId()));
     }
 
     @Override
@@ -271,6 +458,8 @@ public class AdminContentServiceImpl implements AdminContentService {
             }
 
             // 5. Process each group as a song
+            // Filename format: 歌曲名_歌手名.mp3 (e.g. 夜曲_周杰伦.mp3)
+            // Matching .lrc file with same base name is paired automatically
             for (Map.Entry<String, List<File>> group : groups.entrySet()) {
                 String baseName = group.getKey();
                 List<File> files = group.getValue();
@@ -302,6 +491,34 @@ public class AdminContentServiceImpl implements AdminContentService {
                         continue;
                     }
 
+                    // Parse title and artist from filename (format: 歌曲名_歌手名)
+                    String fileName = audioFile.getName();
+                    String fileBaseName = fileName.substring(0, fileName.lastIndexOf('.'));
+                    String songTitle = fileBaseName;
+                    String artistName = null;
+
+                    // Split by last underscore to extract artist name
+                    int lastUnderscore = fileBaseName.lastIndexOf('_');
+                    if (lastUnderscore > 0 && lastUnderscore < fileBaseName.length() - 1) {
+                        songTitle = fileBaseName.substring(0, lastUnderscore).trim();
+                        artistName = fileBaseName.substring(lastUnderscore + 1).trim();
+                    }
+
+                    // Find or create artist by name
+                    Long artistId = null;
+                    if (artistName != null && !artistName.isEmpty()) {
+                        Artist existing = artistMapper.selectByName(artistName);
+                        if (existing != null) {
+                            artistId = existing.getId();
+                        } else {
+                            Artist newArtist = new Artist();
+                            newArtist.setName(artistName);
+                            artistMapper.insert(newArtist);
+                            artistId = newArtist.getId();
+                            log.info("批量导入自动创建艺人: id={}, name={}", artistId, artistName);
+                        }
+                    }
+
                     // Upload audio file via FileService
                     String audioUrl = uploadFile(audioFile, "audio");
 
@@ -317,9 +534,11 @@ public class AdminContentServiceImpl implements AdminContentService {
                         lyricUrl = uploadFile(lyricFile, "lyric");
                     }
 
-                    // Create song record
+                    // Create song record — status ACTIVE means no admin verification needed
                     Song song = new Song();
-                    song.setTitle(titleCase(baseName.replaceAll("[-_]", " ")));
+                    song.setTitle(songTitle);
+                    song.setArtistId(artistId);
+                    song.setDuration(0);
                     song.setAudioUrl(audioUrl);
                     song.setCoverUrl(coverUrl);
                     song.setLyricUrl(lyricUrl);
@@ -329,7 +548,7 @@ public class AdminContentServiceImpl implements AdminContentService {
 
                     songMapper.insert(song);
                     success++;
-                    log.info("批量导入歌曲成功: title={}, audio={}", song.getTitle(), audioUrl);
+                    log.info("批量导入歌曲成功: title={}, artist={}, audio={}", songTitle, artistName, audioUrl);
                 } catch (Exception e) {
                     log.error("批量导入处理失败: baseName={}", baseName, e);
                     failed++;
@@ -364,27 +583,6 @@ public class AdminContentServiceImpl implements AdminContentService {
             throw new BusinessException(ErrorCode.FILE_UPLOAD_FAILED,
                     "文件上传失败: " + file.getName(), e);
         }
-    }
-
-    /**
-     * 将字符串转换为标题大小写（每个单词首字母大写）
-     */
-    private static String titleCase(String str) {
-        if (str == null || str.isEmpty()) return str;
-        StringBuilder sb = new StringBuilder();
-        boolean nextUpper = true;
-        for (char c : str.toCharArray()) {
-            if (Character.isWhitespace(c)) {
-                nextUpper = true;
-                sb.append(c);
-            } else if (nextUpper) {
-                sb.append(Character.toUpperCase(c));
-                nextUpper = false;
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
     }
 
     /**

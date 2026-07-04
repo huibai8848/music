@@ -435,6 +435,22 @@ export const usePlaybackStore = defineStore('playback', () => {
     }
   }
 
+  /**
+   * 停止播放并清空所有播放状态（退出登录时调用）
+   */
+  function stop() {
+    const audio = getAudio()
+    audio.pause()
+    audio.src = ''
+    currentSong.value = null
+    queue.value = []
+    queueIndex.value = 0
+    isPlaying.value = false
+    currentTime.value = 0
+    duration.value = 0
+    playedSet.value = new Set()
+  }
+
   // 初始化
   restoreState()
 
@@ -444,6 +460,6 @@ export const usePlaybackStore = defineStore('playback', () => {
     modeLabel, progressPercent,
     play, togglePlay, next, prev, seekTo, setVolume, toggleMute,
     replaceQueue, clearQueue, removeFromQueue, cycleMode,
-    reportProgress, saveState
+    reportProgress, saveState, stop
   }
 })

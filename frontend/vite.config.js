@@ -13,6 +13,10 @@ export default defineConfig({
       '/data': {
         target: 'http://localhost:8888',
         changeOrigin: true
+      },
+      '/ws': {
+        target: 'ws://localhost:8888',
+        ws: true
       }
     }
   }

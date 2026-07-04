@@ -46,14 +46,23 @@ public interface SongMapper {
     /** 查询热门歌曲（按播放量排序） */
     List<Song> selectHot(@Param("limit") int limit);
 
-    /** 查询某个艺人的歌曲 */
+    /** 查询某个艺人的歌曲（仅 ACTIVE，用于列表页） */
     List<Song> selectByArtistId(@Param("artistId") Long artistId);
+
+    /** 查询某个艺人的所有歌曲（不限制状态，用于详情页展示所有歌曲） */
+    List<Song> selectAllByArtistId(@Param("artistId") Long artistId);
 
     /** 查询某个上传者的歌曲 */
     List<Song> selectByUploaderId(@Param("uploaderId") Long uploaderId);
 
-    /** 查询某个专辑的歌曲 */
+    /** 查询某个专辑的歌曲（仅 ACTIVE，用于列表页） */
     List<Song> selectByAlbumId(@Param("albumId") Long albumId);
+
+    /** 查询某个专辑的所有歌曲（不限制状态，用于详情页展示所有歌曲） */
+    List<Song> selectAllByAlbumId(@Param("albumId") Long albumId);
+
+    /** 统计某个专辑的歌曲数量 */
+    long countByAlbumId(@Param("albumId") Long albumId);
 
     /** 统计所有歌曲总播放量 */
     long sumPlayCount();
@@ -75,4 +84,7 @@ public interface SongMapper {
 
     /** 更新审核状态 */
     int updateStatus(@Param("id") Long id, @Param("status") String status);
+
+    /** 审核歌曲（乐观锁：仅 PENDING 状态可被审核，防止并发重复审核） */
+    int auditStatus(@Param("id") Long id, @Param("status") String status);
 }

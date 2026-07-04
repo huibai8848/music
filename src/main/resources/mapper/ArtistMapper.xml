@@ -65,4 +65,56 @@
         DELETE FROM artist WHERE id = #{id}
     </delete>
 
+    <!-- ==================== 公开查询（仅包含有 ACTIVE 歌曲的艺人） ==================== -->
+
+    <select id="selectListWithActiveSongs" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/> FROM artist a
+        WHERE EXISTS (SELECT 1 FROM song s WHERE s.artist_id = a.id AND s.status = 'ACTIVE')
+        ORDER BY a.created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countWithActiveSongs" resultType="long">
+        SELECT COUNT(*) FROM artist a
+        WHERE EXISTS (SELECT 1 FROM song s WHERE s.artist_id = a.id AND s.status = 'ACTIVE')
+    </select>
+
+    <select id="searchByNameWithActiveSongs" resultMap="BaseResultMap">
+        SELECT DISTINCT a.id, a.name, a.avatar, a.bio, a.country, a.created_time, a.updated_time
+        FROM artist a
+        LEFT JOIN song s ON s.artist_id = a.id AND s.status = 'ACTIVE'
+        WHERE (a.name LIKE CONCAT('%', #{keyword}, '%')
+               OR s.title LIKE CONCAT('%', #{keyword}, '%'))
+          AND EXISTS (SELECT 1 FROM song s2 WHERE s2.artist_id = a.id AND s2.status = 'ACTIVE')
+        ORDER BY
+            CASE
+                WHEN a.name LIKE CONCAT('%', #{keyword}, '%') THEN 0
+                ELSE 1
+            END,
+            a.created_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countSearchWithActiveSongs" resultType="long">
+        SELECT COUNT(DISTINCT a.id) FROM artist a
+        LEFT JOIN song s ON s.artist_id = a.id AND s.status = 'ACTIVE'
+        WHERE (a.name LIKE CONCAT('%', #{keyword}, '%')
+               OR s.title LIKE CONCAT('%', #{keyword}, '%'))
+          AND EXISTS (SELECT 1 FROM song s2 WHERE s2.artist_id = a.id AND s2.status = 'ACTIVE')
+    </select>
+
+    <!-- ==================== 批量查询歌曲数量（避免 N+1） ==================== -->
+
+    <!-- 批量查询指定艺人的 ACTIVE 歌曲数量, 用于艺人列表页展示 -->
+    <select id="selectSongCountsByArtistIds" resultType="java.util.Map">
+        SELECT artist_id, COUNT(*) AS song_count
+        FROM song
+        WHERE artist_id IN
+        <foreach item="artistId" collection="list" open="(" separator="," close=")">
+            #{artistId}
+        </foreach>
+          AND status = 'ACTIVE'
+        GROUP BY artist_id
+    </select>
+
 </mapper>

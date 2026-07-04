@@ -15,6 +15,16 @@
         <router-link v-if="authStore.isLoggedIn" to="/upload-music" class="nav-link">上传音乐</router-link>
       </div>
 
+      <!-- 搜索框 -->
+      <div class="nav-search">
+        <input
+          v-model="searchKeyword"
+          @keyup.enter="goSearch"
+          placeholder="搜索..."
+          class="nav-search-input"
+        />
+      </div>
+
       <!-- 右侧：通知 + 用户 -->
       <div class="nav-right">
         <!-- 通知铃铛 -->
@@ -83,6 +93,15 @@ const showNotifications = ref(false)
 const notifications = ref([])
 const unreadCount = ref(0)
 const loadingNotif = ref(false)
+const searchKeyword = ref('')
+
+function goSearch() {
+  const q = searchKeyword.value.trim()
+  if (q) {
+    router.push({ path: '/search', query: { q } })
+    searchKeyword.value = ''
+  }
+}
 
 async function loadNotifications() {
   if (!authStore.isLoggedIn) return
@@ -193,6 +212,16 @@ onUnmounted(() => {
   gap: 4px;
   flex: 1;
 }
+
+/* 导航栏搜索框 */
+.nav-search { margin: 0 12px; }
+.nav-search-input {
+  width: 140px; padding: 5px 12px; border: none; border-radius: 6px;
+  font-size: 13px; outline: none; background: rgba(255,255,255,0.2);
+  color: #fff; transition: all 0.2s;
+}
+.nav-search-input::placeholder { color: rgba(255,255,255,0.6); }
+.nav-search-input:focus { background: rgba(255,255,255,0.3); width: 180px; }
 
 .nav-link {
   color: rgba(255,255,255,0.85);

@@ -65,7 +65,7 @@
 
     <!-- 模糊搜索（歌曲名/艺人名/专辑名 分别关联） -->
     <select id="search" resultMap="BaseResultMap">
-        SELECT DISTINCT s.id, s.title, s.artist_id, s.album_id, s.duration,
+        SELECT s.id, s.title, s.artist_id, s.album_id, s.duration,
                s.audio_url, s.cover_url, s.lyric_url, s.lyrics,
                s.genre, s.language, s.release_year,
                s.status, s.uploader_id, s.play_count, s.created_time, s.updated_time
@@ -107,11 +107,18 @@
         LIMIT #{limit}
     </select>
 
-    <!-- 按艺人查询（仅返回审核通过的歌曲） -->
+    <!-- 按艺人查询（仅返回审核通过的歌曲，用于列表页） -->
     <select id="selectByArtistId" resultMap="BaseResultMap">
         SELECT <include refid="BaseColumns"/>
         FROM song WHERE artist_id = #{artistId}
           AND status = 'ACTIVE'
+        ORDER BY created_time DESC
+    </select>
+
+    <!-- 按艺人查询全部歌曲（不限制状态，用于艺人详情页展示所有歌曲） -->
+    <select id="selectAllByArtistId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM song WHERE artist_id = #{artistId}
         ORDER BY created_time DESC
     </select>
 
@@ -122,12 +129,24 @@
         ORDER BY created_time DESC
     </select>
 
-    <!-- 按专辑查询（仅返回审核通过的歌曲） -->
+    <!-- 按专辑查询（仅返回审核通过的歌曲，用于列表页） -->
     <select id="selectByAlbumId" resultMap="BaseResultMap">
         SELECT <include refid="BaseColumns"/>
         FROM song WHERE album_id = #{albumId}
           AND status = 'ACTIVE'
         ORDER BY created_time ASC
+    </select>
+
+    <!-- 按专辑查询全部歌曲（不限制状态，用于专辑详情页展示所有歌曲） -->
+    <select id="selectAllByAlbumId" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM song WHERE album_id = #{albumId}
+        ORDER BY created_time ASC
+    </select>
+
+    <!-- 统计某个专辑的歌曲数量 -->
+    <select id="countByAlbumId" resultType="long">
+        SELECT COUNT(*) FROM song WHERE album_id = #{albumId}
     </select>
 
     <!-- 统计所有歌曲总播放量 -->
@@ -190,9 +209,14 @@
         DELETE FROM song WHERE id = #{id}
     </delete>
 
-    <!-- 更新审核状态 -->
+    <!-- 更新审核状态（乐观锁：仅 PENDING 状态可被审核，防止并发重复审核） -->
     <update id="updateStatus">
         UPDATE song SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <!-- 审核歌曲（乐观锁：仅 PENDING 状态可被审核，防止并发重复审核） -->
+    <update id="auditStatus">
+        UPDATE song SET status = #{status} WHERE id = #{id} AND status = 'PENDING'
     </update>
 
 </mapper>

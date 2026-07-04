@@ -1,6 +1,8 @@
 package com.example.music.config;
 
 import com.example.music.constant.RedisChannels;
+import com.example.music.entity.User;
+import com.example.music.mapper.UserMapper;
 import com.example.music.service.RoomService;
 import com.example.music.utils.JwtUtil;
 import com.example.music.vo.WebSocketMessage;
@@ -35,6 +37,7 @@ public class RoomWebSocketHandler extends TextWebSocketHandler {
     private final RoomService roomService;
     private final RedisMessagePublisher redisPublisher;
     private final ObjectMapper objectMapper;
+    private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -176,8 +179,16 @@ public class RoomWebSocketHandler extends TextWebSocketHandler {
         if (wsMsg.getPayload() instanceof Map) {
             @SuppressWarnings("unchecked")
             Map<String, Object> payload = (Map<String, Object>) wsMsg.getPayload();
+            // 补充 roomId 到 payload，确保 Redis Pub/Sub 订阅者能正确路由
+            payload.put("roomId", roomId);
             Object contentObj = payload.get("content");
             content = contentObj != null ? contentObj.toString() : "";
+        }
+
+        // 补充发送者昵称
+        if (wsMsg.getNickname() == null && userId != null) {
+            User user = userMapper.selectById(userId);
+            wsMsg.setNickname(user != null ? user.getNickname() : "未知用户");
         }
 
         // 保存到数据库
@@ -193,9 +204,15 @@ public class RoomWebSocketHandler extends TextWebSocketHandler {
     }
 
     /**
-     * 处理播放同步：更新 Redis 状态 + 广播给房间内其他成员
+     * 处理播放同步：校验房主身份 + 更新 Redis 状态 + 广播给房间内其他成员
      */
     private void handleSync(Long roomId, Long userId, WebSocketMessage wsMsg) {
+        // 仅房主可以发送播放控制指令
+        if (!roomService.isOwner(roomId, userId)) {
+            log.warn("非房主用户尝试同步播放状态: roomId={}, userId={}", roomId, userId);
+            return;
+        }
+
         @SuppressWarnings("unchecked")
         Map<String, Object> payload = (Map<String, Object>) wsMsg.getPayload();
 

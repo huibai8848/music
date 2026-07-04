@@ -7,208 +7,513 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.0)
 
-2026-07-01T17:54:33.803+08:00  INFO 20064 --- [music] [           main] com.example.music.MusicApplication       : Starting MusicApplication using Java 17.0.17 with PID 20064 (E:\07_Data\IdeaProjects\music\target\classes started by huibai in E:\07_Data\IdeaProjects\music)
-2026-07-01T17:54:33.804+08:00 DEBUG 20064 --- [music] [           main] com.example.music.MusicApplication       : Running with Spring Boot v3.2.0, Spring v6.1.1
-2026-07-01T17:54:33.805+08:00  INFO 20064 --- [music] [           main] com.example.music.MusicApplication       : No active profile set, falling back to 1 default profile: "default"
-2026-07-01T17:54:34.897+08:00  INFO 20064 --- [music] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-07-01T17:54:34.897+08:00  INFO 20064 --- [music] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
-2026-07-01T17:54:34.940+08:00  INFO 20064 --- [music] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-07-05T03:49:30.433+08:00  INFO 19116 --- [music] [           main] com.example.music.MusicApplication       : Starting MusicApplication using Java 17.0.17 with PID 19116 (E:\07_Data\IdeaProjects\music\target\music-0.0.1-SNAPSHOT.jar started by huibai in E:\07_Data\IdeaProjects\music\frontend)
+2026-07-05T03:49:30.445+08:00 DEBUG 19116 --- [music] [           main] com.example.music.MusicApplication       : Running with Spring Boot v3.2.0, Spring v6.1.1
+2026-07-05T03:49:30.447+08:00  INFO 19116 --- [music] [           main] com.example.music.MusicApplication       : The following 1 profile is active: "dev"
+2026-07-05T03:49:33.026+08:00  INFO 19116 --- [music] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-05T03:49:33.035+08:00  INFO 19116 --- [music] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-07-05T03:49:33.137+08:00  INFO 19116 --- [music] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
 Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
-2026-07-01T17:54:36.242+08:00  INFO 20064 --- [music] [           main] com.example.music.MusicApplication       : Started MusicApplication in 2.708 seconds (process running for 2.936)
-2026-07-01T17:54:36.246+08:00 DEBUG 20064 --- [music] [   scheduling-1] c.e.music.scheduled.PlayCountFlushTask   : 【定时任务】开始刷新播放计数...
-2026-07-01T17:54:50.172+08:00  INFO 20064 --- [music] [nio-8888-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-07-01T17:54:50.185+08:00  WARN 20064 --- [music] [nio-8888-exec-1] c.e.m.exception.GlobalExceptionHandler   : 【请求方法不支持】Request method 'GET' is not supported
+2026-07-05T03:49:34.963+08:00  WARN 19116 --- [music] [           main] com.example.music.config.JwtConfig       : JWT 密钥使用配置文件中硬编码的默认值（生产环境建议设置 MUSIC_JWT_SECRET 环境变量）
+2026-07-05T03:49:35.230+08:00  INFO 19116 --- [music] [           main] com.example.music.config.WebMvcConfig    : 静态资源映射根目录: E:\07_Data\IdeaProjects\music\frontend\data\music
+2026-07-05T03:49:35.312+08:00  INFO 19116 --- [music] [           main] c.e.music.service.impl.FileServiceImpl   : 文件上传根目录: E:\07_Data\IdeaProjects\music\frontend\data\music
+2026-07-05T03:49:35.759+08:00  INFO 19116 --- [music] [           main] com.example.music.utils.RsaUtil          : RSA 密钥对初始化完成，公钥长度: 392 字节
+2026-07-05T03:49:37.908+08:00  INFO 19116 --- [music] [           main] com.example.music.MusicApplication       : Started MusicApplication in 7.981 seconds (process running for 8.656)
+2026-07-05T03:49:37.912+08:00 DEBUG 19116 --- [music] [   scheduling-1] c.e.music.scheduled.PlayCountFlushTask   : 【定时任务】开始刷新播放计数...
+2026-07-05T03:49:46.065+08:00  INFO 19116 --- [music] [nio-8888-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@e0978b3] was not registered for synchronization because synchronization is not active
-2026-07-01T17:55:00.165+08:00  INFO 20064 --- [music] [nio-8888-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-07-01T17:55:00.260+08:00  INFO 20064 --- [music] [nio-8888-exec-2] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@288c2674
-2026-07-01T17:55:00.261+08:00  INFO 20064 --- [music] [nio-8888-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-JDBC Connection [HikariProxyConnection@71820189 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@d0a3c6f] was not registered for synchronization because synchronization is not active
+2026-07-05T03:49:46.230+08:00  INFO 19116 --- [music] [nio-8888-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-05T03:49:46.359+08:00  INFO 19116 --- [music] [nio-8888-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@60780e3f
+2026-07-05T03:49:46.370+08:00  INFO 19116 --- [music] [nio-8888-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+JDBC Connection [HikariProxyConnection@98135703 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
 ==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE email = ?
-==> Parameters: admin@music.com(String)
+==> Parameters: alipaytest@test.com(String)
 <==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
+<==        Row: 16, alipaytest@test.com, $2a$04$2hZtGoznLCGxUQPwUroreuvKxDr.R.EedkBGyBYZTNNNQ3pt.ETxW, AlipayTest, null, null, null, USER, null, ACTIVE, 2026-07-05 03:47:52, 2026-07-05 03:47:52
 <==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@e0978b3]
-2026-07-01T17:55:00.545+08:00  INFO 20064 --- [music] [nio-8888-exec-5] c.e.music.service.impl.FileServiceImpl   : 文件上传成功: type=cover, size=70, path=E:/07_Data/IdeaProjects/music/data/music/cover/2026/07/f46c691c5fbb4b3d81de2484c5a5dcbe.jpg
-2026-07-01T17:55:00.709+08:00  WARN 20064 --- [music] [nio-8888-exec-7] c.e.m.exception.GlobalExceptionHandler   : 【业务异常】code=4001, message=文件 MIME 类型不匹配: image/png
-2026-07-01T17:55:00.795+08:00  WARN 20064 --- [music] [nio-8888-exec-8] c.e.m.exception.GlobalExceptionHandler   : 【业务异常】code=4001, message=文件 MIME 类型不匹配: application/octet-stream
-2026-07-01T17:55:00.837+08:00  INFO 20064 --- [music] [nio-8888-exec-9] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
- Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
-
-java.lang.IllegalArgumentException: Invalid character found in the request target [/api/admin/logs?page=1&size=5&action=0xb70xe20xbd0xfb/0xbd0xe20xb70xe20xd30xc30xbb0xa7 ]. The valid characters are defined in RFC 7230 and RFC 3986
-	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:264) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
-
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@d0a3c6f]
 Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b91f925] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@357958695 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@633a7580]
+JDBC Connection [HikariProxyConnection@532559857 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will be managed by Spring
+==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
+==> Parameters: 16(Long)
+<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
+<==        Row: 16, alipaytest@test.com, $2a$04$2hZtGoznLCGxUQPwUroreuvKxDr.R.EedkBGyBYZTNNNQ3pt.ETxW, AlipayTest, null, null, null, USER, null, ACTIVE, 2026-07-05 03:47:52, 2026-07-05 03:47:52
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@633a7580]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@633a7580] from current transaction
+==>  Preparing: INSERT INTO recharge_record (user_id, plan, amount, duration_days, expire_time, status, out_trade_no) VALUES (?, ?, ?, ?, ?, ?, ?)
+==> Parameters: 16(Long), MONTHLY(String), 15.00(BigDecimal), 30(Integer), 2026-08-04T03:49:46.777497600(LocalDateTime), PENDING(String), MUSIC_580EF8545F6F47E8BBA0(String)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@633a7580]
+2026-07-05T03:49:46.787+08:00  INFO 19116 --- [music] [nio-8888-exec-2] c.e.m.service.impl.AlipayServiceImpl     : 创建支付订单: outTradeNo=MUSIC_580EF8545F6F47E8BBA0, userId=16, plan=MONTHLY, amount=15.00
+2026-07-05T03:49:46.797+08:00 DEBUG 19116 --- [music] [nio-8888-exec-2] c.e.m.service.impl.AlipayServiceImpl     : 支付宝签名原文: app_id=9021000165631979&biz_content={"out_trade_no":"MUSIC_580EF8545F6F47E8BBA0","total_amount":"15.00","subject":"音乐平台月度VIP会员","product_code":"FAST_INSTANT_TRADE_PAY"}&charset=utf-8&format=json&method=alipay.trade.page.pay&notify_url=https://elliptic-geography-varnish.ngrok-free.dev/api/payment/alipay/notify&return_url=http://localhost:8888/api/payment/alipay/return&timestamp=2026-07-05 03:49:46&version=1.0
+2026-07-05T03:49:46.797+08:00 DEBUG 19116 --- [music] [nio-8888-exec-2] c.e.m.service.impl.AlipayServiceImpl     : 支付宝签名结果: Xb+H3T2v7nzSdPttODkbcLfDwHXMc3oPkyYq+fMa814rUULDppvQBn4uuTdzO6V9TxGbpQesy81phJOMBtOq8Uj1pUkCumkSCslLfijngO0cuCvs8XzzzU4QWqJeBks3VwybFcj7v79M+vSFFsQKCMbLV6ldjqGtfaQHNcnBARLHeiNiDdhKVXX1nXLnyv0qoDTyKVvpdkjMk2yMVOS92C37pDrg1J9szRo+Ra8CBg5KDK5rdKVEZ0VzdQRgQ2z9HEnNLVfyRXmY0vON0OIlgsFscKalvqh+y91KGcCfZLiHAXTEhWiq0sJ3V9wyb2BNbIxv/miu/4Lud7bdAfESLQ==
+2026-07-05T03:49:46.797+08:00  INFO 19116 --- [music] [nio-8888-exec-2] c.e.m.service.impl.AlipayServiceImpl     : 支付宝支付表单已生成: outTradeNo=MUSIC_580EF8545F6F47E8BBA0
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@633a7580]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@633a7580]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@633a7580]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@e73394] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@237035000 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
 ==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE email = ?
-==> Parameters: admin@music.com(String)
+==> Parameters: alipaytest@test.com(String)
 <==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
+<==        Row: 16, alipaytest@test.com, $2a$04$2hZtGoznLCGxUQPwUroreuvKxDr.R.EedkBGyBYZTNNNQ3pt.ETxW, AlipayTest, null, null, null, USER, null, ACTIVE, 2026-07-05 03:47:52, 2026-07-05 03:47:52
 <==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b91f925]
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@e73394]
 Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a642d3] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@1715015435 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, operator_id, action, target_type, target_id, detail, ip, created_time FROM operation_log ORDER BY created_time DESC LIMIT ? OFFSET ?
-==> Parameters: 5(Integer), 0(Integer)
-<==    Columns: id, operator_id, action, target_type, target_id, detail, ip, created_time
-<==        Row: 1, 1, 封禁/解封用户, USER, 1, <<BLOB>>, 0:0:0:0:0:0:0:1, 2026-07-01 17:52:13
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a09bb8d]
+JDBC Connection [HikariProxyConnection@1116097171 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will be managed by Spring
+==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
+==> Parameters: 16(Long)
+<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
+<==        Row: 16, alipaytest@test.com, $2a$04$2hZtGoznLCGxUQPwUroreuvKxDr.R.EedkBGyBYZTNNNQ3pt.ETxW, AlipayTest, null, null, null, USER, null, ACTIVE, 2026-07-05 03:47:52, 2026-07-05 03:47:52
 <==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a642d3]
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a09bb8d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a09bb8d] from current transaction
+==>  Preparing: INSERT INTO recharge_record (user_id, plan, amount, duration_days, expire_time, status, out_trade_no) VALUES (?, ?, ?, ?, ?, ?, ?)
+==> Parameters: 16(Long), MONTHLY(String), 15.00(BigDecimal), 30(Integer), 2026-08-04T03:49:52.473551400(LocalDateTime), PENDING(String), MUSIC_A20D8FA01FE04B808E49(String)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a09bb8d]
+2026-07-05T03:49:52.477+08:00  INFO 19116 --- [music] [nio-8888-exec-6] c.e.m.service.impl.AlipayServiceImpl     : 创建支付订单: outTradeNo=MUSIC_A20D8FA01FE04B808E49, userId=16, plan=MONTHLY, amount=15.00
+2026-07-05T03:49:52.479+08:00 DEBUG 19116 --- [music] [nio-8888-exec-6] c.e.m.service.impl.AlipayServiceImpl     : 支付宝签名原文: app_id=9021000165631979&biz_content={"out_trade_no":"MUSIC_A20D8FA01FE04B808E49","total_amount":"15.00","subject":"音乐平台月度VIP会员","product_code":"FAST_INSTANT_TRADE_PAY"}&charset=utf-8&format=json&method=alipay.trade.page.pay&notify_url=https://elliptic-geography-varnish.ngrok-free.dev/api/payment/alipay/notify&return_url=http://localhost:8888/api/payment/alipay/return&timestamp=2026-07-05 03:49:52&version=1.0
+2026-07-05T03:49:52.479+08:00 DEBUG 19116 --- [music] [nio-8888-exec-6] c.e.m.service.impl.AlipayServiceImpl     : 支付宝签名结果: YjsxxRN/EeEzJyjkFPcK5WoEcOd2HbNrAzGfwjV4Vg2Eq6TIYPP8hdPjNMWG4lyREziIiZ4UKjtsZIRruK871InlItXaDuHwOdxaF76EUxdmNZNeiFX0+xu/yxM9wopO4upDQp03lPR2m7aVQJbRmL+O5Y8TPTrNG6DgX5Cro9JhjW6qGiXjLKVgJz3OtWKdV+LX3dzhxCe1Niyc3dgqBS/WvPf0/4ya6+87SNuam1tGTVdAWaoqDPrz/cgprl0GdKhCQyiLLpoHPfEIC0c3NZj3PFSdaM2f8vZOEnqroKnaI5uQrchOy5TiEfmLH+A0TTo+o8mcUtF0Iv6oFmYszw==
+2026-07-05T03:49:52.479+08:00  INFO 19116 --- [music] [nio-8888-exec-6] c.e.m.service.impl.AlipayServiceImpl     : 支付宝支付表单已生成: outTradeNo=MUSIC_A20D8FA01FE04B808E49
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a09bb8d]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a09bb8d]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a09bb8d]
 Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65e2d0ab] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@439816599 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT COUNT(*) FROM operation_log
-==> Parameters: 
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f8a9e75] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@21848564 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
+==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE email = ?
+==> Parameters: alipaytest@test.com(String)
+<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
+<==        Row: 16, alipaytest@test.com, $2a$04$2hZtGoznLCGxUQPwUroreuvKxDr.R.EedkBGyBYZTNNNQ3pt.ETxW, AlipayTest, null, null, null, USER, null, ACTIVE, 2026-07-05 03:47:52, 2026-07-05 03:47:52
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f8a9e75]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36be5152]
+JDBC Connection [HikariProxyConnection@2116446878 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will be managed by Spring
+==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
+==> Parameters: 16(Long)
+<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
+<==        Row: 16, alipaytest@test.com, $2a$04$2hZtGoznLCGxUQPwUroreuvKxDr.R.EedkBGyBYZTNNNQ3pt.ETxW, AlipayTest, null, null, null, USER, null, ACTIVE, 2026-07-05 03:47:52, 2026-07-05 03:47:52
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36be5152]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36be5152] from current transaction
+==>  Preparing: INSERT INTO recharge_record (user_id, plan, amount, duration_days, expire_time, status, out_trade_no) VALUES (?, ?, ?, ?, ?, ?, ?)
+==> Parameters: 16(Long), MONTHLY(String), 15.00(BigDecimal), 30(Integer), 2026-08-04T03:49:55.809075800(LocalDateTime), PENDING(String), MUSIC_4AA2CFD7EA88487A9A46(String)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36be5152]
+2026-07-05T03:49:55.811+08:00  INFO 19116 --- [music] [io-8888-exec-10] c.e.m.service.impl.AlipayServiceImpl     : 创建支付订单: outTradeNo=MUSIC_4AA2CFD7EA88487A9A46, userId=16, plan=MONTHLY, amount=15.00
+2026-07-05T03:49:55.813+08:00 DEBUG 19116 --- [music] [io-8888-exec-10] c.e.m.service.impl.AlipayServiceImpl     : 支付宝签名原文: app_id=9021000165631979&biz_content={"out_trade_no":"MUSIC_4AA2CFD7EA88487A9A46","total_amount":"15.00","subject":"音乐平台月度VIP会员","product_code":"FAST_INSTANT_TRADE_PAY"}&charset=utf-8&format=json&method=alipay.trade.page.pay&notify_url=https://elliptic-geography-varnish.ngrok-free.dev/api/payment/alipay/notify&return_url=http://localhost:8888/api/payment/alipay/return&timestamp=2026-07-05 03:49:55&version=1.0
+2026-07-05T03:49:55.813+08:00 DEBUG 19116 --- [music] [io-8888-exec-10] c.e.m.service.impl.AlipayServiceImpl     : 支付宝签名结果: U8W8TxF/+/L2amXT2YqNswgWPF+yFTL+7jvMUAoj764ltpr8A2k2um4FSsjj8XCmJz8VzG1R0M/swm2s8X0IebRTxtoNfnhzKw2WNP8Aq34THTuxzIOl4B8E/WMVxEAjnm6weCDEKh1MJhIi0wvNC/8TwiNAQ2zJCIqyYPgjgfDJy5RiFy1dc5AxnJ4dYEYgd8fBmw87MlohbBigQGRLSTi9UXAQLr/DcTuEQBXv9po1nYPI4e0SeUSRHCABmzMzE3e8WOf/d4B11xNywKiBgOfrsBRS9R2RC4uNUjXLtjyVGL5fBs8ME1dgG+RA3mkb764Wu6wLpsvJmIV6t+c1pA==
+2026-07-05T03:49:55.813+08:00  INFO 19116 --- [music] [io-8888-exec-10] c.e.m.service.impl.AlipayServiceImpl     : 支付宝支付表单已生成: outTradeNo=MUSIC_4AA2CFD7EA88487A9A46
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36be5152]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36be5152]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36be5152]
+Creating a new SqlSession
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@13787ead] was not registered for synchronization because synchronization is not active
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@67ec8b79] was not registered for synchronization because synchronization is not active
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5da8160c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1164790122 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
+JDBC Connection [HikariProxyConnection@1329173779 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+JDBC Connection [HikariProxyConnection@369291313 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, user_id, song_id, played_time FROM play_history WHERE user_id = ? ORDER BY played_time DESC LIMIT ?
+==>  Preparing: SELECT id, user_id, target_type, target_id, created_time FROM favorite WHERE user_id = ? ORDER BY created_time DESC LIMIT ? OFFSET ?
+==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
+==> Parameters: 4(Long), 20(Integer), 0(Integer)
+==> Parameters: 4(Long), 100(Integer)
+==> Parameters: 4(Long)
+<==    Columns: id, user_id, target_type, target_id, created_time
+<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
+<==    Columns: id, user_id, song_id, played_time
+<==        Row: 10, 4, ARTIST, 1, 2026-07-02 17:29:48
+<==        Row: 1060, 4, 2, 2026-07-05 01:19:54
+<==        Row: 4, 914036708@qq.com, $2a$04$UtIEmDLXSnVjqZSqoDKX8uZQIA.Tjd9U3NFhmyBKaEZpB73F6Yqpe, wch, /api/files/avatar/2026/07/57cc45a5a2c340fc9aa7773d578eb430.jpg, null, null, VIP, 2027-07-31 21:46:06, ACTIVE, 2026-07-01 15:31:04, 2026-07-02 17:20:06
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@13787ead]
+<==      Total: 1
+Creating a new SqlSession
+<==        Row: 1059, 4, 111, 2026-07-05 01:12:33
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@505a8591] was not registered for synchronization because synchronization is not active
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@67ec8b79]
+JDBC Connection [HikariProxyConnection@44345133 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) FROM favorite WHERE user_id = ?
+<==        Row: 60, 4, 6, 2026-07-03 17:21:09
+==> Parameters: 4(Long)
+<==        Row: 59, 4, 6, 2026-07-03 17:17:39
+<==        Row: 16, 4, 4, 2026-07-03 11:55:50
 <==    Columns: COUNT(*)
 <==        Row: 1
+<==        Row: 15, 4, 3, 2026-07-03 11:53:56
+<==        Row: 14, 4, 3, 2026-07-03 11:39:33
+<==        Row: 13, 4, 3, 2026-07-03 11:39:29
+<==        Row: 12, 4, 3, 2026-07-03 11:38:32
 <==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65e2d0ab]
+<==        Row: 11, 4, 2, 2026-07-03 11:38:19
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@505a8591]
+<==        Row: 10, 4, 3, 2026-07-03 11:37:55
+<==        Row: 3, 4, 3, 2026-07-03 11:24:26
+<==      Total: 12
 Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a8b8d6] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@10911923 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5da8160c]
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4741ccd4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2132554111 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
+Creating a new SqlSession
+==>  Preparing: SELECT id, name, avatar, bio, country, created_time, updated_time FROM artist WHERE id = ?
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6360a033] was not registered for synchronization because synchronization is not active
 ==> Parameters: 1(Long)
-<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
+JDBC Connection [HikariProxyConnection@1107430971 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 2(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==    Columns: id, name, avatar, bio, country, created_time, updated_time
+<==        Row: 2, 爱你美差, 16, null, 0, /api/files/audio/2026/07/7f358152b22d4b12b0023e8652cee5b6.mp3, /api/files/cover/2026/07/a187cb6df9b14a91b7f7a6fab1f1c559.jpg, /api/files/lyric/2026/07/8ed1a60a1703494684990d817886d708.lrc, <<BLOB>>, 流行, 中文, null, ACTIVE, 10, 49, 2026-07-02 21:22:44, 2026-07-05 01:24:21
+<==        Row: 1, 孙串龙, null, <<BLOB>>, 日本, 2026-07-02 17:23:12, 2026-07-02 17:23:48
 <==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a8b8d6]
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4741ccd4]
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6360a033]
 Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@37531544] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@1431464794 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: INSERT INTO operation_log (operator_id, action, target_type, target_id, detail, ip) VALUES (?, ?, ?, ?, ?, ?)
-==> Parameters: 1(Long), 封禁/解封用户(String), USER(String), 1(Long), {"args":{"arg1":"{}","arg0":"{}"},"costMs":5,"error":"不能封禁自己"}(String), 0:0:0:0:0:0:0:1(String)
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@52ec5b94] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1640258474 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 111(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 111, 1235, 23, null, 0, /api/files/audio/2026/07/4c6b25832001432c9f71a3ad559d60d3.mp3, null, null, <<BLOB>>, null, null, null, ACTIVE, 1, 6, 2026-07-05 01:09:47, 2026-07-05 01:17:02
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@52ec5b94]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76939549] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1262089421 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 6(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 6, jiahai, 17, 8, 0, /api/files/audio/2026/07/67616aa1eac44c8eb21bafbe40a8b7dd.mp3, /api/files/cover/2026/07/e6eefc2344da4c73a9cdacc8b43be663.jpg, /api/files/lyric/2026/07/839ba7f19a324e53a0c62a73921292e9.lrc, <<BLOB>>, null, null, null, ACTIVE, 4, 3, 2026-07-03 17:14:32, 2026-07-03 17:23:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76939549]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2fc054aa] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1158915526 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 6(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 6, jiahai, 17, 8, 0, /api/files/audio/2026/07/67616aa1eac44c8eb21bafbe40a8b7dd.mp3, /api/files/cover/2026/07/e6eefc2344da4c73a9cdacc8b43be663.jpg, /api/files/lyric/2026/07/839ba7f19a324e53a0c62a73921292e9.lrc, <<BLOB>>, null, null, null, ACTIVE, 4, 3, 2026-07-03 17:14:32, 2026-07-03 17:23:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2fc054aa]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3bb394e4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@377221692 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 4(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 4, 晴天, 16, 6, 0, /api/files/audio/2026/07/9efc9ef7ccfd49d5a46705b8ac43a7c7.mp3, /api/files/cover/2026/07/bf90f9f5d4954109a6cfe9a94fcf670f.jpg, /api/files/lyric/2026/07/2ff662fdc5da48ae8792d622e6bb6e2b.lrc, <<BLOB>>, null, null, null, ACTIVE, 4, 22, 2026-07-03 11:55:33, 2026-07-03 16:07:56
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3bb394e4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7488c34] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1075769253 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7488c34]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1082aab0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@389758826 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1082aab0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@703e615c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@747339300 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@703e615c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@26e69f4b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@170201622 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@26e69f4b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@34d0c05c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@643702090 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 2(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 2, 爱你美差, 16, null, 0, /api/files/audio/2026/07/7f358152b22d4b12b0023e8652cee5b6.mp3, /api/files/cover/2026/07/a187cb6df9b14a91b7f7a6fab1f1c559.jpg, /api/files/lyric/2026/07/8ed1a60a1703494684990d817886d708.lrc, <<BLOB>>, 流行, 中文, null, ACTIVE, 10, 49, 2026-07-02 21:22:44, 2026-07-05 01:24:21
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@34d0c05c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@431dc8ff] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1904030432 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@431dc8ff]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6b6bcfb8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1184675866 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6b6bcfb8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79ccd776] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1997223487 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
+==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
+==> Parameters: 4(Long)
+<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
+<==        Row: 4, 914036708@qq.com, $2a$04$UtIEmDLXSnVjqZSqoDKX8uZQIA.Tjd9U3NFhmyBKaEZpB73F6Yqpe, wch, /api/files/avatar/2026/07/57cc45a5a2c340fc9aa7773d578eb430.jpg, null, null, VIP, 2027-07-31 21:46:06, ACTIVE, 2026-07-01 15:31:04, 2026-07-02 17:20:06
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79ccd776]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@639bdbdf] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1810599360 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
+==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
+==> Parameters: 4(Long)
+<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
+<==        Row: 4, 914036708@qq.com, $2a$04$UtIEmDLXSnVjqZSqoDKX8uZQIA.Tjd9U3NFhmyBKaEZpB73F6Yqpe, wch, /api/files/avatar/2026/07/57cc45a5a2c340fc9aa7773d578eb430.jpg, null, null, VIP, 2027-07-31 21:46:06, ACTIVE, 2026-07-01 15:31:04, 2026-07-02 17:20:06
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@639bdbdf]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4c118629] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1121346011 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
+==>  Preparing: SELECT id, user_id, type, title, content, is_read, related_type, related_id, created_time FROM notification WHERE user_id = ? ORDER BY created_time DESC LIMIT ? OFFSET ?
+==> Parameters: 4(Long), 20(Integer), 0(Integer)
+Creating a new SqlSession
+Creating a new SqlSession
+<==    Columns: id, user_id, type, title, content, is_read, related_type, related_id, created_time
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1d712ada] was not registered for synchronization because synchronization is not active
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@40706bcf] was not registered for synchronization because synchronization is not active
+<==        Row: 104, 4, SYSTEM, 123, <<BLOB>>, 1, NOTICE, 6, 2026-07-04 20:52:39
+JDBC Connection [HikariProxyConnection@400378268 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+<==        Row: 94, 4, SYSTEM, 关注艺人有新歌, <<BLOB>>, 1, SONG, 110, 2026-07-04 20:32:51
+JDBC Connection [HikariProxyConnection@458374274 wrapping com.mysql.cj.jdbc.ConnectionImpl@1a78f1eb] will not be managed by Spring
+==>  Preparing: SELECT id, user_id, song_id, played_time FROM play_history WHERE user_id = ? ORDER BY played_time DESC LIMIT ?
+<==        Row: 71, 4, SYSTEM, Test Notice, <<BLOB>>, 1, NOTICE, 5, 2026-07-04 20:23:11
+==>  Preparing: SELECT COUNT(*) FROM notification WHERE user_id = ? AND is_read = 0
+==> Parameters: 4(Long), 100(Integer)
+<==        Row: 61, 4, SYSTEM, Test Notice, <<BLOB>>, 1, NOTICE, 4, 2026-07-04 20:23:03
+Creating a new SqlSession
+<==        Row: 51, 4, REPORT_RESULT, 举报处理结果, <<BLOB>>, 1, REPORT, 7, 2026-07-04 18:20:05
+==> Parameters: 4(Long)
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7dd2bf7c] was not registered for synchronization because synchronization is not active
+<==    Columns: COUNT(*)
+<==    Columns: id, user_id, song_id, played_time
+<==        Row: 52, 4, SYSTEM, 评论被删除, <<BLOB>>, 1, COMMENT, 10, 2026-07-04 18:20:05
+JDBC Connection [HikariProxyConnection@1930780342 wrapping com.mysql.cj.jdbc.ConnectionImpl@772ad40c] will not be managed by Spring
+<==        Row: 0
+==>  Preparing: SELECT id, user_id, target_type, target_id, created_time FROM favorite WHERE user_id = ? ORDER BY created_time DESC LIMIT ? OFFSET ?
+<==        Row: 48, 4, REPORT_RESULT, 举报已提交, <<BLOB>>, 1, REPORT, 7, 2026-07-04 18:19:43
+<==        Row: 1060, 4, 2, 2026-07-05 01:19:54
+==> Parameters: 4(Long), 20(Integer), 0(Integer)
+<==      Total: 1
+<==        Row: 1059, 4, 111, 2026-07-05 01:12:33
+<==        Row: 46, 4, SYSTEM, 系统有问题, <<BLOB>>, 1, NOTICE, 3, 2026-07-04 18:14:27
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@40706bcf]
+<==        Row: 36, 4, SYSTEM, 系统有问题, <<BLOB>>, 1, NOTICE, 2, 2026-07-04 18:14:08
+<==        Row: 27, 4, REPORT_RESULT, 举报处理结果, <<BLOB>>, 1, REPORT, 6, 2026-07-04 18:09:29
+<==        Row: 26, 4, REPORT_RESULT, 举报已提交, <<BLOB>>, 1, REPORT, 6, 2026-07-04 18:09:21
+<==        Row: 60, 4, 6, 2026-07-03 17:21:09
+<==        Row: 25, 4, REPORT_RESULT, 举报处理结果, <<BLOB>>, 1, REPORT, 5, 2026-07-04 18:08:40
+<==    Columns: id, user_id, target_type, target_id, created_time
+<==        Row: 10, 4, ARTIST, 1, 2026-07-02 17:29:48
+<==        Row: 59, 4, 6, 2026-07-03 17:17:39
+<==        Row: 24, 4, REPORT_RESULT, 举报已提交, <<BLOB>>, 1, REPORT, 5, 2026-07-04 18:08:11
+<==        Row: 21, 4, SONG_REVIEW, 歌曲审核中, <<BLOB>>, 1, SONG, 106, 2026-07-04 18:07:16
+<==      Total: 1
+<==        Row: 20, 4, SONG_REVIEW, 歌曲审核结果, <<BLOB>>, 1, SONG, 105, 2026-07-04 18:06:29
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7dd2bf7c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a6924eb] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@55583230 wrapping com.mysql.cj.jdbc.ConnectionImpl@772ad40c] will not be managed by Spring
+<==        Row: 17, 4, SONG_REVIEW, 歌曲审核中, <<BLOB>>, 1, SONG, 105, 2026-07-04 18:06:03
+==>  Preparing: SELECT COUNT(*) FROM favorite WHERE user_id = ?
+==> Parameters: 4(Long)
+<==        Row: 16, 4, 4, 2026-07-03 11:55:50
+<==    Columns: COUNT(*)
+<==        Row: 1
+<==        Row: 15, 4, 3, 2026-07-03 11:53:56
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a6924eb]
+<==        Row: 14, 4, 3, 2026-07-03 11:39:33
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5207abc2] was not registered for synchronization because synchronization is not active
+<==        Row: 13, 4, 3, 2026-07-03 11:39:29
+JDBC Connection [HikariProxyConnection@1096450837 wrapping com.mysql.cj.jdbc.ConnectionImpl@772ad40c] will not be managed by Spring
+==>  Preparing: SELECT id, name, avatar, bio, country, created_time, updated_time FROM artist WHERE id = ?
+<==        Row: 12, 4, 3, 2026-07-03 11:38:32
+==> Parameters: 1(Long)
+<==        Row: 11, 4, 2, 2026-07-03 11:38:19
+<==        Row: 14, 4, SONG_REVIEW, 歌曲审核结果, <<BLOB>>, 1, SONG, 104, 2026-07-04 18:05:21
+<==    Columns: id, name, avatar, bio, country, created_time, updated_time
+<==        Row: 10, 4, 3, 2026-07-03 11:37:55
+<==        Row: 1, 孙串龙, null, <<BLOB>>, 日本, 2026-07-02 17:23:12, 2026-07-02 17:23:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5207abc2]
+<==        Row: 3, 4, 3, 2026-07-03 11:24:26
+<==        Row: 11, 4, SONG_REVIEW, 歌曲审核中, <<BLOB>>, 1, SONG, 104, 2026-07-04 18:04:52
+<==      Total: 12
+<==      Total: 18
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1d712ada]
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4c118629]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b4fb5a8] was not registered for synchronization because synchronization is not active
+Creating a new SqlSession
+JDBC Connection [HikariProxyConnection@484717176 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@583a0d1c] was not registered for synchronization because synchronization is not active
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+JDBC Connection [HikariProxyConnection@1551725704 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) FROM notification WHERE user_id = ?
+==> Parameters: 2(Long)
+==> Parameters: 4(Long)
+<==    Columns: COUNT(*)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 18
+<==        Row: 2, 爱你美差, 16, null, 0, /api/files/audio/2026/07/7f358152b22d4b12b0023e8652cee5b6.mp3, /api/files/cover/2026/07/a187cb6df9b14a91b7f7a6fab1f1c559.jpg, /api/files/lyric/2026/07/8ed1a60a1703494684990d817886d708.lrc, <<BLOB>>, 流行, 中文, null, ACTIVE, 10, 49, 2026-07-02 21:22:44, 2026-07-05 01:24:21
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@583a0d1c]
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b4fb5a8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7dc9e179] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1527642525 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 111(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 111, 1235, 23, null, 0, /api/files/audio/2026/07/4c6b25832001432c9f71a3ad559d60d3.mp3, null, null, <<BLOB>>, null, null, null, ACTIVE, 1, 6, 2026-07-05 01:09:47, 2026-07-05 01:17:02
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7dc9e179]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e360864] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1556545266 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 6(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 6, jiahai, 17, 8, 0, /api/files/audio/2026/07/67616aa1eac44c8eb21bafbe40a8b7dd.mp3, /api/files/cover/2026/07/e6eefc2344da4c73a9cdacc8b43be663.jpg, /api/files/lyric/2026/07/839ba7f19a324e53a0c62a73921292e9.lrc, <<BLOB>>, null, null, null, ACTIVE, 4, 3, 2026-07-03 17:14:32, 2026-07-03 17:23:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e360864]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35929351] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1807337647 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 6(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 6, jiahai, 17, 8, 0, /api/files/audio/2026/07/67616aa1eac44c8eb21bafbe40a8b7dd.mp3, /api/files/cover/2026/07/e6eefc2344da4c73a9cdacc8b43be663.jpg, /api/files/lyric/2026/07/839ba7f19a324e53a0c62a73921292e9.lrc, <<BLOB>>, null, null, null, ACTIVE, 4, 3, 2026-07-03 17:14:32, 2026-07-03 17:23:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35929351]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@28ce6875] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2080456764 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 4(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 4, 晴天, 16, 6, 0, /api/files/audio/2026/07/9efc9ef7ccfd49d5a46705b8ac43a7c7.mp3, /api/files/cover/2026/07/bf90f9f5d4954109a6cfe9a94fcf670f.jpg, /api/files/lyric/2026/07/2ff662fdc5da48ae8792d622e6bb6e2b.lrc, <<BLOB>>, null, null, null, ACTIVE, 4, 22, 2026-07-03 11:55:33, 2026-07-03 16:07:56
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@28ce6875]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16c0306f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1301704450 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16c0306f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ce9667] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1362819657 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ce9667]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f6f902a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2145534478 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f6f902a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5315ecc7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@545839183 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5315ecc7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@543afe96] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@674583298 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 2(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 2, 爱你美差, 16, null, 0, /api/files/audio/2026/07/7f358152b22d4b12b0023e8652cee5b6.mp3, /api/files/cover/2026/07/a187cb6df9b14a91b7f7a6fab1f1c559.jpg, /api/files/lyric/2026/07/8ed1a60a1703494684990d817886d708.lrc, <<BLOB>>, 流行, 中文, null, ACTIVE, 10, 49, 2026-07-02 21:22:44, 2026-07-05 01:24:21
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@543afe96]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b984d46] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@953535213 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b984d46]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3987aee6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1082926829 wrapping com.mysql.cj.jdbc.ConnectionImpl@3c42896a] will not be managed by Spring
+==>  Preparing: SELECT id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time FROM song WHERE id = ?
+==> Parameters: 3(Long)
+<==    Columns: id, title, artist_id, album_id, duration, audio_url, cover_url, lyric_url, lyrics, genre, language, release_year, status, uploader_id, play_count, created_time, updated_time
+<==        Row: 3, 青花瓷, 16, null, 0, /api/files/audio/2026/07/db969a2c12df4d94850a79f8866035d6.mp3, /api/files/cover/2026/07/ccde4a7b5152476d97e4a52b49d56249.jpg, /api/files/lyric/2026/07/cb2b5387e55c43899b9693217610e8ff.lrc, <<BLOB>>, 流行, 中文, 2006, ACTIVE, 4, 42, 2026-07-03 11:24:16, 2026-07-03 15:41:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3987aee6]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58f0a0b9]
+JDBC Connection [HikariProxyConnection@93964711 wrapping com.mysql.cj.jdbc.ConnectionImpl@60780e3f] will be managed by Spring
+==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
+==> Parameters: 4(Long)
+<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
+<==        Row: 4, 914036708@qq.com, $2a$04$UtIEmDLXSnVjqZSqoDKX8uZQIA.Tjd9U3NFhmyBKaEZpB73F6Yqpe, wch, /api/files/avatar/2026/07/57cc45a5a2c340fc9aa7773d578eb430.jpg, null, null, VIP, 2027-07-31 21:46:06, ACTIVE, 2026-07-01 15:31:04, 2026-07-02 17:20:06
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58f0a0b9]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58f0a0b9] from current transaction
+==>  Preparing: INSERT INTO recharge_record (user_id, plan, amount, duration_days, expire_time, status, out_trade_no) VALUES (?, ?, ?, ?, ?, ?, ?)
+==> Parameters: 4(Long), MONTHLY(String), 15.00(BigDecimal), 30(Integer), 2027-08-30T21:46:06(LocalDateTime), PENDING(String), MUSIC_36D1A9DA2472410F92F1(String)
 <==    Updates: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@37531544]
-2026-07-01T17:55:17.307+08:00  WARN 20064 --- [music] [nio-8888-exec-4] c.e.m.exception.GlobalExceptionHandler   : 【业务异常】code=8001, message=不能封禁自己
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6286e3bf] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@1453628982 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, operator_id, action, target_type, target_id, detail, ip, created_time FROM operation_log ORDER BY created_time DESC LIMIT ? OFFSET ?
-==> Parameters: 5(Integer), 0(Integer)
-<==    Columns: id, operator_id, action, target_type, target_id, detail, ip, created_time
-<==        Row: 2, 1, 封禁/解封用户, USER, 1, <<BLOB>>, 0:0:0:0:0:0:0:1, 2026-07-01 17:55:17
-<==        Row: 1, 1, 封禁/解封用户, USER, 1, <<BLOB>>, 0:0:0:0:0:0:0:1, 2026-07-01 17:52:13
-<==      Total: 2
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6286e3bf]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72460a61] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@654869645 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT COUNT(*) FROM operation_log
-==> Parameters: 
-<==    Columns: COUNT(*)
-<==        Row: 2
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72460a61]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f58d841] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@1561320649 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
-==> Parameters: 1(Long)
-<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f58d841]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35d51d25] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@319913700 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
-==> Parameters: 1(Long)
-<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35d51d25]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5347a3de] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@1568688070 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE email = ?
-==> Parameters: admin@music.com(String)
-<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5347a3de]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3444f153] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@1215565323 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, operator_id, action, target_type, target_id, detail, ip, created_time FROM operation_log ORDER BY created_time DESC LIMIT ? OFFSET ?
-==> Parameters: 5(Integer), 0(Integer)
-<==    Columns: id, operator_id, action, target_type, target_id, detail, ip, created_time
-<==        Row: 2, 1, 封禁/解封用户, USER, 1, <<BLOB>>, 0:0:0:0:0:0:0:1, 2026-07-01 17:55:17
-<==        Row: 1, 1, 封禁/解封用户, USER, 1, <<BLOB>>, 0:0:0:0:0:0:0:1, 2026-07-01 17:52:13
-<==      Total: 2
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3444f153]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@23d71ae6] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@806005158 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT COUNT(*) FROM operation_log
-==> Parameters: 
-<==    Columns: COUNT(*)
-<==        Row: 2
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@23d71ae6]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@176fa780] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@208965537 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
-==> Parameters: 1(Long)
-<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@176fa780]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@630f9ed] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@1812536588 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
-==> Parameters: 1(Long)
-<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@630f9ed]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@616de709] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@229607770 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, operator_id, action, target_type, target_id, detail, ip, created_time FROM operation_log ORDER BY created_time DESC LIMIT ? OFFSET ?
-==> Parameters: 5(Integer), 0(Integer)
-<==    Columns: id, operator_id, action, target_type, target_id, detail, ip, created_time
-<==        Row: 2, 1, 封禁/解封用户, USER, 1, <<BLOB>>, 0:0:0:0:0:0:0:1, 2026-07-01 17:55:17
-<==        Row: 1, 1, 封禁/解封用户, USER, 1, <<BLOB>>, 0:0:0:0:0:0:0:1, 2026-07-01 17:52:13
-<==      Total: 2
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@616de709]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72f80db6] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@557351178 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT COUNT(*) FROM operation_log
-==> Parameters: 
-<==    Columns: COUNT(*)
-<==        Row: 2
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72f80db6]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@50773f52] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@1388854895 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
-==> Parameters: 1(Long)
-<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@50773f52]
-Creating a new SqlSession
-SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53d231f3] was not registered for synchronization because synchronization is not active
-JDBC Connection [HikariProxyConnection@985008500 wrapping com.mysql.cj.jdbc.ConnectionImpl@288c2674] will not be managed by Spring
-==>  Preparing: SELECT id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time FROM `user` WHERE id = ?
-==> Parameters: 1(Long)
-<==    Columns: id, email, password, nickname, avatar, bio, background, role, vip_expire_time, status, created_time, updated_time
-<==        Row: 1, admin@music.com, $2b$10$cYat.gu5TUgAh57yTWLS3ecWVPW9DGkVjKPBFsREOUsJu7B4mohKK, 管理员, null, null, null, ADMIN, null, ACTIVE, 2026-06-30 16:30:40, 2026-07-01 17:22:15
-<==      Total: 1
-Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53d231f3]
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58f0a0b9]
+2026-07-05T03:50:16.508+08:00  INFO 19116 --- [music] [nio-8888-exec-1] c.e.m.service.impl.AlipayServiceImpl     : 创建支付订单: outTradeNo=MUSIC_36D1A9DA2472410F92F1, userId=4, plan=MONTHLY, amount=15.00
+2026-07-05T03:50:16.510+08:00 DEBUG 19116 --- [music] [nio-8888-exec-1] c.e.m.service.impl.AlipayServiceImpl     : 支付宝签名原文: app_id=9021000165631979&biz_content={"out_trade_no":"MUSIC_36D1A9DA2472410F92F1","total_amount":"15.00","subject":"音乐平台月度VIP会员","product_code":"FAST_INSTANT_TRADE_PAY"}&charset=utf-8&format=json&method=alipay.trade.page.pay&notify_url=https://elliptic-geography-varnish.ngrok-free.dev/api/payment/alipay/notify&return_url=http://localhost:8888/api/payment/alipay/return&timestamp=2026-07-05 03:50:16&version=1.0
+2026-07-05T03:50:16.510+08:00 DEBUG 19116 --- [music] [nio-8888-exec-1] c.e.m.service.impl.AlipayServiceImpl     : 支付宝签名结果: GeHdO8bYa5FuasyO98eiREEe1pw0u4JDAG+OkAIeeBZM2CVaqtehl02ImfcFFDanmDSqquNEV9bKvdsTiW4KXlTpSlekNZ1l/Bg+xHbLHS8/R1Sib1b4Y3qdthZ29qoPV/By5pq1KB1qb1rtuPmOPZSG4e6G9JZt7DZIdrBLP6UUQFLP3Iy5BsorhcZ6hmSER0lbdDl5c9fxvEoV1ydnadOoRXbQ32eYq6jtdqYcukNksNmjV7qnvU3NIsPJ4FGIOyyNels9/Z6iYOQIFQHWGSJkiFp8oMxOjHv/QK8wnrEwfpEflcqeYvusn/H2XokQShNEcxcSQRegyJlsVS/Xug==
+2026-07-05T03:50:16.512+08:00  INFO 19116 --- [music] [nio-8888-exec-1] c.e.m.service.impl.AlipayServiceImpl     : 支付宝支付表单已生成: outTradeNo=MUSIC_36D1A9DA2472410F92F1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58f0a0b9]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58f0a0b9]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58f0a0b9]
+2026-07-05T03:54:37.920+08:00 DEBUG 19116 --- [music] [   scheduling-1] c.e.music.scheduled.PlayCountFlushTask   : 【定时任务】开始刷新播放计数...

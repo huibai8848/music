@@ -1,5 +1,9 @@
 package com.example.music.service;
 
+import com.example.music.entity.Artist;
+import com.example.music.entity.Song;
+import com.example.music.vo.ArtistVO;
+import com.example.music.vo.SongVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
@@ -35,6 +39,33 @@ public interface AdminContentService {
     void auditSong(Long adminId, Long songId, String status, String rejectReason);
 
     /**
+     * 创建歌曲
+     *
+     * @param adminId 操作管理员 ID
+     * @param song    歌曲信息
+     * @return 创建的歌曲 VO
+     */
+    SongVO createSong(Long adminId, Song song);
+
+    /**
+     * 更新歌曲
+     *
+     * @param adminId 操作管理员 ID
+     * @param id      歌曲 ID
+     * @param song    更新的歌曲信息
+     * @return 更新后的歌曲 VO
+     */
+    SongVO updateSong(Long adminId, Long id, Song song);
+
+    /**
+     * 获取歌曲详情（管理端，含艺人名）
+     *
+     * @param id 歌曲 ID
+     * @return 歌曲 VO
+     */
+    SongVO getSongDetail(Long id);
+
+    /**
      * 删除歌曲
      *
      * @param adminId 操作管理员 ID
@@ -45,9 +76,9 @@ public interface AdminContentService {
     // ==================== 专辑管理 ====================
 
     /**
-     * 分页查询专辑列表
+     * 分页查询专辑列表（支持按名称搜索）
      */
-    Map<String, Object> listAlbums(int page, int size);
+    Map<String, Object> listAlbums(String keyword, int page, int size);
 
     /**
      * 删除专辑
@@ -57,9 +88,17 @@ public interface AdminContentService {
     // ==================== 艺人管理 ====================
 
     /**
-     * 分页查询艺人列表
+     * 分页查询艺人列表（支持按名称搜索）
      */
-    Map<String, Object> listArtists(int page, int size);
+    Map<String, Object> listArtists(String keyword, int page, int size);
+
+    /**
+     * 更新艺人信息（管理员修改艺人名称/头像/简介等）
+     *
+     * @param artist 艺人信息（含 id）
+     * @return 更新后的艺人 VO
+     */
+    ArtistVO updateArtist(Artist artist);
 
     /**
      * 删除艺人
