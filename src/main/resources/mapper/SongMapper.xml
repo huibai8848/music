@@ -191,6 +191,11 @@
         WHERE id = #{id}
     </update>
 
+    <!-- 递增单曲播放量 -->
+    <update id="incrementPlayCount">
+        UPDATE song SET play_count = play_count + 1 WHERE id = #{id}
+    </update>
+
     <!-- 批量更新播放量（定时任务使用，单语句 CASE WHEN 避免 JDBC 多语句问题） -->
     <update id="batchUpdatePlayCount" parameterType="java.util.List">
         UPDATE song SET play_count = play_count + CASE id

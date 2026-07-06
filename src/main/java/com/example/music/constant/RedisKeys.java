@@ -56,9 +56,6 @@ public interface RedisKeys {
 
     // ==================== 计数 ====================
 
-    /** 播放计数缓冲（Hash，play_count:buffer -> {songId: count}） */
-    String PLAY_COUNT_BUFFER = "play_count:buffer:";
-
     /** 每日上传计数（key = upload_count:{userId}:{date}） */
     String UPLOAD_COUNT = "upload_count:";
 

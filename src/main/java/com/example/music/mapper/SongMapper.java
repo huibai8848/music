@@ -76,6 +76,9 @@ public interface SongMapper {
     /** 更新歌曲 */
     int update(Song song);
 
+    /** 递增单曲播放量（每次播放 +1） */
+    int incrementPlayCount(@Param("id") Long id);
+
     /** 更新播放量（批量，定时任务使用） */
     int batchUpdatePlayCount(@Param("updates") List<Song> updates);
 

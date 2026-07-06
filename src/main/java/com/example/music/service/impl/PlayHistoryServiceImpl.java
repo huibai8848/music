@@ -68,6 +68,9 @@ public class PlayHistoryServiceImpl implements PlayHistoryService {
         record.setSongId(songId);
         playHistoryMapper.insert(record);
 
+        // 递增歌曲播放量（从 play_history 表记录中统计）
+        songMapper.incrementPlayCount(songId);
+
         // 检查是否超出限制，超出则清理最旧的
         int count = playHistoryMapper.countByUserId(userId);
         if (count > MAX_HISTORY) {

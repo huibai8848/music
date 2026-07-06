@@ -21,7 +21,6 @@ import com.example.music.vo.SongVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -59,7 +58,6 @@ public class SongServiceImpl implements SongService {
     private final com.example.music.mapper.LikesMapper likesMapper;
     private final com.example.music.mapper.FavoriteMapper favoriteMapper;
     private final CacheUtil cacheUtil;
-    private final StringRedisTemplate stringRedisTemplate;
     private final UserMapper userMapper;
     private final NotificationService notificationService;
 
@@ -221,26 +219,17 @@ public class SongServiceImpl implements SongService {
 
     // ==================== 播放量统计 ====================
 
+    /**
+     * 播放量上报
+     * <p>
+     * 已废弃：播放量统计统一由 PlayHistoryService.recordPlay() 处理
+     * （插入 play_history 表 + 递增 song.play_count）。
+     * 此方法保留空实现避免前端调用报错。
+     */
     @Override
     public void reportPlay(Long songId) {
-        // 使用 Redis INCR 原子递增播放计数缓冲
-        String bufferKey = RedisKeys.PLAY_COUNT_BUFFER + songId;
-        cacheUtil.increment(bufferKey, 1);
-
-        // 更新排行榜 ZSet（原子自增，用于日榜/周榜/月榜/总榜）
-        java.time.LocalDate now = java.time.LocalDate.now();
-        String today = now.format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
-        cacheUtil.zIncrementScore(RedisKeys.RANKING_DAILY + today, songId.toString(), 1);
-
-        String week = now.format(java.time.format.DateTimeFormatter.ofPattern("yyyy'w'ww"));
-        cacheUtil.zIncrementScore(RedisKeys.RANKING_WEEKLY + week, songId.toString(), 1);
-
-        String month = now.format(java.time.format.DateTimeFormatter.ofPattern("yyyyMM"));
-        cacheUtil.zIncrementScore(RedisKeys.RANKING_MONTHLY + month, songId.toString(), 1);
-
-        cacheUtil.zIncrementScore(RedisKeys.RANKING_ALL, songId.toString(), 1);
-
-        log.debug("播放量上报: songId={}", songId);
+        // 播放量统计已迁移至 PlayHistoryService.recordPlay()
+        log.debug("播放量上报（空实现，已迁移至 PlayHistoryService）: songId={}", songId);
     }
 
     // ==================== 增删改 ====================
@@ -598,22 +587,8 @@ public class SongServiceImpl implements SongService {
             }
         }
 
-        // 5. 叠加 Redis 缓冲中尚未刷入数据库的播放计数，使播放量接近实时
-        if (songId != null) {
-            try {
-                String bufVal = stringRedisTemplate.opsForValue()
-                        .get(RedisKeys.PLAY_COUNT_BUFFER + songId);
-                if (bufVal != null) {
-                    long bufferCount = Long.parseLong(bufVal);
-                    if (bufferCount > 0) {
-                        long dbCount = vo.getPlayCount() != null ? vo.getPlayCount() : 0L;
-                        vo.setPlayCount(dbCount + bufferCount);
-                    }
-                }
-            } catch (Exception e) {
-                log.debug("叠加 Redis 播放计数缓冲失败, songId={}", songId, e);
-            }
-        }
+        // 5. 播放量直接使用 song.play_count 字段（已在播放时同步更新）
+        //    不再叠加 Redis 缓冲，详见 PlayHistoryService.recordPlay()
 
         return vo;
     }
